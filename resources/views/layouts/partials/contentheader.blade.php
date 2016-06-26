@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        @yield('contentheader_title', 'Page Header here')
+        @yield('contentheader_title', 'Sistema de Administracion de Hoteles')
         <small>@yield('contentheader_description')</small>
     </h1>
     <ol class="breadcrumb">
