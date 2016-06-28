@@ -54,10 +54,12 @@ class Hotel extends Model
     use SoftDeletes;
 
     public $table = 'hotels';
-    
 
     protected $dates = ['deleted_at'];
 
+    public function habitaciones(){
+        return $this->hasMany('\App\Models\Habitaciones','foreign_key', 'hotel_id');
+    }
 
     public $fillable = [
         'nombre',
@@ -89,4 +91,5 @@ class Hotel extends Model
     public static $rules = [
         'nombre' => 'required'
     ];
+
 }

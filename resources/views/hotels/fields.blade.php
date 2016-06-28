@@ -1,13 +1,7 @@
 <!-- Nombre Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('nombre', 'Nombre:') !!}
-    {!! Form::text('nombre', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Direccion Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('direccion', 'Direccion:') !!}
-    {!! Form::text('direccion', null, ['class' => 'form-control']) !!}
+    {!! Form::text('nombre', null, ['class' => 'form-control', 'required']) !!}
 </div>
 
 <!-- Telefonos Field -->
@@ -15,8 +9,13 @@
     {!! Form::label('telefonos', 'Telefonos:') !!}
     {!! Form::text('telefonos', null, ['class' => 'form-control']) !!}
 </div>
-<br>
-<div class="row">
+
+<!-- Direccion Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('direccion', 'Direccion:') !!}
+    {!! Form::text('direccion', null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Pisos Field -->
 <div class="form-group col-sm-4">
     {!! Form::label('pisos', 'Pisos:') !!}
@@ -26,7 +25,7 @@
 <!-- Habitaciones Field -->
 <div class="form-group col-sm-4">
     {!! Form::label('habitaciones', 'Habitaciones:') !!}
-    {!! Form::text('habitaciones', null, ['class' => 'form-control']) !!}
+    {!! Form::number('habitaciones', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Camas Field -->
@@ -34,7 +33,7 @@
     {!! Form::label('camas', 'Camas:') !!}
     {!! Form::number('camas', null, ['class' => 'form-control']) !!}
 </div>
-</div>
+
 <!-- Observaciones Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('observaciones', 'Observaciones:') !!}
@@ -43,6 +42,6 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('hotels.index') !!}" class="btn btn-default">Cancel</a>
+    {!! Form::submit('Guardar', ['class' => 'btn btn-primary']) !!}
+    <a href="{!! route('hotels.index') !!}" class="btn btn-default">Cancelar</a>
 </div>

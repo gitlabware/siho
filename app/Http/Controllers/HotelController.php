@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Http\Requests;
 use App\Http\Requests\CreateHotelRequest;
 use App\Http\Requests\UpdateHotelRequest;
@@ -32,7 +33,15 @@ class HotelController extends InfyOmBaseController
     {
         $this->hotelRepository->pushCriteria(new RequestCriteria($request));
         $hotels = $this->hotelRepository->all();
-
+        //$habitaciones = $this->hotelRepository->find(2)->habitaciones;
+        //$habita = \App\Models\Hotel::find(2);
+        $ha = \App\Models\Hotel::find(2)->habitaciones;
+        $ha = DB::table('habitaciones')
+            ->leftJoin('hotels','hotels.id','=','habitaciones.hotel_id')
+            ->select('hotels.nombre', 'habitaciones.piso')
+            ->get();
+        //$ha = $this->Hotel->all();
+        //dd($habita);
         return view('hotels.index')
             ->with('hotels', $hotels);
     }

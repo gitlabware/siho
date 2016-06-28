@@ -32,3 +32,11 @@ Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
 Route::resource('hotels', 'HotelController');
 
 Route::resource('posts', 'PostController');
+
+Route::resource('habitaciones', 'HabitacionesController');
+
+
+
+
+
+Route::resource('clientes', 'ClientesController');
