@@ -35,8 +35,9 @@ Route::resource('posts', 'PostController');
 
 Route::resource('habitaciones', 'HabitacionesController');
 
-
-
-
+Route::get('muestraHabitaciones/{idHotel}', 'HotelController@muestraHabitaciones');
+Route::get('muestraPisos/{idHotel}', 'PisosController@muestraPisos');
 
 Route::resource('clientes', 'ClientesController');
+
+Route::resource('pisos', 'PisosController');

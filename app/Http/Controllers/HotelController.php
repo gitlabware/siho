@@ -36,14 +36,30 @@ class HotelController extends InfyOmBaseController
         //$habitaciones = $this->hotelRepository->find(2)->habitaciones;
         //$habita = \App\Models\Hotel::find(2);
         $ha = \App\Models\Hotel::find(2)->habitaciones;
-        $ha = DB::table('habitaciones')
-            ->leftJoin('hotels','hotels.id','=','habitaciones.hotel_id')
-            ->select('hotels.nombre', 'habitaciones.piso')
-            ->get();
         //$ha = $this->Hotel->all();
-        //dd($habita);
+        //dd($ha);
         return view('hotels.index')
             ->with('hotels', $hotels);
+    }
+
+    /**
+     * @return HotelRepository
+     */
+    public function muestraHabitaciones($idHotel)
+    {
+        //dd($idHotel);
+        /*$ha = DB::table('habitaciones')
+            ->leftJoin('hotels','hotels.id','=','habitaciones.hotel_id')
+            ->select('hotels.nombre', 'habitaciones.piso')
+            ->where('hotels.id',$idHotel)
+            ->get();*/
+        //dd($ha);
+        //$habitaciones = \App\Models\Hotel::find($idHotel)->rhabitaciones;
+        /*foreach ($habitaciones as $h){
+            echo($h);
+        }*/
+        //dd($habitaciones);
+        //return view('hotels.muestraHabitaciones', compact('habitaciones'));
     }
 
     /**

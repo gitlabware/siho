@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @SWG\Definition(
- *      definition="Hotel",
+ *      definition="Pisos",
  *      required={nombre},
  *      @SWG\Property(
  *          property="id",
@@ -21,18 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="direccion",
- *          description="direccion",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="telefonos",
- *          description="telefonos",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="observaciones",
- *          description="observaciones",
+ *          property="estado",
+ *          description="estado",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -49,21 +39,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      )
  * )
  */
-class Hotel extends Model
+class Pisos extends Model
 {
     use SoftDeletes;
 
-    public $table = 'hotels';
+    public $table = 'pisos';
+    
 
     protected $dates = ['deleted_at'];
 
+
     public $fillable = [
         'nombre',
-        'direccion',
-        'telefonos',
-        'pisos',
-        'habitaciones',
-        'camas',
+        'estado',
         'observaciones'
     ];
 
@@ -74,9 +62,7 @@ class Hotel extends Model
      */
     protected $casts = [
         'nombre' => 'string',
-        'direccion' => 'string',
-        'telefonos' => 'string',
-        'observaciones' => 'string'
+        'estado' => 'string'
     ];
 
     /**
@@ -88,7 +74,11 @@ class Hotel extends Model
         'nombre' => 'required'
     ];
 
-    public function rpisos(){
-        return $this->hasMany('\App\Models\Pisos');
+    public function habitaciones(){
+        //return $this->hasMany('\App\Models\Habitaciones','foreign_key', 'hotel_id');
+        return $this->hasMany('\App\Models\Habitaciones');
+    }
+    public function hotel(){
+        return $this->belongsTo('\App\Models\Hotel');
     }
 }

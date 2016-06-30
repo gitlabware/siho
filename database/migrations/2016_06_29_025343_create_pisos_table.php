@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatehabitacionesTable extends Migration
+class CreatepisosTable extends Migration
 {
 
     /**
@@ -13,10 +13,10 @@ class CreatehabitacionesTable extends Migration
      */
     public function up()
     {
-        Schema::create('habitaciones', function (Blueprint $table) {
+        Schema::create('pisos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('piso_id')->unsigned();
-            $table->foreign('piso_id')->references('id')->on('pisos');
+            $table->integer('hotel_id')->unsigned();
+            $table->foreign('hotel_id')->references('id')->on('hotels');
             $table->string('nombre');
             $table->string('estado');
             $table->text('observaciones');
@@ -32,6 +32,6 @@ class CreatehabitacionesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('habitaciones');
+        Schema::drop('pisos');
     }
 }
