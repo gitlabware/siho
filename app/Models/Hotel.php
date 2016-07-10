@@ -91,4 +91,8 @@ class Hotel extends Model
     public function rpisos(){
         return $this->hasMany('\App\Models\Pisos');
     }
+
+    public function rhabitaciones(){
+        return $this->hasMany('\App\Models\Habitaciones');
+    }
 }

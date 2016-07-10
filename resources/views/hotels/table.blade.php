@@ -1,4 +1,4 @@
-<table class="table table-responsive" id="hotels-table">
+<table class="table table-bordered table-striped" id="tabla">
     <thead>
         <th>Nombre</th>
         <th>Direccion</th>
@@ -22,9 +22,12 @@
             <td>
                 {!! Form::open(['route' => ['hotels.destroy', $hotel->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
-                    <a href="{!! route('hotels.show', [$hotel->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a href="{!! route('hotels.edit', [$hotel->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
-                    <a href="{!! url('muestraPisos',[$hotel->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-th"></i></a>
+                    <a href="{!! route('hotels.show', [$hotel->id]) !!}" class='btn btn-default btn-xs'><i
+                                class="glyphicon glyphicon-eye-open"></i></a>
+                    <a href="{!! route('hotels.edit', [$hotel->id]) !!}" class='btn btn-default btn-xs'><i
+                                class="glyphicon glyphicon-edit"></i></a>
+                    <a href="{!! url('pisosHotel',[$hotel->id]) !!}" class='btn btn-default btn-xs'><i
+                                class="glyphicon glyphicon-th"></i></a>
                     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                 </div>
                 {!! Form::close() !!}
@@ -32,4 +35,17 @@
         </tr>
     @endforeach
     </tbody>
+    <tfoot>
+        <th>Nombre</th>
+        <th>Direccion</th>
+        <th>Telefonos</th>
+        <th>Pisos</th>
+        <th>Habitaciones</th>
+        <th>Camas</th>
+        <th>Observaciones</th>
+        <th colspan="3">Action</th>
+    </tfoot>
 </table>
+@push('scriptsextras')
+@include('layouts.partials.jsdatatable')
+@endpush

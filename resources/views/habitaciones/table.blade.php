@@ -1,6 +1,5 @@
 <table class="table table-responsive" id="habitaciones-table">
     <thead>
-        <th>Hotel Id</th>
         <th>Piso</th>
         <th>Nombre</th>
         <th>Estado</th>
@@ -10,8 +9,7 @@
     <tbody>
     @foreach($habitaciones as $habitaciones)
         <tr>
-            <td>{!! $habitaciones->hotel_id !!}</td>
-            <td>{!! $habitaciones->piso !!}</td>
+            <td>{!! $habitaciones->piso_id !!}</td>
             <td>{!! $habitaciones->nombre !!}</td>
             <td>{!! $habitaciones->estado !!}</td>
             <td>{!! $habitaciones->observaciones !!}</td>

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Http\Requests;
+use App\Models\Pisos;
+use Yajra\Datatables\Datatables;
 use App\Http\Requests\CreatePisosRequest;
 use App\Http\Requests\UpdatePisosRequest;
 use App\Repositories\PisosRepository;
@@ -156,11 +159,27 @@ class PisosController extends InfyOmBaseController
         return redirect(route('pisos.index'));
     }
 
-    public function muestraPisos($idHotel){
+    public function pisosHotel($idHotel){
+        //DB::enableQueryLog();
         $hotel = \App\Models\Hotel::find($idHotel);
+        $pisos = \App\Models\Hotel::find($idHotel)->rpisos;
+        
+        //dd(DB::getQueryLog(), $pisos->toArray());
+        // \Debugbar::info($pisos);
+        //dd($pisos);
+        return view('pisos.pisosHotel')->with(compact('pisos', 'hotel'));
+    }
+
+    /*public function muestraPisos($idHotel){
+        /*$hotel = \App\Models\Hotel::find($idHotel);
         $pisos = \App\Models\Hotel::find($idHotel)->rpisos;
         //dd($hotel);
         \Debugbar::info($pisos);
         return view('pisos.muestraPisos')->with(compact('pisos', 'hotel'));
-    }
+        return view('pisos.muestraPisos');
+    }*/
+
+    /*public function anyData(){
+        return Datatables::of(Pisos::query())->make(true);
+    }*/
 }

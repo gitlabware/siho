@@ -153,4 +153,9 @@ class HabitacionesController extends InfyOmBaseController
 
         return redirect(route('habitaciones.index'));
     }
+
+    public function listado($idHotel)
+    {
+        $habitaciones = \App\Models\Habitaciones::find('');
+    }
 }

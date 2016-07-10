@@ -58,6 +58,6 @@ desired effect
 @section('scripts')
     @include('layouts.partials.scripts')
 @show
-
+@stack('datatablesjs')
 </body>
 </html>

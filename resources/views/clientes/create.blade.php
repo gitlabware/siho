@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12">
-            <h1 class="pull-left">Create New Clientes</h1>
+            <h1 class="pull-left">Nuevo Cliente</h1>
         </div>
     </div>
 

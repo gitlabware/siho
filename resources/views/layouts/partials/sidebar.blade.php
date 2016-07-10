@@ -37,6 +37,8 @@
             <li class="active"><a href="{{ url('clientes') }}"><i class='fa fa-building-o'></i> <span>Clientes</span></a></li>
             <li class="active"><a href="{{ url('pisos') }}"><i class='fa fa-building-o'></i> <span>Pisos</span></a></li>
             <li class="active"><a href="{{ url('habitaciones') }}"><i class='fa fa-building-o'></i> <span>Habitaciones</span></a></li>
+            <li class="active"><a href="#"><i class='fa fa-building-o'></i> <span>Cuentas</span></a></li>
+            <li class="active"><a href="#"><i class='fa fa-building-o'></i> <span>Caja Chica</span></a></li>
             {{--<li><a href="#"><i class='fa fa-link'></i> <span>{{ trans('adminlte_lang::message.anotherlink') }}</span></a></li>
             <li class="treeview">
                 <a href="#"><i class='fa fa-link'></i> <span>{{ trans('adminlte_lang::message.multilevel') }}</span> <i class="fa fa-angle-left pull-right"></i></a>

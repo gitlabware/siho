@@ -65,7 +65,9 @@ class Habitaciones extends Model
 
 
     public $fillable = [
+        'piso_id',
         'hotel_id',
+        'camas',
         'piso',
         'nombre',
         'estado',
@@ -78,8 +80,9 @@ class Habitaciones extends Model
      * @var array
      */
     protected $casts = [
-        'hotel_id' => 'string',
-        'piso' => 'string',
+        'piso_id' => 'integer',
+        'hotel_id' => 'integer',
+        'camas' => 'integer',
         'nombre' => 'string',
         'estado' => 'string',
         'observaciones' => 'string'
@@ -95,6 +98,10 @@ class Habitaciones extends Model
     ];
 
     public function hotel(){
-        return $this->belongsTo('App\Hotel');
+        return $this->belongsTo('\App\Models\Hotel');
+    }
+
+    public function pisos(){
+        return $this->belongsTo('\App\Models\Pisos');
     }
 }

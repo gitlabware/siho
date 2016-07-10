@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Log;
+use App\Models\Habitaciones;
 use App\Http\Requests;
 use App\Http\Requests\CreateHotelRequest;
 use App\Http\Requests\UpdateHotelRequest;
@@ -83,9 +85,42 @@ class HotelController extends InfyOmBaseController
     {
         $input = $request->all();
 
-        $hotel = $this->hotelRepository->create($input);
+        $pisos = $request->pisos;
+        $habitaciones = $request->input('habitaciones');
+        $camas = $request->camas;
 
-        Flash::success('Hotel saved successfully.');
+        $hotel = $this->hotelRepository->create($input);
+        $h = new Habitaciones();
+        if($hotel){
+            Flash::success('Se guardo correctamente.');
+            $idHotel = $hotel->id;
+            for ($i = 1; $i <= $pisos; $i++) {
+                for ($c = 1; $c <= $habitaciones; $c++) {
+
+                    echo 'Piso: ' . $i . 'Habitacion: ' . $c . 'camas por habitacion: ' . $camas . '<p>';
+                    $h->piso_id = $i;
+                    $h->hotel_id = $idHotel;
+                    $h->nombre = 'Creado desde controlador';
+                    $h->save();
+                }
+            }
+        }else{
+            Flash::error('Error al guradar.');
+        }
+
+        Log::info($pisos);
+        echo '<pre>';
+        print_r($input);
+        echo '</pre>';
+        \Debugbar::info($input);
+        echo $habitaciones;
+        dd($pisos);
+
+        \Debugbar::info($pisos);
+
+        /*$hotel = $this->hotelRepository->create($input);1
+
+        Flash::success('Hotel saved successfully.');*/
 
         return redirect(route('hotels.index'));
     }
@@ -133,7 +168,7 @@ class HotelController extends InfyOmBaseController
     /**
      * Update the specified Hotel in storage.
      *
-     * @param  int              $id
+     * @param  int $id
      * @param UpdateHotelRequest $request
      *
      * @return Response
@@ -177,5 +212,10 @@ class HotelController extends InfyOmBaseController
         Flash::success('Hotel deleted successfully.');
 
         return redirect(route('hotels.index'));
+    }
+
+    public function pisos()
+    {
+
     }
 }

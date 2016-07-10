@@ -1,13 +1,7 @@
 <!-- Hotel Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('hotel_id', 'Hotel Id:') !!}
-    {!! Form::text('hotel_id', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Piso Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('piso', 'Piso:') !!}
-    {!! Form::text('piso', null, ['class' => 'form-control']) !!}
+    {!! Form::label('piso_id', 'Piso:') !!}
+    {!! Form::text('piso_id', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Nombre Field -->
