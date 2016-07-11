@@ -50,6 +50,7 @@ class Pisos extends Model
 
 
     public $fillable = [
+        'hotel_id',
         'nombre',
         'estado',
         'observaciones'

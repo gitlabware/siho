@@ -38,6 +38,8 @@ Route::resource('habitaciones', 'HabitacionesController');
 Route::get('muestraHabitaciones/{idHotel}', 'HotelController@muestraHabitaciones');
 //Route::get('muestraPisos/{idHotel}', 'PisosController@muestraPisos');
 Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel');
+Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
+
 
 /*Route::controller('datatables', 'PisosController', [
     'anyData'  => 'datatables.data',

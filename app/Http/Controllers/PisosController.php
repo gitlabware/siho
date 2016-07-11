@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Log;
 use App\Http\Requests;
 use App\Models\Pisos;
 use Yajra\Datatables\Datatables;
@@ -160,14 +161,17 @@ class PisosController extends InfyOmBaseController
     }
 
     public function pisosHotel($idHotel){
-        //DB::enableQueryLog();
+        $habitaciones = DB::table('habitaciones')
+            ->where('hotel_id', $idHotel)
+            ->leftJoin('pisos', 'habitaciones.piso_id', '=', 'pisos.id')
+            ->select('habitaciones.id', 'pisos.nombre as piso', 'habitaciones.nombre as hab')
+            ->get();
         $hotel = \App\Models\Hotel::find($idHotel);
-        $pisos = \App\Models\Hotel::find($idHotel)->rpisos;
-        
-        //dd(DB::getQueryLog(), $pisos->toArray());
-        // \Debugbar::info($pisos);
-        //dd($pisos);
-        return view('pisos.pisosHotel')->with(compact('pisos', 'hotel'));
+        //$pisos = \App\Models\Hotel::find($idHotel)->rpisos;
+
+        //\Debugbar::info($hab);
+
+        return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));
     }
 
     /*public function muestraPisos($idHotel){

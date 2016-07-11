@@ -1,19 +1,33 @@
 <!-- Hotel Id Field -->
 <div class="form-group col-sm-6">
+    {{--    {!! dd($pisosHotel) !!}--}}
     {!! Form::label('piso_id', 'Piso:') !!}
-    {!! Form::text('piso_id', null, ['class' => 'form-control']) !!}
+
+    <select name="piso_id" class="form-control">
+        <?php foreach($pisosHotel as $p): ?>
+        <option value="<?php echo $p->id; ?>"><?php echo $p->nombre; ?></option>
+        <?php endforeach ?>
+    </select>
 </div>
 
 <!-- Nombre Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('nombre', 'Nombre:') !!}
-    {!! Form::text('nombre', null, ['class' => 'form-control']) !!}
+    {!! Form::text('nombre', null, ['class' => 'form-control', 'required']) !!}
+</div>
+
+<div class="form-group col-sm-6">
+    {!! Form::label('camas', 'Camas por habitacion:') !!}
+    {!! Form::text('camas', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Estado Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('estado', 'Estado:') !!}
-    {!! Form::text('estado', null, ['class' => 'form-control']) !!}
+    <select name="estado" class="form-control">
+        <option value="habilitado">Habilitado</option>
+        <option value="Deshabilitado">Deshabilitado</option>
+    </select>
 </div>
 
 <!-- Observaciones Field -->

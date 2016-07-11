@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Log;
 use App\Models\Habitaciones;
+use App\Models\Pisos;
 use App\Http\Requests;
 use App\Http\Requests\CreateHotelRequest;
 use App\Http\Requests\UpdateHotelRequest;
@@ -37,7 +38,7 @@ class HotelController extends InfyOmBaseController
         $hotels = $this->hotelRepository->all();
         //$habitaciones = $this->hotelRepository->find(2)->habitaciones;
         //$habita = \App\Models\Hotel::find(2);
-        $ha = \App\Models\Hotel::find(2)->habitaciones;
+        //$ha = \App\Models\Hotel::find(2)->habitaciones;
         //$ha = $this->Hotel->all();
         //dd($ha);
         return view('hotels.index')
@@ -90,25 +91,34 @@ class HotelController extends InfyOmBaseController
         $camas = $request->camas;
 
         $hotel = $this->hotelRepository->create($input);
-        $h = new Habitaciones();
-        if($hotel){
-            Flash::success('Se guardo correctamente.');
-            $idHotel = $hotel->id;
-            for ($i = 1; $i <= $pisos; $i++) {
-                for ($c = 1; $c <= $habitaciones; $c++) {
 
+        if ($hotel) {
+            $idHotel = $hotel->id;
+            //echo 'hotel: '.$idHotel;
+            //dd($idHotel);
+            for ($i = 1; $i <= $pisos; $i++) {
+                $p = new Pisos();
+                $p->hotel_id = $idHotel;
+                $p->nombre = 'Piso ' . $i;
+                $p->save();
+                $idPiso = $p->id;
+                //echo 'Piso: ' . $idPiso;
+                for ($c = 1; $c <= $habitaciones; $c++) {
                     echo 'Piso: ' . $i . 'Habitacion: ' . $c . 'camas por habitacion: ' . $camas . '<p>';
-                    $h->piso_id = $i;
-                    $h->hotel_id = $idHotel;
-                    $h->nombre = 'Creado desde controlador';
+                    $h = new Habitaciones();
+                    $h->piso_id = $idPiso;
+                    //$h->hotel_id = $idHotel;
+                    $h->camas = $camas;
+                    $h->nombre = $i.'0'.$c;
                     $h->save();
                 }
             }
-        }else{
+            Flash::success('Se guardo correctamente.');
+        } else {
             Flash::error('Error al guradar.');
         }
 
-        Log::info($pisos);
+        /*Log::info($pisos);
         echo '<pre>';
         print_r($input);
         echo '</pre>';
@@ -116,7 +126,7 @@ class HotelController extends InfyOmBaseController
         echo $habitaciones;
         dd($pisos);
 
-        \Debugbar::info($pisos);
+        \Debugbar::info($pisos);*/
 
         /*$hotel = $this->hotelRepository->create($input);1
 

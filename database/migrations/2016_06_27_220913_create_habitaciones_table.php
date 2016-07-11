@@ -17,7 +17,6 @@ class CreatehabitacionesTable extends Migration
             $table->increments('id');
             $table->integer('piso_id')->unsigned();
             $table->foreign('piso_id')->references('id')->on('pisos');
-            $table->integer('hotel_id');
             $table->integer('camas');
             $table->string('nombre');
             $table->string('estado');

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Http\Requests;
 use App\Http\Requests\CreateHabitacionesRequest;
 use App\Http\Requests\UpdateHabitacionesRequest;
+use App\Models\Hotel;
 use App\Repositories\HabitacionesRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
@@ -47,6 +49,19 @@ class HabitacionesController extends InfyOmBaseController
         return view('habitaciones.create');
     }
 
+    public function nuevaHabitacion($idHotel){
+        $habitacion = \App\Models\Habitaciones::find($idHotel);
+        $habitacionPiso = $habitacion->piso_id;
+        $piso = \App\Models\Pisos::find($habitacionPiso);
+        $idHotel = $piso->hotel_id;
+        $pisosHotel = DB::table('pisos')
+            ->where('hotel_id', $idHotel)
+            ->select('id', 'nombre')
+            ->get();
+        return view('habitaciones.create')
+            ->with(compact('pisosHotel'));
+    }
+
     /**
      * Store a newly created Habitaciones in storage.
      *
@@ -57,12 +72,14 @@ class HabitacionesController extends InfyOmBaseController
     public function store(CreateHabitacionesRequest $request)
     {
         $input = $request->all();
-
+        $idPiso = \App\Models\Pisos::find($request->input('piso_id'));
+        $idHotel = $idPiso->hotel_id;
         $habitaciones = $this->habitacionesRepository->create($input);
 
         Flash::success('Habitaciones saved successfully.');
 
-        return redirect(route('habitaciones.index'));
+        //return redirect(route('habitaciones.index'));
+        return redirect()->action('PisosController@pisosHotel', [$idHotel]);
     }
 
     /**
@@ -95,14 +112,26 @@ class HabitacionesController extends InfyOmBaseController
     public function edit($id)
     {
         $habitaciones = $this->habitacionesRepository->findWithoutFail($id);
+        //dd($habitaciones);
+        $habitacion = \App\Models\Habitaciones::find($id);
+        $habitacionPiso = $habitacion->piso_id;
+        $piso = \App\Models\Pisos::find($habitacionPiso);
+        $idHotel = $piso->hotel_id;
+        $pisosHotel = DB::table('pisos')
+            ->where('hotel_id', $idHotel)
+            ->select('id', 'nombre')
+            ->get();
+        //\Debugbar::info($pisosHotel);
+
+        //\Debugbar::info($piso);
 
         if (empty($habitaciones)) {
             Flash::error('Habitaciones not found');
 
             return redirect(route('habitaciones.index'));
-        }
 
-        return view('habitaciones.edit')->with('habitaciones', $habitaciones);
+        }
+        return view('habitaciones.edit')->with(compact('habitaciones', 'pisosHotel'));
     }
 
     /**
@@ -116,6 +145,10 @@ class HabitacionesController extends InfyOmBaseController
     public function update($id, UpdateHabitacionesRequest $request)
     {
         $habitaciones = $this->habitacionesRepository->findWithoutFail($id);
+        $habitacion = \App\Models\Habitaciones::find($id);
+        $habitacionPiso = $habitacion->piso_id;
+        $piso = \App\Models\Pisos::find($habitacionPiso);
+        $idHotel = $piso->hotel_id;
 
         if (empty($habitaciones)) {
             Flash::error('Habitaciones not found');
@@ -127,7 +160,9 @@ class HabitacionesController extends InfyOmBaseController
 
         Flash::success('Habitaciones updated successfully.');
 
-        return redirect(route('habitaciones.index'));
+        //return redirect(route('pisosHotel', [$idHotel]));
+        return redirect()->action('PisosController@pisosHotel', [$idHotel]);
+        //return back()->withInput();
     }
 
     /**
