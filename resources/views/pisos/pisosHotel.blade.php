@@ -36,7 +36,7 @@
                                         {{--class="glyphicon glyphicon-eye-open"></i></a>--}}
                             <a href="{!! route('habitaciones.edit', [$h->id]) !!}" class='btn btn-warning btn-xs'><i
                                         class="glyphicon glyphicon-edit"></i></a>
-                            <a href="{!! url('pisosHotel',[$h->id]) !!}" class='btn btn-success btn-xs'><i
+                            <a href="{!! url('ingresaPrecio', [$h->id]) !!}" class='btn btn-success btn-xs'><i
                                         class="fa fa-fw fa-dollar"></i></a>
                             {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                         </div>
