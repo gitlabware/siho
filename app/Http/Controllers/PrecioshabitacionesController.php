@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Requests\CreatePrecioshabitacionesRequest;
 use App\Http\Requests\UpdatePrecioshabitacionesRequest;
+use App\Models\Precioshabitaciones;
 use App\Repositories\PrecioshabitacionesRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
@@ -156,6 +157,10 @@ class PrecioshabitacionesController extends InfyOmBaseController
 
     public function ingresaPrecio($idHabitacion){
         //dd($idHabitacion);
-        return view('precioshabitaciones.ingresaprecio');
+        $habitacion = \App\Models\Habitaciones::find($idHabitacion);
+        $precios = \App\Models\Precioshabitaciones::where('habitacione_id', $idHabitacion)->get();
+        //dd($precios);
+        \Debugbar::info($precios);
+        return view('precioshabitaciones.ingresaprecio')->with(compact('idHabitacion', 'habitacion', 'precios'));
     }
 }

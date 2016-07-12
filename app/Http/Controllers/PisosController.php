@@ -168,8 +168,8 @@ class PisosController extends InfyOmBaseController
             ->get();
         $hotel = \App\Models\Hotel::find($idHotel);
         //$pisos = \App\Models\Hotel::find($idHotel)->rpisos;
-
-        //\Debugbar::info($hab);
+        //dd($habitaciones);
+        //\Debugbar::info($habitaciones);
 
         return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));
     }
