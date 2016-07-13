@@ -16,7 +16,7 @@ class CreatehabitacionesTable extends Migration
         Schema::create('habitaciones', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('piso_id')->unsigned();
-            $table->foreign('piso_id')->references('id')->on('pisos');
+            //$table->foreign('piso_id')->references('id')->on('pisos');
             $table->integer('camas');
             $table->string('nombre');
             $table->string('estado');

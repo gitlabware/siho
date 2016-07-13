@@ -85,7 +85,7 @@ class HotelController extends InfyOmBaseController
     public function store(CreateHotelRequest $request)
     {
         $input = $request->all();
-        dd($input);
+        //dd($input);
 
         $pisos = $request->pisos;
         $habitaciones = $request->input('habitaciones');
