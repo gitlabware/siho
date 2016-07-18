@@ -3,11 +3,7 @@
         <th>Nombre</th>
         <th>Direccion</th>
         <th>Telefonos</th>
-        <th>Pisos</th>
-        <th>Habitaciones</th>
-        <th>Camas</th>
-        <th>Observaciones</th>
-        <th colspan="3">Action</th>
+        <th>Acciones</th>
     </thead>
     <tbody>
     @foreach($hotels as $hotel)
@@ -15,10 +11,6 @@
             <td>{!! $hotel->nombre !!}</td>
             <td>{!! $hotel->direccion !!}</td>
             <td>{!! $hotel->telefonos !!}</td>
-            <td>{!! $hotel->pisos !!}</td>
-            <td>{!! $hotel->habitaciones !!}</td>
-            <td>{!! $hotel->camas !!}</td>
-            <td>{!! $hotel->observaciones !!}</td>
             <td>
                 {!! Form::open(['route' => ['hotels.destroy', $hotel->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
@@ -39,11 +31,7 @@
         <th>Nombre</th>
         <th>Direccion</th>
         <th>Telefonos</th>
-        <th>Pisos</th>
-        <th>Habitaciones</th>
-        <th>Camas</th>
-        <th>Observaciones</th>
-        <th colspan="3">Action</th>
+        <th>Action</th>
     </tfoot>
 </table>
 @push('scriptsextras')
