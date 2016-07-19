@@ -53,6 +53,8 @@ desired effect
 
     @include('layouts.partials.footer')
 
+        @include('layouts.partials.modal')
+
 </div><!-- ./wrapper -->
 
 @section('scripts')
