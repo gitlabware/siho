@@ -95,4 +95,8 @@ class Hotel extends Model
     public function rhabitaciones(){
         return $this->hasMany('\App\Models\Habitaciones');
     }
+
+    public function ruser(){
+        return $this->hasOne('\App\Models\User');
+    }
 }

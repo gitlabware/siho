@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+       'hotel_id' ,'name', 'email', 'password',
     ];
 
     /**
@@ -23,4 +23,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function rhotel(){
+        return $this->belongsTo('\App\Models\Hotel');
+    }
 }

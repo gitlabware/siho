@@ -53,3 +53,5 @@ Route::resource('pisos', 'PisosController');
 Route::resource('precioshabitaciones', 'PrecioshabitacionesController');
 
 Route::resource('estudiantes', 'EstudiantesController');
+
+//`Route::auth();
