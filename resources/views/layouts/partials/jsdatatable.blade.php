@@ -7,6 +7,7 @@
             "lengthChange": false,
             "searching": true,
             "ordering": true,
+            "scrollX": true,
             "info": true,
             "autoWidth": false,
             "language": {
