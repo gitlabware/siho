@@ -58,11 +58,17 @@ class PrecioshabitacionesController extends InfyOmBaseController
     {
         $input = $request->all();
 
+        $idHabitacion = $request->input('habitacione_id');
+        //dd($idHabitacion);
+
         $precioshabitaciones = $this->precioshabitacionesRepository->create($input);
 
         Flash::success('Precioshabitaciones saved successfully.');
 
-        return redirect(route('precioshabitaciones.index'));
+        //return redirect(route('precioshabitaciones.index'));
+        //return redirect(route('ingresaPrecio/'.$idHabitacion));
+        //return redirect()->action('App\Http\Controllers\Precioshabitaciones@ingresaPrecio', [$idHabitacion]);
+        return redirect()->action('PrecioshabitacionesController@ingresaPrecio', [$idHabitacion]);
     }
 
     /**
@@ -157,7 +163,7 @@ class PrecioshabitacionesController extends InfyOmBaseController
     public function ingresaPrecio($idHabitacion){
         //dd($idHabitacion);
         $user = Auth::user();
-        dd($user);
+        \Debugbar::info($user);
         $habitacion = \App\Models\Habitaciones::find($idHabitacion);
         $precios = \App\Models\Precioshabitaciones::where('habitacione_id', $idHabitacion)->get();
         //dd($precios);

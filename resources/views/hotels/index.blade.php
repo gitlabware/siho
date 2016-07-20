@@ -10,8 +10,6 @@
 
     <div class="clearfix"></div>
     <div class="box">
-        <div class="box-header">
-        </div>
         <!-- /.box-header -->
         <div class="box-body">
 

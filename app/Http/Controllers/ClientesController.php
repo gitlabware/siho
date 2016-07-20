@@ -153,4 +153,8 @@ class ClientesController extends InfyOmBaseController
 
         return redirect(route('clientes.index'));
     }
+
+    public function asignahabitacion(){
+        return view('clientes.asignahabitacion');
+    }
 }

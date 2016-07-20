@@ -23,6 +23,7 @@ class HotelController extends InfyOmBaseController
 
     public function __construct(HotelRepository $hotelRepo)
     {
+        $this->middleware('auth');
         $this->hotelRepository = $hotelRepo;
     }
 

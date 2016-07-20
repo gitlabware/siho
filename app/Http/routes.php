@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return view('auth.login');
 });
 
 
@@ -40,7 +41,7 @@ Route::get('muestraHabitaciones/{idHotel}', 'HotelController@muestraHabitaciones
 Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel');
 Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
 Route::get('ingresaPrecio/{idHabitacion}', 'PrecioshabitacionesController@ingresaPrecio');
-
+Route::get('asignahabitacion', 'ClientesController@asignahabitacion');
 /*Route::controller('datatables', 'PisosController', [
     'anyData'  => 'datatables.data',
     'muestraPisos' => 'datatables',
