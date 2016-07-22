@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @SWG\Definition(
- *      definition="Habitaciones",
+ *      definition="Registro",
  *      required={},
  *      @SWG\Property(
  *          property="id",
@@ -16,19 +16,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="hotel_id",
- *          description="hotel_id",
- *          type="string"
+ *          property="cliente_id",
+ *          description="cliente_id",
+ *          type="integer",
+ *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="piso",
- *          description="piso",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="nombre",
- *          description="nombre",
- *          type="string"
+ *          property="habitacione_id",
+ *          description="habitacione_id",
+ *          type="integer",
+ *          format="int32"
  *      ),
  *      @SWG\Property(
  *          property="estado",
@@ -36,9 +33,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="observaciones",
- *          description="observaciones",
+ *          property="observacion",
+ *          description="observacion",
  *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="precio",
+ *          description="precio",
+ *          type="number",
+ *          format="float"
+ *      ),
+ *      @SWG\Property(
+ *          property="monto_total",
+ *          description="monto_total",
+ *          type="number",
+ *          format="float"
+ *      ),
+ *      @SWG\Property(
+ *          property="user_id",
+ *          description="user_id",
+ *          type="integer",
+ *          format="int32"
  *      ),
  *      @SWG\Property(
  *          property="created_at",
@@ -54,24 +69,26 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      )
  * )
  */
-class Habitaciones extends Model
+class Registro extends Model
 {
     use SoftDeletes;
 
-    public $table = 'habitaciones';
+    public $table = 'registros';
     
 
     protected $dates = ['deleted_at'];
 
 
     public $fillable = [
-        'piso_id',
-        'camas',
-        'piso',
-        'nombre',
+        'cliente_id',
+        'habitacione_id',
         'estado',
-        'observaciones',
-        'registro_id'
+        'fecha_ingreso',
+        'fecha_salida',
+        'observacion',
+        'precio',
+        'monto_total',
+        'user_id'
     ];
 
     /**
@@ -80,11 +97,11 @@ class Habitaciones extends Model
      * @var array
      */
     protected $casts = [
-        'piso_id' => 'integer',
-        'camas' => 'integer',
-        'nombre' => 'string',
+        'cliente_id' => 'integer',
+        'habitacione_id' => 'integer',
         'estado' => 'string',
-        'observaciones' => 'string'
+        'observacion' => 'string',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -95,15 +112,4 @@ class Habitaciones extends Model
     public static $rules = [
         
     ];
-
-    public function rhotel(){
-        return $this->belongsTo('\App\Models\Hotel');
-    }
-
-    public function rpisos(){
-        return $this->belongsTo('\App\Models\Pisos');
-    }
-    public function rprecios(){
-        return $this->hasMany('\App\Models\Precioshabitaciones');
-    }
 }

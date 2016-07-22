@@ -132,7 +132,7 @@
 
 <!-- Page Plugins -->
 <script src="{{ URL::asset('') }}js/vendor/plugins/magnific/jquery.magnific-popup.js"></script>
-
+<script src="{{ URL::asset('') }}js/vendor/plugins/datepicker/bootstrap-datepicker.js"></script>
 <!-- Theme Javascript -->
 <script src="{{ URL::asset('') }}js/utility/utility.js"></script>
 <script src="{{ URL::asset('') }}js/demo/demo.js"></script>

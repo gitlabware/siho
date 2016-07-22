@@ -42,6 +42,7 @@ Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel');
 Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
 Route::get('ingresaPrecio/{idHabitacion}', 'PrecioshabitacionesController@ingresaPrecio');
 Route::get('asignahabitacion', 'ClientesController@asignahabitacion');
+Route::get('asignahabitacion2/{idCliente}', 'ClientesController@asignahabitacion2')->name('asignahabitacion2');
 /*Route::controller('datatables', 'PisosController', [
     'anyData'  => 'datatables.data',
     'muestraPisos' => 'datatables',
@@ -67,3 +68,8 @@ Route::get('caja/ingreso/{idCaja}', 'CajaController@ingreso');
 
 Route::post('caja/guarda_ingreso', 'CajaController@guarda_ingreso');
 
+
+
+Route::resource('registros', 'RegistroController');
+Route::get('registros/nuevo/{idCliente}/{idHabitacion}/nuevoregistro', 'RegistroController@nuevo')->name('nuevoregistro');
+Route::post('registros/guarda_registro', 'RegistroController@guarda_registro');

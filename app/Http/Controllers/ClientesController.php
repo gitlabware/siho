@@ -12,6 +12,8 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
+use App\Models\Habitaciones;
+
 class ClientesController extends InfyOmBaseController
 {
     /** @var  ClientesRepository */
@@ -156,5 +158,13 @@ class ClientesController extends InfyOmBaseController
 
     public function asignahabitacion(){
         return view('clientes.asignahabitacion');
+    }
+    public function asignahabitacion2($idCliente){
+
+        $cliente = $this->clientesRepository->find($idCliente);
+        //dd($cliente);
+        $habitaciones = Habitaciones::all();
+
+        return view('clientes.asignahabitacion2')->with(compact('habitaciones','cliente'));
     }
 }
