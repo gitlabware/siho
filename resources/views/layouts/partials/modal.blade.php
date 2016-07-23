@@ -28,8 +28,9 @@
 @section('scripts')
     @parent
     <script>
-        function cargarmodal(urll)
+        function cargarmodal(urll,color = 'primary')
         {
+            $('#mimodal').attr('class', 'modal modal-'+color);
             $('#divmodal').hide();
             jQuery("#spin-cargando-mod").show(200);
             jQuery('#mimodal').modal('show', {backdrop: 'static'});

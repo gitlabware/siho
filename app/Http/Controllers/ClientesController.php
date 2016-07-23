@@ -161,9 +161,14 @@ class ClientesController extends InfyOmBaseController
     }
     public function asignahabitacion2($idCliente){
 
+        /*$habitacion = Habitaciones::find(1);
+
+        dd($habitacion->registro->cliente->nombre);*/
+
         $cliente = $this->clientesRepository->find($idCliente);
         //dd($cliente);
         $habitaciones = Habitaciones::all();
+        //dd($habitaciones);
 
         return view('clientes.asignahabitacion2')->with(compact('habitaciones','cliente'));
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 /**
  * @SWG\Definition(
@@ -74,7 +75,7 @@ class Registro extends Model
     use SoftDeletes;
 
     public $table = 'registros';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -110,6 +111,31 @@ class Registro extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
+
+    public function cliente()
+    {
+        return $this->belongsTo('\App\Models\Clientes');
+    }
+
+
+    public function getFechaIngresoAttribute($value)
+    {
+        $fecha = Carbon::parse($value);
+        return $fecha->format('d/m/Y');
+    }
+
+    public function getFechaSalidaAttribute($value)
+    {
+
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y');
+        } else {
+            return null;
+        }
+
+    }
+
 }

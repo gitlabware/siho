@@ -84,7 +84,8 @@ class Habitaciones extends Model
         'camas' => 'integer',
         'nombre' => 'string',
         'estado' => 'string',
-        'observaciones' => 'string'
+        'observaciones' => 'string',
+        'registro_id' => 'integer'
     ];
 
     /**
@@ -96,12 +97,14 @@ class Habitaciones extends Model
         
     ];
 
-    public function rhotel(){
-        return $this->belongsTo('\App\Models\Hotel');
+
+    public function rpiso(){
+        //return $this->belongsTo('\App\Models\Pisos');
+        return $this->belongsTo('\App\Models\Pisos', 'piso_id');
     }
 
-    public function rpisos(){
-        return $this->belongsTo('\App\Models\Pisos');
+    public function registro(){
+        return $this->belongsTo('\App\Models\Registro');
     }
     public function rprecios(){
         return $this->hasMany('\App\Models\Precioshabitaciones');

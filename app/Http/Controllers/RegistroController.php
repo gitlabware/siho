@@ -11,10 +11,12 @@ use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
+use Carbon\Carbon;
 
 use App\Models\Precioshabitaciones;
 use App\Models\Clientes;
 use App\Models\Habitaciones;
+
 
 class RegistroController extends InfyOmBaseController
 {
@@ -158,38 +160,41 @@ class RegistroController extends InfyOmBaseController
         return redirect(route('registros.index'));
     }
 
-    public function nuevo($idCliente,$idHabitacion)
+    public function nuevo($idCliente,$idHabitacion,$idRegistro = null)
     {
-        //dd($idHabitacion);
+        //dd($idRegistro);
         //return view('registros.create');
+        if(isset($idRegistro)){
+            $registro = $this->registroRepository->findWithoutFail($idRegistro);
 
+            $idCliente = $registro->cliente_id;
+        }
         $precios = Precioshabitaciones::where('habitacione_id' , $idHabitacion)->get()->lists('precio','precio')->all();
         //dd($precios);
         $cliente = Clientes::find($idCliente);
-
         $habitacion = Habitaciones::find($idHabitacion);
-
-        return view('registros.nuevo')->with(compact('precios','habitacion','cliente'));
-
-
+        return view('registros.nuevo')->with(compact('precios','habitacion','cliente','registro'));
     }
 
-    public function guarda_registro(Request $request){
-        //dd($request->all());
-        $input = $request->all();
-        $input['estado'] = 'Ocupando';
-        $registro = $this->registroRepository->create($input);
+    public function guarda_registro(Request $request,$idRegistro = null){
+        $datos_reg = $request->all();
+        $datos_reg['fecha_ingreso'] ;
 
-        $habitacion = Habitaciones::find($request->habitacione_id);
-        $habitacion->registro_id = $registro->id;
-
-        $habitacion->save();
-
+        dd($datos_reg['fecha_ingreso']);
+        if(isset($idRegistro)){
+            $registro = $this->registroRepository->findWithoutFail($idRegistro);
+            $registro = $this->registroRepository->update($request->all(), $idRegistro);
+        }else{
+            $input = $request->all();
+            $input['estado'] = 'Ocupando';
+            $registro = $this->registroRepository->create($input);
+            $habitacion = Habitaciones::find($request->habitacione_id);
+            $habitacion->registro_id = $registro->id;
+            $habitacion->save();
+        }
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
         return redirect(route('registros.index'));
-
     }
-
 
 }
 

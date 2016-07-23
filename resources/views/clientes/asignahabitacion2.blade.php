@@ -14,22 +14,36 @@
         <thead>
         <th>Piso</th>
         <th>Nombre</th>
-        <th>Estado</th>
-        <th>Observaciones</th>
+        <th>Cliente</th>
+        <th>Fecha Ingreso</th>
         <th colspan="3">Action</th>
         </thead>
         <tbody>
+
+
         @foreach($habitaciones as $habitaciones)
-            <tr>
-                <td>{!! $habitaciones->piso_id !!}</td>
+            <?php
+            $color_reg = null;
+            $color_reg2 = null;
+            if (isset($habitaciones->registro_id)) {
+                $color_reg = 'danger';
+                $color_reg2 = ",'danger'";
+            }
+            ?>
+            <tr class="{{ $color_reg }}">
+                <td>{!! $habitaciones->rpiso->nombre !!}</td>
                 <td>{!! $habitaciones->nombre !!}</td>
-                <td>{!! $habitaciones->estado !!}</td>
-                <td>{!! $habitaciones->observaciones !!}</td>
+                <td>{{ isset($habitaciones->registro->cliente->nombre) ? $habitaciones->registro->cliente->nombre : '' }}</td>
+                <td>{{ isset($habitaciones->registro->fecha_ingreso) ? $habitaciones->registro->fecha_ingreso : '' }}</td>
                 <td>
                     {!! Form::open(['route' => ['habitaciones.destroy', $habitaciones->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>
-                        <a href="{!! route('habitaciones.show', [$habitaciones->id]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                        <a href="javascript:" onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitaciones->id]) !!}')" class='btn btn-primary btn-xs' title="Formulario"><i class="glyphicon glyphicon-edit"></i></a>
+                        <a href="{!! route('habitaciones.show', [$habitaciones->id]) !!}"
+                           class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
+                        <a href="javascript:"
+                           onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitaciones->id,$habitaciones->registro_id]) !!}'{{ $color_reg2 }})"
+                           class='btn btn-primary btn-xs' title="Formulario"><i
+                                    class="glyphicon glyphicon-edit"></i></a>
                     </div>
                     {!! Form::close() !!}
                 </td>
