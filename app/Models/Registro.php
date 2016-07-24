@@ -128,14 +128,12 @@ class Registro extends Model
 
     public function getFechaSalidaAttribute($value)
     {
-
         if (!empty($value) && "0000-00-00 00:00:00" != $value) {
             $fecha = Carbon::parse($value);
             return $fecha->format('d/m/Y');
         } else {
             return null;
         }
-
     }
 
 }

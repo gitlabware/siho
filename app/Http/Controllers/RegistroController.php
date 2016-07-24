@@ -178,16 +178,18 @@ class RegistroController extends InfyOmBaseController
 
     public function guarda_registro(Request $request,$idRegistro = null){
         $datos_reg = $request->all();
-        $datos_reg['fecha_ingreso'] ;
-
-        dd($datos_reg['fecha_ingreso']);
+        if(isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])){
+            $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y',$datos_reg['fecha_ingreso'])->toDateTimeString();
+        }
+        if(isset($datos_reg['fecha_salida']) && !empty($datos_reg['fecha_salida'])){
+            $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y',$datos_reg['fecha_salida'])->toDateTimeString();
+        }
         if(isset($idRegistro)){
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
-            $registro = $this->registroRepository->update($request->all(), $idRegistro);
+            $registro = $this->registroRepository->update($datos_reg, $idRegistro);
         }else{
-            $input = $request->all();
-            $input['estado'] = 'Ocupando';
-            $registro = $this->registroRepository->create($input);
+            $datos_reg['estado'] = 'Ocupando';
+            $registro = $this->registroRepository->create($datos_reg);
             $habitacion = Habitaciones::find($request->habitacione_id);
             $habitacion->registro_id = $registro->id;
             $habitacion->save();

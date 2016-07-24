@@ -1,7 +1,4 @@
-<?php
-use Carbon\Carbon;
 
-?>
 <link rel="stylesheet" href="{{ asset('/plugins/datepicker/datepicker3.css') }}">
 <style>
     .datepicker {
@@ -37,25 +34,25 @@ use Carbon\Carbon;
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Fecha de Ingreso:</label>
-                    {!! Form::text('fecha_ingreso', $fecha_ingreso, ['class' => 'form-control calendario','placeholder' => 'Detalle del ingrese','required']) !!}
+                    {!! Form::text('fecha_ingreso', $fecha_ingreso, ['class' => 'form-control calendario','placeholder' => '','required','id' => 'cfechaingreso']) !!}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Fecha de salida:</label>
-                    {!! Form::text('fecha_salida', null, ['class' => 'form-control calendario','placeholder' => 'Detalle del ingrese']) !!}
+                    {!! Form::text('fecha_salida', null, ['class' => 'form-control calendario','placeholder' => '','id' => 'cfechasalida']) !!}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::select('precio', $precios,null, ['class' => 'form-control','placeholder' => 'Seleccione el precio','required']) !!}
+                    {!! Form::select('precio', $precios,null, ['class' => 'form-control','placeholder' => 'Seleccione el precio','required','id' => 'cprecio']) !!}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::text('monto_total', null, ['class' => 'form-control','placeholder' => 'Monto','step' => 'any','type' => 'number','min' => 0]) !!}
+                    {!! Form::text('monto_total', null, ['class' => 'form-control','placeholder' => 'Monto','step' => 'any','type' => 'number','min' => 0,'id' => 'cmontototal']) !!}
                 </div>
             </div>
         </div>
@@ -87,4 +84,26 @@ use Carbon\Carbon;
         format: 'dd/mm/yyyy',
         autoclose: true
     });
+    function parseDate(str) {
+        var mdy = str.split('/');
+        return new Date(mdy[2], mdy[1]-1, mdy[0]);
+    }
+
+    function daydiff(first, second) {
+        return Math.round((second-first)/(1000*60*60*24));
+    }
+
+
+    $('.calendario').change(function(){
+        if($('#cfechaingreso').val() != '' && $('#cfechasalida').val() != '' && $('#cprecio').val() != ''){
+            var dias = daydiff(parseDate($('#cfechaingreso').val()), parseDate($('#cfechasalida').val()));
+            var precio = parseFloat($('#cprecio').val());
+            if(dias > 0){
+                $('#cmontototal').val(dias*precio);
+            }
+
+        }
+    });
+
+
 </script>

@@ -109,4 +109,5 @@ class Habitaciones extends Model
     public function rprecios(){
         return $this->hasMany('\App\Models\Precioshabitaciones');
     }
+
 }
