@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-        <h1 class="pull-left">Habitaciones</h1>
-        <a class="btn btn-primary pull-right" style="margin-top: 25px" href="{!! route('habitaciones.create') !!}">Add New</a>
 
         <div class="clearfix"></div>
 

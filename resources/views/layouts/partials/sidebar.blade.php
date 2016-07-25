@@ -33,6 +33,7 @@
         <ul class="sidebar-menu">
             <li class="header">{{ trans('adminlte_lang::message.header') }}</li>
             <!-- Optionally, you can add icons to the links -->
+            <li class="active"><a href="{{ url('usuarios') }}"><i class='fa fa-users'></i> <span>Usuarios</span></a></li>
             <li class="active"><a href="{{ url('hotels') }}"><i class='fa fa-building-o'></i> <span>Hoteles</span></a></li>
             <li class="active"><a href="{{ url('clientes') }}"><i class='fa fa-building-o'></i> <span>Clientes</span></a></li>
             <li class="active"><a href="{{ url('pisos') }}"><i class='fa fa-building-o'></i> <span>Pisos</span></a></li>

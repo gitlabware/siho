@@ -36,9 +36,9 @@
             }
         });
 
-        $('#tabla tfoot th').each( function () {
+        $('#tabla thead th').each( function () {
             var title = $(this).text();
-            $(this).html( '<input type="text" placeholder="Buscar: '+title+'" />' );
+            $(this).html( '<input type="text" style="width: 100%;" placeholder="'+title+'" />' );
         } );
 
         //var table = $('#example').DataTable();

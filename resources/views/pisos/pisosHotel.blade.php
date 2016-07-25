@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
 
+</style>
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Hotel: {!! $hotel->nombre  !!}</h3>
@@ -20,15 +22,30 @@
                     <th>Piso</th>
                     <th>Habitacion</th>
                     <th>Estado</th>
+                    <th>Cliente</th>
+                    <th>Fechas</th>
+                    <th>Observaciones</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($habitaciones as $h)
-                <tr>
-                    <td>{!! $h->piso !!}</td>
-                    <td>{!! $h->hab !!}</td>
+
+                    <?php
+                    $color_reg = null;
+                    $color_reg2 = null;
+                    if (isset($h->registro_id)) {
+                        $color_reg = 'background-color: darkseagreen;';
+                        $color_reg2 = ",'warning'";
+                    }
+                    ?>
+                <tr style="{{ $color_reg }}">
+                    <td>{!! $h->rpiso->nombre !!}</td>
+                    <td>{!! $h->nombre !!}</td>
                     <td>Activo</td>
+                    <td>{{ isset($h->registro->cliente->nombre) ? $h->registro->cliente->nombre : '' }}</td>
+                    <td>{{ isset($h->registro) ? $h->registro->fecha_ingreso.' - '.$h->registro->fecha_salida  : '' }}</td>
+                    <td>{{ isset($h->registro) ? $h->registro->observacion : '' }}</td>
                     <td>
                         {!! Form::open(['route' => ['hotels.destroy', $h->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
@@ -45,14 +62,6 @@
                 </tr>
                 @endforeach
                 </tbody>
-                <tfoot>
-                <tr>
-                    <th>Piso</th>
-                    <th>Habitacion</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                </tfoot>
             </table>
         </div>
         <!-- /.box-body -->

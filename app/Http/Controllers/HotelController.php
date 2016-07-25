@@ -16,6 +16,8 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
+use App\User;
+
 class HotelController extends InfyOmBaseController
 {
     /** @var  HotelRepository */
@@ -35,6 +37,7 @@ class HotelController extends InfyOmBaseController
      */
     public function index(Request $request)
     {
+
         $this->hotelRepository->pushCriteria(new RequestCriteria($request));
         $hotels = $this->hotelRepository->all();
         //$habitaciones = $this->hotelRepository->find(2)->habitaciones;

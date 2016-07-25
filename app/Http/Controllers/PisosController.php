@@ -16,6 +16,8 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
+use App\Models\Habitaciones;
+
 class PisosController extends InfyOmBaseController
 {
     /** @var  PisosRepository */
@@ -161,15 +163,18 @@ class PisosController extends InfyOmBaseController
     }
 
     public function pisosHotel($idHotel){
-        $habitaciones = DB::table('habitaciones')
+        /*$habitaciones = DB::table('habitaciones')
             ->where('hotel_id', $idHotel)
             ->leftJoin('pisos', 'habitaciones.piso_id', '=', 'pisos.id')
             ->select('habitaciones.id', 'pisos.nombre as piso', 'habitaciones.nombre as hab')
-            ->get();
+            ->get();*/
         $hotel = \App\Models\Hotel::find($idHotel);
         //$pisos = \App\Models\Hotel::find($idHotel)->rpisos;
         //dd($habitaciones);
         //\Debugbar::info($habitaciones);
+
+        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id',$idHotel);
+        //dd($habitaciones);
 
         return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));
     }
