@@ -135,5 +135,9 @@ class Registro extends Model
             return null;
         }
     }
+    public function habitacione(){
+        //return $this->belongsTo('\App\Models\Pisos');
+        return $this->belongsTo('\App\Models\Habitaciones');
+    }
 
 }

@@ -10,7 +10,7 @@
     <?php $fecha_ingreso = $registro->fecha_ingreso; ?>
 @else
     {!! Form::open(['route' => ['guarda_registro']]) !!}
-    <?php $fecha_ingreso = null; ?>
+    <?php $fecha_ingreso = date('d/m/Y'); ?>
 @endif
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
@@ -60,6 +60,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     {!! Form::textarea('observacion', null, ['class' => 'form-control','placeholder' => 'Observacion...','rows' => 3]) !!}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    {!! Form::checkbox('ocupado') !!} Desocupar habitacion
                 </div>
             </div>
         </div>

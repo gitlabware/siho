@@ -32,16 +32,21 @@ desired effect
 <body class="skin-blue sidebar-mini">
 <div class="wrapper">
 
-    @include('layouts.partials.mainheader')
+@include('layouts.partials.mainheader')
+@if (! Auth::guest())
+    @if(Auth::user()->rol == 'Super Administrador')
+        @include('layouts.sidebar.superadmin')
+    @else
+        @include('layouts.sidebar.administrador')
+    @endif
+@endif
 
-    @include('layouts.partials.sidebar')
-
-    <!-- Content Wrapper. Contains page content -->
+<!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
 
-        @include('layouts.partials.contentheader')
+    @include('layouts.partials.contentheader')
 
-        <!-- Main content -->
+    <!-- Main content -->
         <section class="content">
             <!-- Your Page Content Here -->
             @yield('main-content')
@@ -53,7 +58,7 @@ desired effect
 
     @include('layouts.partials.footer')
 
-        @include('layouts.partials.modal')
+    @include('layouts.partials.modal')
 
 </div><!-- ./wrapper -->
 

@@ -16,7 +16,8 @@ use Carbon\Carbon;
 use App\Models\Precioshabitaciones;
 use App\Models\Clientes;
 use App\Models\Habitaciones;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\Registro;
 
 class RegistroController extends InfyOmBaseController
 {
@@ -34,11 +35,15 @@ class RegistroController extends InfyOmBaseController
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $this->registroRepository->pushCriteria(new RequestCriteria($request));
-        $registros = $this->registroRepository->all();
+        $idHotel = Auth::user()->hotel_id;
 
+        //$this->registroRepository->pushCriteria(new RequestCriteria($request));
+        //$registros = $this->registroRepository->findWhere(['habitacione_id','=',1])->all();
+
+        $registros = Registro::all()->where('habitacione.rpiso.hotel.id',1);
+        //dd($registros);
         return view('registros.index')
             ->with('registros', $registros);
     }
@@ -164,16 +169,24 @@ class RegistroController extends InfyOmBaseController
     {
         //dd($idRegistro);
         //return view('registros.create');
+        $ocupado = false;
         if(isset($idRegistro)){
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
 
             $idCliente = $registro->cliente_id;
+
+            $h_ocupado = Habitaciones::where('registro_id',$idRegistro)->first();
+            if(isset($ocupado->registro_id)){
+                $ocupado = true;
+            }
         }
         $precios = Precioshabitaciones::where('habitacione_id' , $idHabitacion)->get()->lists('precio','precio')->all();
         //dd($precios);
         $cliente = Clientes::find($idCliente);
         $habitacion = Habitaciones::find($idHabitacion);
-        return view('registros.nuevo')->with(compact('precios','habitacion','cliente','registro'));
+
+
+        return view('registros.nuevo')->with(compact('precios','habitacion','cliente','registro','ocupado'));
     }
 
     public function guarda_registro(Request $request,$idRegistro = null){

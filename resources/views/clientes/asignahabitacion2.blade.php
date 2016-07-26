@@ -26,8 +26,8 @@
             $color_reg = null;
             $color_reg2 = null;
             if (isset($habitaciones->registro_id)) {
-                $color_reg = 'danger';
-                $color_reg2 = ",'danger'";
+                $color_reg = 'warning';
+                $color_reg2 = ",'warning'";
             }
             ?>
             <tr class="{{ $color_reg }}">
