@@ -24,21 +24,27 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Email del Usuario:</label>
-                    {!! Form::text('name', null, ['class' => 'form-control','placeholder' => 'Nombre del usuario','required']) !!}
+                    {!! Form::text('email', null, ['class' => 'form-control','placeholder' => 'Nombre del usuario','required']) !!}
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="form-group">
                     {!! Form::select('rol', ['Super Administrador' => 'Super Administrador','Administrador' => 'Administrador'],null, ['class' => 'form-control','placeholder' => 'Seleccione el Rol','required']) !!}
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    {!! Form::select('hotel_id', $hoteles,null, ['class' => 'form-control','placeholder' => 'Seleccione el Hotel']) !!}
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    {!! Form::select('rol', $hoteles,null, ['class' => 'form-control','placeholder' => 'Seleccione el Hotel','required']) !!}
+                    <label>Contraseña:</label>
+                    {!! Form::input('password','password2', null, ['class' => 'form-control','placeholder' => 'Ingrese el nuevo password']) !!}
                 </div>
             </div>
         </div>

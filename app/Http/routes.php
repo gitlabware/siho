@@ -73,6 +73,7 @@ Route::get('registros/nuevo/{idCliente}/{idHabitacion}/{idRegistro?}', 'Registro
 Route::post('registros/guarda_registro/{idRegistro?}', 'RegistroController@guarda_registro')->name('guarda_registro');
 
 Route::get('usuarios/', 'UserController@index')->name('usuarios');
-Route::get('usuarios/usuario', 'UserController@usuario')->name('usuario');
+Route::get('usuarios/usuario/{idUsuario?}', 'UserController@usuario')->name('usuario');
 Route::post('usuarios/guarda_usuario/{idUsuario?}', 'UserController@guarda_usuario')->name('guarda_usuario');
+Route::get('usuarios/eliminar/{idUsuario}', 'UserController@eliminar')->name('eliminar');
 

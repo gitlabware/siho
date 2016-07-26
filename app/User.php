@@ -24,7 +24,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function rhotel(){
+    public function hotel(){
         return $this->belongsTo('\App\Models\Hotel');
     }
 }
