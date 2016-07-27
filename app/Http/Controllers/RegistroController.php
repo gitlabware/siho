@@ -176,7 +176,7 @@ class RegistroController extends InfyOmBaseController
             $idCliente = $registro->cliente_id;
 
             $h_ocupado = Habitaciones::where('registro_id',$idRegistro)->first();
-            if(isset($ocupado->registro_id)){
+            if(isset($h_ocupado->registro_id)){
                 $ocupado = true;
             }
         }
@@ -190,6 +190,7 @@ class RegistroController extends InfyOmBaseController
     }
 
     public function guarda_registro(Request $request,$idRegistro = null){
+        //dd($request->ocupado);
         $datos_reg = $request->all();
         if(isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])){
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y',$datos_reg['fecha_ingreso'])->toDateTimeString();
@@ -207,7 +208,18 @@ class RegistroController extends InfyOmBaseController
             $habitacion->registro_id = $registro->id;
             $habitacion->save();
         }
+        //Desocupa la habitacion liberando del registro
+        if(isset($request->ocupado) && isset($idRegistro)){
+            $habitacion = Habitaciones::where('registro_id',$idRegistro)->first();
+            $habitacion->registro_id = null;
+            $habitacion->save();
+
+            $registro = $this->registroRepository->findWithoutFail($idRegistro);
+            $datos_reg['estado'] = 'Desocupado';
+            $registro = $this->registroRepository->update($datos_reg, $idRegistro);
+        }
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
+        //return redirect()->back();
         return redirect(route('registros.index'));
     }
 

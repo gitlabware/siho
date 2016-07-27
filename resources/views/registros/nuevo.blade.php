@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="{{ asset('/plugins/datepicker/datepicker3.css') }}">
 <style>
     .datepicker {
@@ -40,14 +39,14 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Fecha de salida:</label>
-                    {!! Form::text('fecha_salida', null, ['class' => 'form-control calendario','placeholder' => '','id' => 'cfechasalida']) !!}
+                    {!! Form::text('fecha_salida', null, ['class' => 'form-control calendario calendario2','placeholder' => '','id' => 'cfechasalida']) !!}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::select('precio', $precios,null, ['class' => 'form-control','placeholder' => 'Seleccione el precio','required','id' => 'cprecio']) !!}
+                    {!! Form::select('precio', $precios,null, ['class' => 'form-control precio','placeholder' => 'Seleccione el precio','required','id' => 'cprecio']) !!}
                 </div>
             </div>
             <div class="col-md-6">
@@ -63,13 +62,15 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    {!! Form::checkbox('ocupado') !!} Desocupar habitacion
+        @if($ocupado)
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        {!! Form::checkbox('ocupado',null,null,['class' => 'ch-ocupado']) !!} Desocupar habitacion
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
 
@@ -93,22 +94,63 @@
     });
     function parseDate(str) {
         var mdy = str.split('/');
-        return new Date(mdy[2], mdy[1]-1, mdy[0]);
+        return new Date(mdy[2], mdy[1] - 1, mdy[0]);
     }
 
     function daydiff(first, second) {
-        return Math.round((second-first)/(1000*60*60*24));
+        if(first == second){
+            return 0;
+        }else{
+            return Math.round((second - first) / (1000 * 60 * 60 * 24));
+        }
     }
 
 
-    $('.calendario').change(function(){
-        if($('#cfechaingreso').val() != '' && $('#cfechasalida').val() != '' && $('#cprecio').val() != ''){
+    function calculamonto() {
+        console.log($('#cfechaingreso').val());
+        console.log($('#cfechasalida').val());
+        console.log($('#cprecio').val());
+        if ($('#cfechaingreso').val() != '' && $('#cfechasalida').val() != '' && $('#cprecio').val() != '') {
+            //alert(dias);
             var dias = daydiff(parseDate($('#cfechaingreso').val()), parseDate($('#cfechasalida').val()));
+            //alert(dias);
             var precio = parseFloat($('#cprecio').val());
-            if(dias > 0){
-                $('#cmontototal').val(dias*precio);
+            if (dias > 0) {
+                $('#cmontototal').val(dias * precio);
             }
+        }
+    }
+    $('.calendario').change(function () {
+        calculamonto();
+    });
+    $('.precio').change(function () {
+        calculamonto();
+    });
+    //console.log(fechahoy());
 
+    function fechahoy(){
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd='0'+dd
+        }
+
+        if(mm<10) {
+            mm='0'+mm
+        }
+
+        today = dd+'/'+mm+'/'+yyyy;
+        return today;
+        //document.write(today);
+    }
+
+    $('.ch-ocupado').click(function(){
+        if($(this).prop('checked') && $('.calendario2').val() == ''){
+            $('.calendario2').val(fechahoy());
+            calculamonto();
         }
     });
 

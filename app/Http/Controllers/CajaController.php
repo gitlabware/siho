@@ -171,12 +171,18 @@ class CajaController extends InfyOmBaseController
     public function ingreso($idCaja){
         return view('cajas.ingreso')->with(compact('idCaja'));
     }
+    public function egreso($idCaja){
+        return view('cajas.egreso')->with(compact('idCaja'));
+    }
+    public function eliminaflujo($idFlujo){
+        $flujo = Flujo::find($idFlujo);
+        return view('cajas.eliminaflujo')->with(compact('idFLujo','flujo'));
+    }
 
     public function guarda_ingreso(Request $request){
 
-
         $flujo = new Flujo;
-        $flujo->detalle = $request->ingreso;
+        $flujo->detalle = $request->detalle;
         $flujo->ingreso = $request->ingreso;
         $flujo->observacion = $request->observacion;
         $flujo->salida = $request->salida;
@@ -184,16 +190,51 @@ class CajaController extends InfyOmBaseController
         $flujo->user_id = $request->user_id;
         $flujo->save();
 
+        $total = $this->get_total($request->caja_id);
+        $this->set_total($request->caja_id,($total+$request->ingreso));
+
         Flash::success('El ingreso se ha registrado correctamente!!');
+        return redirect()->back();
 
-        return redirect(route('cajas.index'));
+    }
+    public function guarda_egreso(Request $request){
+
+        $total = $this->get_total($request->caja_id);
+
+        if($total >= $request->salida){
+            $flujo = new Flujo;
+            $flujo->detalle = $request->detalle;
+            $flujo->ingreso = $request->ingreso;
+            $flujo->observacion = $request->observacion;
+            $flujo->salida = $request->salida;
+            $flujo->caja_id = $request->caja_id;
+            $flujo->user_id = $request->user_id;
+            $flujo->save();
+
+
+            $this->set_total($request->caja_id,($total-$request->salida));
+            Flash::success('El ingreso se ha registrado correctamente!!');
+        }else{
+            Flash::error('No se pudo registral el egreso por q solo hay '.$total.' en caja!!');
+        }
+
+        return redirect()->back();
 
     }
 
-    public function get_total($idCaja = null){
-        $cajas = Caja::find($idCaja);
-        return $cajas;
+    public function get_total($idCaja){
+        $caja = Caja::find($idCaja);
+        return $caja->total;
     }
+
+    public function set_total($idCaja,$total = 0.00){
+        $caja = Caja::find($idCaja);
+        $caja->total = $total;
+        $caja->save();
+        return true;
+    }
+
+
 
 
 

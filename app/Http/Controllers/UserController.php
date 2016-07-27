@@ -58,7 +58,8 @@ class UserController extends Controller
             $usuario->save();
         }
         Flash::success('El registro del usuario se ha realizado correctamente!!');
-        return redirect(route('usuarios'));
+        return redirect()->back();
+        //return redirect(route('usuarios'));
     }
 
     public function eliminar($idUsuario){

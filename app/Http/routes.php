@@ -65,8 +65,12 @@ Route::resource('flujos', 'FlujoController');
 Route::get('caja/flujos/{idCaja}', 'CajaController@flujos');
 
 Route::get('caja/ingreso/{idCaja}', 'CajaController@ingreso');
-
 Route::post('caja/guarda_ingreso', 'CajaController@guarda_ingreso');
+
+Route::get('caja/egreso/{idCaja}', 'CajaController@egreso');
+Route::post('caja/guarda_egreso', 'CajaController@guarda_egreso');
+
+Route::get('caja/eliminaflujo/{idFlujo}', 'CajaController@eliminaflujo')->name('eliminaflujo');
 
 Route::resource('registros', 'RegistroController');
 Route::get('registros/nuevo/{idCliente}/{idHabitacion}/{idRegistro?}', 'RegistroController@nuevo')->name('nuevoregistro');

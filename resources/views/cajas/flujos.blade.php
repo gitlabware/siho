@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1 class="pull-left">{!! $caja->nombre !!}</h1>
+    <h1 class="pull-left">{!! $caja->nombre !!} <span style="font-size: 17px; font-weight: bold;" class="text-primary">(SALDO: {!! $caja->total !!}
+            ) Bs.</span></h1>
 
     <div class="clearfix"></div>
 
@@ -13,11 +14,15 @@
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Simple Full Width Table</h3>
+                    <h3 class="box-title">Flujos de caja</h3>
 
                     <div class="box-tools pull-right">
-                        <a href="javascript:" class="btn btn-success btn-box-tool" style="color: yellow;" onclick="cargarmodal('{!!url('caja/ingreso',[$caja->id])!!}}')"><b>NUEVO INGRESO</b></a>
-                        <a href="javascript:" class="btn btn-primary btn-box-tool" style="color: yellow;"><b>NUEVO EGRESO</b></a>
+                        <a href="javascript:" class="btn btn-success btn-box-tool" style="color: yellow;"
+                           onclick="cargarmodal('{!!url('caja/ingreso',[$caja->id])!!}}','success')"><b>NUEVO
+                                INGRESO</b></a>
+                        <a href="javascript:" class="btn btn-primary btn-box-tool" style="color: yellow;"
+                           onclick="cargarmodal('{!!url('caja/egreso',[$caja->id])!!}}','primary')"><b>NUEVO
+                                EGRESO</b></a>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -28,8 +33,22 @@
                             <th>Detalle</th>
                             <th>Ingreso</th>
                             <th>Salida</th>
+                            <th>Accion</th>
                         </tr>
                         </thead>
+                        <tbody>
+                        @foreach($flujos as $flu)
+                            <tr>
+                                <td>{!! $flu->detalle !!}</td>
+                                <td>{!! $flu->ingreso !!}</td>
+                                <td>{!! $flu->salida !!}</td>
+                                <td>
+                                    <a disabled="true" href="javascript:" onclick="cargarmodal('{!! route('eliminaflujo',[$flu->id]) !!}','warning')"  class='btn btn-danger btn-xs' title="Eliminar Flujo"><i
+                                                class="fa fa-remove"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
                     </table>
                 </div>
                 <!-- /.box-body -->
