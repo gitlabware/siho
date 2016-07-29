@@ -1,4 +1,4 @@
-{!! Form::open(['url' => 'caja/eliminar_flujo']) !!}
+{!! Form::open(['url' => 'caja/eliminar_flujo/'.$idFlujo]) !!}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     </button>
@@ -10,15 +10,13 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    {!! Form::textarea('observacion', null, ['class' => 'form-control','placeholder' => 'Observacion...','rows' => 3]) !!}
+                    <label>Motivo por el cual desea eliminar el flujo??</label>
+                    {!! Form::textarea('observacion', null, ['class' => 'form-control','placeholder' => 'Observacion...','rows' => 3,'required']) !!}
                 </div>
             </div>
         </div>
     </div>
 </div>
-{!! Form::hidden('ingreso',0) !!}
-{!! Form::hidden('caja_id',$idCaja) !!}
-{!! Form::hidden('user_id',0) !!}
 <div class="modal-footer">
     <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
     {!! Form::submit('Eliminar Flujo', ['class' => 'btn btn-outline pull-left']) !!}

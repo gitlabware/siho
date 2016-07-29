@@ -42,7 +42,7 @@ class RegistroController extends InfyOmBaseController
         //$this->registroRepository->pushCriteria(new RequestCriteria($request));
         //$registros = $this->registroRepository->findWhere(['habitacione_id','=',1])->all();
 
-        $registros = Registro::all()->where('habitacione.rpiso.hotel.id',1);
+        $registros = Registro::all()->where('habitacione.rpiso.hotel.id',$idHotel);
         //dd($registros);
         return view('registros.index')
             ->with('registros', $registros);
@@ -165,7 +165,7 @@ class RegistroController extends InfyOmBaseController
         return redirect(route('registros.index'));
     }
 
-    public function nuevo($idCliente,$idHabitacion,$idRegistro = null)
+    public function nuevo($idCliente = null,$idHabitacion = null,$idRegistro = null)
     {
         //dd($idRegistro);
         //return view('registros.create');
@@ -175,11 +175,12 @@ class RegistroController extends InfyOmBaseController
 
             $idCliente = $registro->cliente_id;
 
-            $h_ocupado = Habitaciones::where('registro_id',$idRegistro)->first();
+            $h_ocupado = Habitaciones::where('registro_id','=',$idRegistro)->first();
             if(isset($h_ocupado->registro_id)){
                 $ocupado = true;
             }
         }
+        //dd($idHabitacion);
         $precios = Precioshabitaciones::where('habitacione_id' , $idHabitacion)->get()->lists('precio','precio')->all();
         //dd($precios);
         $cliente = Clientes::find($idCliente);

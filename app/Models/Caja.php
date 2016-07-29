@@ -52,7 +52,8 @@ class Caja extends Model
 
     public $fillable = [
         'nombre',
-        'total'
+        'total',
+        'hotel_id'
     ];
 
     /**
@@ -73,4 +74,9 @@ class Caja extends Model
         'nombre' => 'required',
         'total' => 'required'
     ];
+
+    public function hotel(){
+        return $this->belongsTo('\App\Models\Hotel');
+    }
+
 }

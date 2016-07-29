@@ -69,6 +69,7 @@ Route::post('caja/guarda_ingreso', 'CajaController@guarda_ingreso');
 
 Route::get('caja/egreso/{idCaja}', 'CajaController@egreso');
 Route::post('caja/guarda_egreso', 'CajaController@guarda_egreso');
+Route::post('caja/eliminar_flujo/{idFlujo}', 'CajaController@eliminar_flujo');
 
 Route::get('caja/eliminaflujo/{idFlujo}', 'CajaController@eliminaflujo')->name('eliminaflujo');
 

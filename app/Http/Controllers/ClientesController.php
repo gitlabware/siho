@@ -9,6 +9,7 @@ use App\Repositories\ClientesRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Auth;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -167,7 +168,9 @@ class ClientesController extends InfyOmBaseController
 
         $cliente = $this->clientesRepository->find($idCliente);
         //dd($cliente);
-        $habitaciones = Habitaciones::all();
+        $idHotel = Auth::user()->hotel_id;
+        //dd($idHotel);exit;
+        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id',intval($idHotel));
         //dd($habitaciones);
 
         return view('clientes.asignahabitacion2')->with(compact('habitaciones','cliente'));

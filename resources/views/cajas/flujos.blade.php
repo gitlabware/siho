@@ -43,7 +43,7 @@
                                 <td>{!! $flu->ingreso !!}</td>
                                 <td>{!! $flu->salida !!}</td>
                                 <td>
-                                    <a disabled="true" href="javascript:" onclick="cargarmodal('{!! route('eliminaflujo',[$flu->id]) !!}','warning')"  class='btn btn-danger btn-xs' title="Eliminar Flujo"><i
+                                    <a href="javascript:" onclick="cargarmodal('{!! route('eliminaflujo',[$flu->id]) !!}','danger')"  class='btn btn-danger btn-xs' title="Eliminar Flujo"><i
                                                 class="fa fa-remove"></i></a>
                                 </td>
                             </tr>

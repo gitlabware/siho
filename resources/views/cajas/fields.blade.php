@@ -15,3 +15,4 @@
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
     <a href="{!! route('cajas.index') !!}" class="btn btn-default">Cancel</a>
 </div>
+{!! Form::hidden('hotel_id',Auth::user()->hotel_id) !!}
