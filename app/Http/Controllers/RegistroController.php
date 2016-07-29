@@ -38,11 +38,11 @@ class RegistroController extends InfyOmBaseController
     public function index()
     {
         $idHotel = Auth::user()->hotel_id;
-
+        //dd($idHotel);
         //$this->registroRepository->pushCriteria(new RequestCriteria($request));
         //$registros = $this->registroRepository->findWhere(['habitacione_id','=',1])->all();
 
-        $registros = Registro::all()->where('habitacione.rpiso.hotel.id',$idHotel);
+        $registros = Registro::all()->where('habitacione.rpiso.hotel_id',$idHotel);
         //dd($registros);
         return view('registros.index')
             ->with('registros', $registros);

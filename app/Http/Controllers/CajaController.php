@@ -167,7 +167,7 @@ class CajaController extends InfyOmBaseController
         //dd($this->get_total($idCaja)->total);
         $caja = $this->cajaRepository->findWithoutFail($idCaja);
         //dd($caja->nombre);
-        $flujos = Flujo::all();
+        $flujos = Flujo::all()->where('caja_id',$idCaja);
         //dd($flujos);
         return view('cajas.flujos')->with(compact('caja', 'flujos'));
     }
