@@ -79,7 +79,8 @@ class Flujo extends Model
         'detalle',
         'observacion',
         'flujo_id',
-        'user_id'
+        'user_id',
+        'caja_id'
     ];
 
     /**
@@ -102,4 +103,8 @@ class Flujo extends Model
     public static $rules = [
         
     ];
+
+    public function caja(){
+        return $this->belongsTo('\App\Models\Caja');
+    }
 }

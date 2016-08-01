@@ -14,11 +14,12 @@ use Response;
 use Carbon\Carbon;
 
 use App\Models\Precioshabitaciones;
+use App\Models\Caja;
+use App\Models\Flujo;
 use App\Models\Clientes;
 use App\Models\Habitaciones;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Registro;
-use App\Models\Caja;
 
 class RegistroController extends InfyOmBaseController
 {
@@ -151,11 +152,17 @@ class RegistroController extends InfyOmBaseController
      */
     public function destroy($id)
     {
+        //---------- Quita de la habitacion el registro -------
+        $habitacion = Habitaciones::where('registro_id',$id)->first();
+        if(isset($habitacion)){
+            $habitacion->registro_id = null;
+            $habitacion->save();
+        }
+        //---------------------------------------------------------
         $registro = $this->registroRepository->findWithoutFail($id);
 
         if (empty($registro)) {
-            Flash::error('Registro not found');
-
+            Flash::error('El registro no fue encontrado');
             return redirect(route('registros.index'));
         }
 
@@ -187,20 +194,66 @@ class RegistroController extends InfyOmBaseController
         //dd($precios);
         $cliente = Clientes::find($idCliente);
         $habitacion = Habitaciones::find($idHabitacion);
-        $cajas = Caja::where('hotel_id',$idHotel);
-
-        return view('registros.nuevo')->with(compact('precios','habitacion','cliente','registro','ocupado'));
+        $cajas = Caja::where('hotel_id',$idHotel)->get()->lists('nombre','id')->all();
+        //dd($cajas);
+        return view('registros.nuevo')->with(compact('precios','habitacion','cliente','registro','ocupado','cajas'));
     }
 
     public function guarda_registro(Request $request,$idRegistro = null){
-        //dd($request->ocupado);
+
         $datos_reg = $request->all();
+
         if(isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])){
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y',$datos_reg['fecha_ingreso'])->toDateTimeString();
         }
         if(isset($datos_reg['fecha_salida']) && !empty($datos_reg['fecha_salida'])){
             $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y',$datos_reg['fecha_salida'])->toDateTimeString();
         }
+        //----------- Elimina el flujo de pago ---------------------
+        if(isset($request->repago) && !empty($datos_reg['flujo_id'])){
+
+            $flujo = Flujo::find($datos_reg['flujo_id']);
+            $total = $this->get_total($flujo->caja_id);
+
+            if($flujo->ingreso != 0){
+                if($total >= $flujo->ingreso){
+                    $this->set_total($flujo->caja_id,($total-$flujo->ingreso));
+                }else{
+                    //dd($request->all());
+                    Flash::error('No se ha guardado porque no se ha podido eliminar el pago por que el total es solo '.$total);
+                    return redirect()->back();
+                }
+            }else{
+                $this->set_total($flujo->caja_id,($total+$flujo->salida));
+            }
+            $flujo->deleted_at = date('Y-m-d H:m:i');
+            $flujo->observacion = 'Eliminado desde Registro';
+            $flujo->save();
+
+            $datos_reg['flujo_id'] = null;
+        }
+        //--------------------------------------------------------
+        //----------- Crea el flujo de pago para el registro ---------
+        if(isset($request->pagar) && empty($datos_reg['flujo_id'])){
+
+            $datos_reg['monto_total'];
+
+            $flujo = new Flujo;
+            $flujo->detalle = 'Pago de Registro';
+            $flujo->ingreso = $datos_reg['monto_total'];
+            $flujo->observacion = '';
+            $flujo->salida = 0;
+            $flujo->caja_id = $request->caja_id;
+            $flujo->user_id = $request->user_id;
+            $flujo->save();
+
+            $total = $this->get_total($request->caja_id);
+            $this->set_total($request->caja_id, ($total + $datos_reg['monto_total']));
+
+            $datos_reg['flujo_id'] = $flujo->id;
+        }
+        //-------------------------------------------------------
+        //----------- Guarda el registro -----------------------
         if(isset($idRegistro)){
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
             $registro = $this->registroRepository->update($datos_reg, $idRegistro);
@@ -211,6 +264,7 @@ class RegistroController extends InfyOmBaseController
             $habitacion->registro_id = $registro->id;
             $habitacion->save();
         }
+        //---------------------------------------------------------
         //Desocupa la habitacion liberando del registro
         if(isset($request->ocupado) && isset($idRegistro)){
             $habitacion = Habitaciones::where('registro_id',$idRegistro)->first();
@@ -224,6 +278,20 @@ class RegistroController extends InfyOmBaseController
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
         //return redirect()->back();
         return redirect(route('registros.index'));
+    }
+
+    public function get_total($idCaja)
+    {
+        $caja = Caja::find($idCaja);
+        return $caja->total;
+    }
+
+    public function set_total($idCaja, $total = 0.00)
+    {
+        $caja = Caja::find($idCaja);
+        $caja->total = $total;
+        $caja->save();
+        return true;
     }
 
 

@@ -62,6 +62,45 @@
                 </div>
             </div>
         </div>
+        @if(empty($registro->flujo_id))
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::checkbox('pagar',null,null,['class' => 'ch-pago']) !!} Registrar pago
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::select('caja_id', $cajas,null, ['class' => 'form-control caja','required','id' => 'ccaja','disabled']) !!}
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="row" id="form-repago">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::checkbox('repago',null,null,['class' => 'ch-repago']) !!} Rehacer pago
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="text-success">$$ EL pago esta en {!! $registro->flujo->caja->nombre !!}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="form-pago" style="display: none;">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::checkbox('pagar',null,null,['class' => 'ch-pago','checked']) !!} Registrar pago
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::select('caja_id', $cajas,null, ['class' => 'form-control caja','required','id' => 'ccaja']) !!}
+                    </div>
+                </div>
+            </div>
+        @endif
         @if($ocupado)
             <div class="row">
                 <div class="col-md-12">
@@ -73,15 +112,17 @@
         @endif
     </div>
 </div>
-
+{!! Form::hidden('flujo_id') !!}
 {!! Form::hidden('cliente_id',$cliente->id) !!}
 {!! Form::hidden('habitacione_id',$habitacion->id) !!}
-{!! Form::hidden('user_id',0) !!}
+{!! Form::hidden('user_id',Auth::user()->id) !!}
 <div class="modal-footer">
     <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
     {!! Form::submit('Save', ['class' => 'btn btn-outline pull-left']) !!}
 </div>
 {!! Form::close() !!}
+
+
 
 
 <!-- bootstrap datepicker -->
@@ -98,9 +139,9 @@
     }
 
     function daydiff(first, second) {
-        if(first == second){
+        if (first == second) {
             return 0;
-        }else{
+        } else {
             return Math.round((second - first) / (1000 * 60 * 60 * 24));
         }
     }
@@ -128,30 +169,50 @@
     });
     //console.log(fechahoy());
 
-    function fechahoy(){
+    function fechahoy() {
         var today = new Date();
         var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
+        var mm = today.getMonth() + 1; //January is 0!
         var yyyy = today.getFullYear();
 
-        if(dd<10) {
-            dd='0'+dd
+        if (dd < 10) {
+            dd = '0' + dd
         }
 
-        if(mm<10) {
-            mm='0'+mm
+        if (mm < 10) {
+            mm = '0' + mm
         }
 
-        today = dd+'/'+mm+'/'+yyyy;
+        today = dd + '/' + mm + '/' + yyyy;
         return today;
         //document.write(today);
     }
 
-    $('.ch-ocupado').click(function(){
-        if($(this).prop('checked') && $('.calendario2').val() == ''){
+    $('.ch-ocupado').click(function () {
+        if ($(this).prop('checked') && $('.calendario2').val() == '') {
             $('.calendario2').val(fechahoy());
             calculamonto();
         }
+    });
+
+    $('.ch-pago').click(function () {
+        if ($(this).prop('checked')) {
+            $('select.caja').attr('disabled', false);
+            $('#cmontototal').attr('required',true);
+        } else {
+            $('select.caja').attr('disabled', true);
+            $('#cmontototal').attr('required',false);
+        }
+    });
+
+    $('.ch-repago').click(function () {
+        if(confirm("Esta seguro de rehacer el pago??")){
+            $('#form-repago').hide(400);
+            $('#form-pago').show(400);
+        }else{
+            $(this).prop('checked',false);
+        }
+
     });
 
 

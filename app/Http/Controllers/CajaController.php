@@ -8,6 +8,7 @@ use App\Http\Requests\CreateCajaRequest;
 use App\Http\Requests\UpdateCajaRequest;
 use App\Models\Caja;
 use App\Models\Flujo;
+use App\Models\Registro;
 use App\Repositories\CajaRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ class CajaController extends InfyOmBaseController
         //$this->cajaRepository->pushCriteria(new RequestCriteria($request));
 
         $cajas = Caja::all()->where('hotel_id', $idHotel);
+        //dd($idHotel);
         //$cajas = $this->cajaRepository->all();
 
         return view('cajas.index')
@@ -251,6 +253,12 @@ class CajaController extends InfyOmBaseController
     public function eliminar_flujo(Request $request, $idFlujo)
     {
         //dd($request);
+        $registro = Registro::where('flujo_id',$idFlujo)->first();
+        if(isset($registro)){
+            $registro->flujo_id = null;
+            $registro->save();
+        }
+
         $flujo = Flujo::find($idFlujo);
         $total = $this->get_total($flujo->caja_id);
         if($flujo->ingreso != 0){

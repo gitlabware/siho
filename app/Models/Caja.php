@@ -62,7 +62,8 @@ class Caja extends Model
      * @var array
      */
     protected $casts = [
-        'nombre' => 'string'
+        'nombre' => 'string',
+        'total' => 'decimal'
     ];
 
     /**

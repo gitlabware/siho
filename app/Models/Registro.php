@@ -89,7 +89,8 @@ class Registro extends Model
         'observacion',
         'precio',
         'monto_total',
-        'user_id'
+        'user_id',
+        'flujo_id'
     ];
 
     /**
@@ -136,8 +137,10 @@ class Registro extends Model
         }
     }
     public function habitacione(){
-        //return $this->belongsTo('\App\Models\Pisos');
         return $this->belongsTo('\App\Models\Habitaciones');
+    }
+    public function flujo(){
+        return $this->belongsTo('\App\Models\Flujo');
     }
 
 }

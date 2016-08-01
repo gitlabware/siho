@@ -4,6 +4,7 @@
     <style>
 
     </style>
+    @include('flash::message')
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Hotel: {!! $hotel->nombre  !!}</h3>
