@@ -18,6 +18,7 @@ use App\Models\Clientes;
 use App\Models\Habitaciones;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Registro;
+use App\Models\Caja;
 
 class RegistroController extends InfyOmBaseController
 {
@@ -169,6 +170,7 @@ class RegistroController extends InfyOmBaseController
     {
         //dd($idRegistro);
         //return view('registros.create');
+        $idHotel = Auth::user()->hotel_id;
         $ocupado = false;
         if(isset($idRegistro)){
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
@@ -185,7 +187,7 @@ class RegistroController extends InfyOmBaseController
         //dd($precios);
         $cliente = Clientes::find($idCliente);
         $habitacion = Habitaciones::find($idHabitacion);
-
+        $cajas = Caja::where('hotel_id',$idHotel);
 
         return view('registros.nuevo')->with(compact('precios','habitacion','cliente','registro','ocupado'));
     }
@@ -223,6 +225,8 @@ class RegistroController extends InfyOmBaseController
         //return redirect()->back();
         return redirect(route('registros.index'));
     }
+
+
 
 }
 
