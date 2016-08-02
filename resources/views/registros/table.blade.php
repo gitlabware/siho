@@ -14,8 +14,8 @@
     <tbody>
     @foreach($registros as $registro)
         <tr>
-            <td>{!! $registro->cliente_id !!}</td>
-            <td>{!! $registro->habitacione_id !!}</td>
+            <td>{!! $registro->cliente->nombre !!}</td>
+            <td>{!! $registro->habitacione->nombre.' - '.$registro->habitacione->rpiso->nombre !!}</td>
             <td>{!! $registro->estado !!}</td>
             <td>{!! $registro->fecha_ingreso !!}</td>
             <td>{!! $registro->fecha_salida !!}</td>
