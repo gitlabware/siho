@@ -152,6 +152,35 @@ class RegistroController extends InfyOmBaseController
      */
     public function destroy($id)
     {
+
+        $registro = $this->registroRepository->findWithoutFail($id);
+
+
+        //----------- Elimina el flujo de pago ---------------------
+        if(!empty($registro->flujo_id)){
+
+            $flujo = Flujo::find($registro->flujo_id);
+            $total = $this->get_total($flujo->caja_id);
+
+            if($flujo->ingreso != 0){
+                if($total >= $flujo->ingreso){
+                    $this->set_total($flujo->caja_id,($total-$flujo->ingreso));
+                }else{
+                    //dd($request->all());
+                    Flash::error('No se ha podido eliminar el pago por que el total es solo '.$total);
+                    return redirect()->back();
+                }
+            }else{
+                $this->set_total($flujo->caja_id,($total+$flujo->salida));
+            }
+            $flujo->deleted_at = date('Y-m-d H:m:i');
+            $flujo->observacion = 'Eliminado desde Registro';
+            $flujo->save();
+
+            $datos_reg['flujo_id'] = null;
+        }
+        //--------------------------------------------------------
+
         //---------- Quita de la habitacion el registro -------
         $habitacion = Habitaciones::where('registro_id',$id)->first();
         if(isset($habitacion)){
@@ -159,7 +188,7 @@ class RegistroController extends InfyOmBaseController
             $habitacion->save();
         }
         //---------------------------------------------------------
-        $registro = $this->registroRepository->findWithoutFail($id);
+
 
         if (empty($registro)) {
             Flash::error('El registro no fue encontrado');
@@ -169,8 +198,8 @@ class RegistroController extends InfyOmBaseController
         $this->registroRepository->delete($id);
 
         Flash::success('Registro deleted successfully.');
-
-        return redirect(route('registros.index'));
+        return redirect()->back();
+        //return redirect(route('registros.index'));
     }
 
     public function nuevo($idCliente = null,$idHabitacion = null,$idRegistro = null)

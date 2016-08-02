@@ -118,10 +118,20 @@
 {!! Form::hidden('user_id',Auth::user()->id) !!}
 <div class="modal-footer">
     <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-    {!! Form::submit('Save', ['class' => 'btn btn-outline pull-left']) !!}
+    @if(isset($registro->id))
+        <button type="button"
+                onclick="if(confirm('Al el eliminar el registro significa eliminar pagos y  ocupacion de habitacion.. Esta seguro de eliminar el registro?')){$('#form-elimina').submit();}"
+                class="btn btn-outline pull-left" data-dismiss="modal">Cancelar Registro
+        </button>
+    @endif
+    {!! Form::submit('Guardar', ['class' => 'btn btn-outline pull-left']) !!}
 </div>
 {!! Form::close() !!}
 
+@if(isset($registro->id))
+    {!! Form::open(['route' => ['registros.destroy', $registro->id], 'method' => 'delete','id' => 'form-elimina']) !!}
+    {!! Form::close() !!}
+@endif
 
 
 
@@ -198,19 +208,19 @@
     $('.ch-pago').click(function () {
         if ($(this).prop('checked')) {
             $('select.caja').attr('disabled', false);
-            $('#cmontototal').attr('required',true);
+            $('#cmontototal').attr('required', true);
         } else {
             $('select.caja').attr('disabled', true);
-            $('#cmontototal').attr('required',false);
+            $('#cmontototal').attr('required', false);
         }
     });
 
     $('.ch-repago').click(function () {
-        if(confirm("Esta seguro de rehacer el pago??")){
+        if (confirm("Esta seguro de rehacer el pago??")) {
             $('#form-repago').hide(400);
             $('#form-pago').show(400);
-        }else{
-            $(this).prop('checked',false);
+        } else {
+            $(this).prop('checked', false);
         }
 
     });
