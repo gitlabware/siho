@@ -77,7 +77,7 @@ class Pisos extends Model
 
     public function habitaciones(){
         //return $this->hasMany('\App\Models\Habitaciones','foreign_key', 'hotel_id');
-        return $this->hasMany('\App\Models\Habitaciones');
+        return $this->hasMany('\App\Models\Habitaciones','piso_id');
     }
     public function hotel(){
         return $this->belongsTo('\App\Models\Hotel');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Habitaciones;
 use DB;
 use App\Http\Requests;
 use App\Http\Requests\CreateHabitacionesRequest;
@@ -11,8 +12,11 @@ use App\Repositories\HabitacionesRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Auth;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
+
+use App\Models\Pisos;
 
 class HabitacionesController extends InfyOmBaseController
 {
@@ -189,8 +193,19 @@ class HabitacionesController extends InfyOmBaseController
         return redirect(route('habitaciones.index'));
     }
 
-    public function listado($idHotel)
+    public function vhabitaciones()
     {
-        $habitaciones = \App\Models\Habitaciones::find('');
+        $idHotel = Auth::user()->hotel_id;
+        $hotel = Hotel::find($idHotel);
+        //dd($idHotel);
+        $pisos = Pisos::all()->where('hotel_id',$idHotel);
+
+        return view('habitaciones.vhabitaciones')->with(compact('pisos','hotel'));
+        //dd($pisos[0]->habitaciones[0]->nombre);
+    }
+
+    public function informacion_habitacion($idHabitacion){
+        $habitacion = Habitaciones::find($idHabitacion);
+        return view('habitaciones.informacion_habitacion')->with(compact('habitacion'));
     }
 }

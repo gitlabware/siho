@@ -117,14 +117,14 @@
 {!! Form::hidden('habitacione_id',$habitacion->id) !!}
 {!! Form::hidden('user_id',Auth::user()->id) !!}
 <div class="modal-footer">
-    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+    {!! Form::submit('Guardar', ['class' => 'btn btn-outline pull-left']) !!}
     @if(isset($registro->id))
         <button type="button"
                 onclick="if(confirm('Al el eliminar el registro significa eliminar pagos y  ocupacion de habitacion.. Esta seguro de eliminar el registro?')){$('#form-elimina').submit();}"
                 class="btn btn-outline pull-left" data-dismiss="modal">Cancelar Registro
         </button>
     @endif
-    {!! Form::submit('Guardar', ['class' => 'btn btn-outline pull-left']) !!}
+    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
 </div>
 {!! Form::close() !!}
 

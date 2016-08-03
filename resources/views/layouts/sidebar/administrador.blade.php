@@ -34,10 +34,10 @@
             <li class="header">{{ trans('adminlte_lang::message.header') }}</li>
             <!-- Optionally, you can add icons to the links -->
             <li class="active"><a href="{{ url('clientes') }}"><i class='fa fa-building-o'></i> <span>Clientes</span></a></li>
-            <li class="active"><a href="{{ url('pisosHotel',[Auth::user()->hotel_id]) }}"><i class='fa fa-building-o'></i> <span>Habitaciones</span></a></li>
+            <li class="active"><a href="{{ url('pisosHotel',[Auth::user()->hotel_id]) }}"><i class='fa fa-building-o'></i> <span>Lista Habitaciones</span></a></li>
+            <li class="active"><a href="{{ url('vhabitaciones') }}"><i class='fa fa-tag'></i> <span>Cuadro Habitaciones</span></a></li>
             <li class="active"><a href="{{ url('registros') }}"><i class='fa fa-building-o'></i> <span>Registros</span></a></li>
             <li class="active"><a href="{{ url('cajas') }}"><i class='fa fa-building-o'></i> <span>Caja Chica</span></a></li>
-
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->

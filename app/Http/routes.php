@@ -82,3 +82,7 @@ Route::get('usuarios/usuario/{idUsuario?}', 'UserController@usuario')->name('usu
 Route::post('usuarios/guarda_usuario/{idUsuario?}', 'UserController@guarda_usuario')->name('guarda_usuario');
 Route::get('usuarios/eliminar/{idUsuario}', 'UserController@eliminar')->name('eliminar');
 
+
+Route::get('vhabitaciones', 'HabitacionesController@vhabitaciones')->name('vhabitaciones');
+Route::get('informacion_habitacion/{idHabitacion}', 'HabitacionesController@informacion_habitacion')->name('informacion_habitacion');
+
