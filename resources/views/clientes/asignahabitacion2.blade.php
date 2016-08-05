@@ -29,16 +29,17 @@
             <?php
             $color_reg = null;
             $color_reg2 = null;
+            $idHabitacion = $habitacion->id;
+            $regis_checkbox = Form::checkbox("habitaciones[$idHabitacion][marca]", null, null, ['class' => 'ch-marca-h']);
             if (isset($habitacion->registro_id)) {
                 $color_reg = 'warning';
                 $color_reg2 = ",'warning'";
+                $regis_checkbox = '';
             }
-
-            $idHabitacion = $habitacion->id;
             ?>
             <tr class="{{ $color_reg }}">
                 <td>
-                    {!! Form::checkbox("habitaciones[$idHabitacion][marca]",null,null,['class' => 'ch-marca-h']) !!}
+                    {!! $regis_checkbox !!}
                 </td>
                 <td>{!! $habitacion->rpiso->nombre !!}</td>
                 <td>{!! $habitacion->nombre !!}</td>
@@ -66,7 +67,7 @@
 <script>
 
 
-    function envia_form(){
+    function envia_form() {
 
         var postData = $("#ajaxform").serializeArray();
         var formURL = '{!! route('nuevos',[$cliente->id]) !!}';

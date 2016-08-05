@@ -349,9 +349,7 @@ class RegistroController extends InfyOmBaseController
         //--------------------------------------------------------
         //----------- Crea el flujo de pago para el registro ---------
         if (isset($request->pagar) && empty($datos_reg['flujo_id'])) {
-
-            $datos_reg['monto_total'];
-
+            //$datos_reg['monto_total'];
             $flujo = new Flujo;
             $flujo->detalle = 'Pago de Registro';
             $flujo->ingreso = $datos_reg['monto_total'];
@@ -360,27 +358,32 @@ class RegistroController extends InfyOmBaseController
             $flujo->caja_id = $request->caja_id;
             $flujo->user_id = $request->user_id;
             $flujo->save();
-
             $total = $this->get_total($request->caja_id);
             $this->set_total($request->caja_id, ($total + $datos_reg['monto_total']));
-
             $datos_reg['flujo_id'] = $flujo->id;
         }
         //-------------------------------------------------------
         //----------- Guarda el registro -----------------------
 
-        $numero_reg = $this->get_num_reg();
+
         //
-        $datos_reg['num_reg'] = $numero_reg;
+
         $datos_reg['estado'] = 'Ocupando';
 
         if (isset($num_reg)) {
-            $registro = $this->registroRepository->findWithoutFail($idRegistro);
-            $registro = $this->registroRepository->update($datos_reg, $idRegistro);
+            foreach ($habitaciones as $idHabitacion => $habitacion) {
+                //$datos_reg['habitacione_id'] = $idHabitacion;
+                $datos_reg['precio'] = $habitacion['precio'];
+                $datos_reg['monto_total'] = $habitacion['monto_total'];
+                $registro = $this->registroRepository->update($datos_reg, $habitacion['registro_id']);
+            }
         } else {
-
-            foreach ($habitaciones as $idHabitacion => $habitacion){
+            $numero_reg = $this->get_num_reg();
+            $datos_reg['num_reg'] = $numero_reg;
+            foreach ($habitaciones as $idHabitacion => $habitacion) {
                 $datos_reg['habitacione_id'] = $idHabitacion;
+                $datos_reg['precio'] = $habitacion['precio'];
+                $datos_reg['monto_total'] = $habitacion['monto_total'];
                 $registro = $this->registroRepository->create($datos_reg);
                 $habitacion = Habitaciones::find($idHabitacion);
                 $habitacion->registro_id = $registro->id;
@@ -390,14 +393,30 @@ class RegistroController extends InfyOmBaseController
         //---------------------------------------------------------
         //Desocupa la habitacion liberando del registro
 
-        if (isset($request->ocupado) && isset($idRegistro)) {
-            $habitacion = Habitaciones::where('registro_id', $idRegistro)->first();
-            $habitacion->registro_id = null;
-            $habitacion->save();
+        if (isset($request->ocupado) && isset($num_reg)) {
 
-            $registro = $this->registroRepository->findWithoutFail($idRegistro);
-            $datos_reg['estado'] = 'Desocupado';
-            $registro = $this->registroRepository->update($datos_reg, $idRegistro);
+
+            $habitaciones = DB::table('habitaciones')
+                ->join('registros', 'habitaciones.registro_id', '=','registros.id')
+                ->where('registros.num_reg',$num_reg)
+                ->select('habitaciones.id')
+                ->get();
+            //dd($num_reg);
+            //dd($habitaciones);
+            foreach ($habitaciones as $hab){
+                $habitacion = Habitaciones::find($hab->id);
+                $habitacion->registro_id = null;
+                $habitacion->save();
+            }
+
+            $registros = Registro::all()->where('num_reg', $num_reg);
+            foreach ($registros as $registro){
+                $registro->estado = 'Desocupado';
+                $registro->save();
+            }
+
+            //$datos_reg['estado'] = 'Desocupado';
+            //$registro = $this->registroRepository->update($datos_reg, $idRegistro);
         }
         //----------------------------------------------------------
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
@@ -405,7 +424,7 @@ class RegistroController extends InfyOmBaseController
         return redirect(route('registros.index'));
     }
 
-    public function nuevos(Request $request, $idCliente = null,$num_reg = null)
+    public function nuevos(Request $request, $idCliente = null, $num_reg = null)
     {
         $habitaciones = $request->habitaciones;
         //dd($num_reg);
@@ -413,13 +432,21 @@ class RegistroController extends InfyOmBaseController
         $idHotel = Auth::user()->hotel_id;
         $ocupado = false;
         if (isset($num_reg)) {
-            $registros = Registro::all()->where('num_reg',$num_reg);
-            $registro
+            $registros = Registro::all()->where('num_reg', $num_reg);
+
             //$registro = $this->registroRepository->findWithoutFail($idRegistro);
-            $h_ocupado = Habitaciones::where('registro_id', '=', $registros[0]->id)->first();
-            if (isset($h_ocupado->registro_id)) {
+            //$h_ocupado = Habitaciones::all()->registro()->where('id', 19);
+
+            $h_ocupado = DB::table('habitaciones')
+                ->join('registros', 'habitaciones.registro_id', '=','registros.id')
+                ->where('registros.num_reg',$num_reg)
+                ->select('habitaciones.id')
+                ->get();
+
+            if (!empty($h_ocupado)) {
                 $ocupado = true;
             }
+            //dd($h_ocupado);
             $habitaciones = array();
             foreach ($registros as $registro) {
                 $habitaciones[$registro->habitacione_id]['registro'] = $registro;
@@ -427,17 +454,16 @@ class RegistroController extends InfyOmBaseController
                 $habitaciones[$registro->habitacione_id]['habitacion'] = Habitaciones::find($registro->habitacione_id);
             }
 
-        }else{
+        } else {
             foreach ($habitaciones as $idHabitacion => $ha) {
                 $habitaciones[$idHabitacion]['precios'] = Precioshabitaciones::where('habitacione_id', $idHabitacion)->get()->lists('precio', 'precio')->all();
                 $habitaciones[$idHabitacion]['habitacion'] = Habitaciones::find($idHabitacion);
             }
         }
 
-
         $cliente = Clientes::find($idCliente);
         $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
-        return view('registros.nuevos')->with(compact( 'cliente', 'registro', 'ocupado', 'cajas','habitaciones'));
+        return view('registros.nuevos')->with(compact('cliente', 'registro', 'ocupado', 'cajas', 'habitaciones'));
     }
 
     public function get_total($idCaja)
@@ -461,7 +487,7 @@ class RegistroController extends InfyOmBaseController
             ->orderBy('num_reg', 'desc')
             ->first();
         if (isset($registro->num_reg)) {
-            return $registro->num_reg +1;
+            return $registro->num_reg + 1;
         } else {
             return 1;
         }

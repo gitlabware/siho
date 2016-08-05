@@ -49,7 +49,7 @@
             $monto = null;
             if (isset($habitacion['registro'])) {
                 $precio = $habitacion['registro']->precio;
-                $monto = $habitacion['monto']->monto;
+                $monto = $habitacion['registro']->monto_total;
                 echo Form::hidden("habitaciones[$idHabitacion][registro_id]", $habitacion['registro']->id);
             }
             ?>
@@ -75,6 +75,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
+                    {!! Form::hidden('monto_total',null,['id' => 'totaltotal']) !!}
                     {!! Form::text('total', null, ['class' => 'form-control','placeholder' => 'Total','step' =>
                     'any','type' => 'number','min' => 0,'id' => 'cmontototalt','disabled']) !!}
                 </div>
@@ -197,7 +198,7 @@
             }
         });
         $('#cmontototalt').val(sum_total);
-
+        $('#totaltotal').val(sum_total);
     }
     $('.calendario').change(function () {
         calculamonto();
@@ -205,6 +206,8 @@
     $('.precio').change(function () {
         calculamonto();
     });
+
+    calculamonto();
     //console.log(fechahoy());
 
     function fechahoy() {

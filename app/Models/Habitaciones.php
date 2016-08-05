@@ -81,11 +81,9 @@ class Habitaciones extends Model
      */
     protected $casts = [
         'piso_id' => 'integer',
-        'camas' => 'integer',
         'nombre' => 'string',
         'estado' => 'string',
-        'observaciones' => 'string',
-        'registro_id' => 'integer'
+        'observaciones' => 'string'
     ];
 
     /**
