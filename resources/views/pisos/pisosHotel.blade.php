@@ -57,9 +57,16 @@
                                             class="glyphicon glyphicon-edit"></i></a>
                                 <a href="{!! url('ingresaPrecio', [$h->id]) !!}" class='btn btn-success btn-xs'><i
                                             class="fa fa-fw fa-dollar"></i></a>
-                                @if (isset($h->registro_id))
-                                <a href="javascript:" onclick="cargarmodal('{!! route('nuevoregistro',[$h->registro->cliente_id,$h->id,$h->registro_id]) !!}','warning')"  class='btn btn-primary btn-xs' title="Registro"><i
-                                            class="glyphicon glyphicon-edit"></i></a>
+                                @if (isset($h->registro_id) && empty($h->registro->num_reg))
+                                    <a href="javascript:"
+                                       onclick="cargarmodal('{!! route('nuevoregistro',[$h->registro->cliente_id,$h->id,$h->registro_id]) !!}','warning')"
+                                       class='btn btn-primary btn-xs' title="Registro"><i
+                                                class="glyphicon glyphicon-edit"></i></a>
+                                @elseif(isset($h->registro_id) && !empty($h->registro->num_reg))
+                                    <a href="javascript:"
+                                       onclick="cargarmodal('{!! route('nuevos',[$h->registro->cliente_id,$h->registro->num_reg]) !!}','warning')"
+                                       class='btn btn-primary btn-xs' title="Registro"><i
+                                                class="glyphicon glyphicon-edit"></i></a>
                                 @endif
                                 {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                             </div>

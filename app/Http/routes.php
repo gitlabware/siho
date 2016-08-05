@@ -76,6 +76,13 @@ Route::get('caja/eliminaflujo/{idFlujo}', 'CajaController@eliminaflujo')->name('
 Route::resource('registros', 'RegistroController');
 Route::get('registros/nuevo/{idCliente}/{idHabitacion}/{idRegistro?}', 'RegistroController@nuevo')->name('nuevoregistro');
 Route::post('registros/guarda_registro/{idRegistro?}', 'RegistroController@guarda_registro')->name('guarda_registro');
+//Route::post('registros/nuevos/{idCliente}/{num_reg?}', 'RegistroController@nuevos')->name('nuevos');
+Route::post('registros/guarda_registros/{num_reg?}', 'RegistroController@guarda_registros')->name('guarda_registros');
+
+Route::match(['get', 'post'], 'registros/nuevos/{idCliente}/{num_reg?}', 'RegistroController@nuevos')->name('nuevos');
+
+Route::get('get_num_reg', 'RegistroController@get_num_reg');
+
 
 Route::get('usuarios/', 'UserController@index')->name('usuarios');
 Route::get('usuarios/usuario/{idUsuario?}', 'UserController@usuario')->name('usuario');
@@ -85,4 +92,5 @@ Route::get('usuarios/eliminar/{idUsuario}', 'UserController@eliminar')->name('el
 
 Route::get('vhabitaciones', 'HabitacionesController@vhabitaciones')->name('vhabitaciones');
 Route::get('informacion_habitacion/{idHabitacion}', 'HabitacionesController@informacion_habitacion')->name('informacion_habitacion');
+
 

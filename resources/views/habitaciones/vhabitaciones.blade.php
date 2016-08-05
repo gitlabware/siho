@@ -27,9 +27,11 @@
                     @foreach($piso->habitaciones as $habitacion)
 
                         <?php
+                        $color2 = 'info';
                         $color = 'bg-aqua';
                         if (isset($habitacion->registro)) {
                             $color = 'bg-yellow';
+                            $color2 = 'warning';
                         }
                         ?>
                         <div class="col-lg-2 col-xs-4">
@@ -44,7 +46,7 @@
                                     <i class="ion ion-pricetag"></i>
                                 </div>
                                 <a href="javascript:"
-                                   onclick="cargarmodal('{!! route('informacion_habitacion',[$habitacion->id]) !!}','info')"
+                                   onclick="cargarmodal('{!! route('informacion_habitacion',[$habitacion->id]) !!}','{!! $color2 !!}')"
                                    class="small-box-footer">Mas Informacion <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>

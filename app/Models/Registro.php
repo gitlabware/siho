@@ -90,7 +90,8 @@ class Registro extends Model
         'precio',
         'monto_total',
         'user_id',
-        'flujo_id'
+        'flujo_id',
+        'num_reg'
     ];
 
     /**

@@ -16,6 +16,7 @@
                         <td>{!! $habitacion->rpiso->nombre !!}</td>
                     </tr>
                 </table>
+                @if(isset($habitacion->registro))
                 <table class="table table-bordered">
                     <tr>
                         <td><b>Cliente:</b></td>
@@ -40,34 +41,29 @@
                     <tr>
                         <td><b>Fecha Ingreso:</b></td>
                         <td>
-                            @if(isset($habitacion->registro))
-                                {!! $habitacion->registro->fecha_ingreso !!}
-                            @else
-                                ----
-                            @endif
+                            {!! $habitacion->registro->fecha_ingreso !!}
                         </td>
                         <td><b>Fecha Salida:</b></td>
                         <td>
-                            @if(isset($habitacion->registro))
-                                {!! $habitacion->registro->fecha_salida !!}
-                            @else
-                                ----
-                            @endif
+                            {!! $habitacion->registro->fecha_salida !!}
                         </td>
                     </tr>
                 </table>
+                @endif
             </div>
         </div>
-
-
     </div>
 </div>
-
+{!! Form::open(['route' => ['hotels.destroy', $habitacion->id], 'method' => 'delete']) !!}
 <div class="modal-footer">
+    <a href="{!! route('habitaciones.edit', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Editar</a>
+    <a href="{!! url('ingresaPrecio', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Precios</a>
+    @if (isset($habitacion->registro_id))
+        <a href="javascript:" onclick="cargarmodal('{!! route('nuevoregistro',[$habitacion->registro->cliente_id,$habitacion->id,$habitacion->registro_id]) !!}','warning')" class='btn btn-outline pull-left' title="Registro">Registro</a>
+    @endif
+
+    {!! Form::button('Eliminar', ['type' => 'submit', 'class' => 'btn btn-outline pull-left', 'onclick' => "return confirm('Esta seguro de eliminar?')"]) !!}
+
     <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-
-
 </div>
-
-
-
+{!! Form::close() !!}
