@@ -9,6 +9,17 @@
     <th>Referencia</th>
     <th>Action</th>
     </thead>
+
+    <thead>
+    <th>Nombre</th>
+    <th>Nacionalidad</th>
+    <th>Profesion</th>
+    <th>Pasaporte</th>
+    <th>Ci</th>
+    <th>Celular</th>
+    <th>Referencia</th>
+    <th>Action</th>
+    </thead>
     <tbody>
     @foreach($clientes as $clientes)
         <tr>
@@ -35,16 +46,6 @@
         </tr>
     @endforeach
     </tbody>
-    <tfoot>
-    <th>Nombre</th>
-    <th>Nacionalidad</th>
-    <th>Profesion</th>
-    <th>Pasaporte</th>
-    <th>Ci</th>
-    <th>Celular</th>
-    <th>Referencia</th>
-    <th>Action</th>
-    </tfoot>
 </table>
 @push('scriptsextras')
 @include('layouts.partials.jsdatatable')

@@ -10,60 +10,76 @@
     @include('flash::message')
 
     <div class="clearfix"></div>
+    <div class="box">
+        <div class="box-body table-responsive">
+            <table class="table table-responsive table-bordered" id="tabla">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Piso</th>
+                    <th>Nombre</th>
+                    <th>Cliente</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Piso</th>
+                    <th>Nombre</th>
+                    <th>Cliente</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
 
 
-    <table class="table table-responsive" id="habitaciones-table">
-        <thead>
-        <tr>
-            <th>Piso</th>
-            <th>Nombre</th>
-            <th>Cliente</th>
-            <th>Fecha Ingreso</th>
-            <th colspan="3">Action</th>
-        </tr>
-        </thead>
-        <tbody>
+                @foreach($habitaciones as $key => $habitacion)
+                    <?php
+                    $color_reg = null;
+                    $color_reg2 = null;
+                    $idHabitacion = $habitacion->id;
+                    $regis_checkbox = Form::checkbox("habitaciones[$idHabitacion][marca]", null, null, ['class' => 'ch-marca-h']);
+                    if (isset($habitacion->registro_id)) {
+                        $color_reg = 'warning';
+                        $color_reg2 = ",'warning'";
+                        $regis_checkbox = '';
+                    }
+                    ?>
+                    <tr class="{{ $color_reg }}">
+                        <td>
+                            {!! $regis_checkbox !!}
+                        </td>
+                        <td>{!! $habitacion->rpiso->nombre !!}</td>
+                        <td>{!! $habitacion->nombre !!}</td>
+                        <td>{{ isset($habitacion->registro->cliente->nombre) ? $habitacion->registro->cliente->nombre : '' }}</td>
+                        <td>{{ isset($habitacion->registro->fecha_ingreso) ? $habitacion->registro->fecha_ingreso : '' }}</td>
+                        <td>
+                            <div class='btn-group'>
+                                <a href="{!! route('habitaciones.show', [$habitacion->id]) !!}"
+                                   class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
+                                <a href="javascript:"
+                                   onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitacion->id,$habitacion->registro_id]) !!}'{{ $color_reg2 }})"
+                                   class='btn btn-primary btn-xs' title="Formulario"><i
+                                            class="glyphicon glyphicon-edit"></i></a>
+                            </div>
+
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 
-        @foreach($habitaciones as $key => $habitacion)
-            <?php
-            $color_reg = null;
-            $color_reg2 = null;
-            $idHabitacion = $habitacion->id;
-            $regis_checkbox = Form::checkbox("habitaciones[$idHabitacion][marca]", null, null, ['class' => 'ch-marca-h']);
-            if (isset($habitacion->registro_id)) {
-                $color_reg = 'warning';
-                $color_reg2 = ",'warning'";
-                $regis_checkbox = '';
-            }
-            ?>
-            <tr class="{{ $color_reg }}">
-                <td>
-                    {!! $regis_checkbox !!}
-                </td>
-                <td>{!! $habitacion->rpiso->nombre !!}</td>
-                <td>{!! $habitacion->nombre !!}</td>
-                <td>{{ isset($habitacion->registro->cliente->nombre) ? $habitacion->registro->cliente->nombre : '' }}</td>
-                <td>{{ isset($habitacion->registro->fecha_ingreso) ? $habitacion->registro->fecha_ingreso : '' }}</td>
-                <td>
-                    <div class='btn-group'>
-                        <a href="{!! route('habitaciones.show', [$habitacion->id]) !!}"
-                           class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                        <a href="javascript:"
-                           onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitacion->id,$habitacion->registro_id]) !!}'{{ $color_reg2 }})"
-                           class='btn btn-primary btn-xs' title="Formulario"><i
-                                    class="glyphicon glyphicon-edit"></i></a>
-                    </div>
-
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
     {!! Form::close() !!}
 
 @endsection
 @push('scriptsextras')
+@include('layouts.partials.jsdatatable')
 <script>
 
 

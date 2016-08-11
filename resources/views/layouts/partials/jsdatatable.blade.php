@@ -7,7 +7,7 @@
             "lengthChange": false,
             "searching": true,
             "ordering": true,
-            "scrollX": true,
+            //"scrollX": true,
             "info": true,
             "autoWidth": false,
             "language": {
@@ -36,23 +36,23 @@
             }
         });
 
-        $('#tabla thead th').each( function () {
-            var title = $(this).text();
-            $(this).html( '<input type="text" style="width: 100%;" placeholder="'+title+'" />' );
+        $('#tabla thead:eq( 0 ) th').each( function () {
+            var title = $('#tabla thead:eq( 0 ) th').eq( $(this).index() ).text();
+            if(title != ''){
+                $(this).html( '<input type="text" style="width: 100%;" placeholder="'+title+'" />' );
+            }
+
         } );
 
         //var table = $('#example').DataTable();
 
         // Apply the search
-        table.columns().every( function () {
-            var that = this;
-
-            $( 'input', this.footer() ).on( 'keyup change', function () {
-                if ( that.search() !== this.value ) {
-                    that
-                            .search( this.value )
-                            .draw();
-                }
+        table.columns().eq( 0 ).each( function ( colIdx ) {
+            $( 'input', table.column( colIdx ).header() ).on( 'keyup change', function () {
+                table
+                        .column( colIdx )
+                        .search( this.value )
+                        .draw();
             } );
         } );
 

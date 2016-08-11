@@ -11,7 +11,7 @@
     <div class="clearfix"></div>
     <div class="box">
         <!-- /.box-header -->
-        <div class="box-body">
+        <div class="box-body table-responsive">
             @include('clientes.table')
         </div>
     </div>

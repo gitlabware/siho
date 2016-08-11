@@ -2,7 +2,11 @@
 
 @section('content')
     <style>
-
+        tfoot input {
+            width: 100%;
+            padding: 1px;
+            box-sizing: border-box;
+        }
     </style>
     @include('flash::message')
     <div class="box">
@@ -17,8 +21,20 @@
             </table>
         </div>
         <!-- /.box-header -->
-        <div class="box-body">
+        <div class="box-body table-responsive">
             <table id="tabla" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Piso</th>
+                    <th>Habitacion</th>
+                    <th>Estado</th>
+                    <th>Cliente</th>
+                    <th>Fechas</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+
+                </thead>
                 <thead>
                 <tr>
                     <th>Piso</th>
