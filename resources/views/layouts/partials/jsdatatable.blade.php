@@ -44,9 +44,6 @@
 
         } );
 
-        //var table = $('#example').DataTable();
-
-        // Apply the search
         table.columns().eq( 0 ).each( function ( colIdx ) {
             $( 'input', table.column( colIdx ).header() ).on( 'keyup change', function () {
                 table

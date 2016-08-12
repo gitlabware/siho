@@ -49,6 +49,11 @@ Route::get('asignahabitacion2/{idCliente}', 'ClientesController@asignahabitacion
 ]);*/
 
 Route::resource('clientes', 'ClientesController');
+Route::controller('datatables', 'ClientesController', [
+    'anyData'  => 'datatables.data',
+    'getIndex' => 'datatables',
+]);
+
 
 Route::resource('pisos', 'PisosController');
 

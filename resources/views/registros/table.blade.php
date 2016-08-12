@@ -1,6 +1,6 @@
 <div class="box">
     <div class="box-body table-responsive">
-        <table class="table table-bordered" id="tabla">
+        <table class="table table-responsive" id="tabla">
             <thead>
             <th>Cliente Id</th>
             <th>Habitacione Id</th>

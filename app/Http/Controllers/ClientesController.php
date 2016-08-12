@@ -12,6 +12,9 @@ use Flash;
 use Illuminate\Support\Facades\Auth;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
+use App\Models\Clientes;
+
+use Yajra\Datatables\Datatables;
 
 use App\Models\Habitaciones;
 
@@ -33,11 +36,12 @@ class ClientesController extends InfyOmBaseController
      */
     public function index(Request $request)
     {
-        $this->clientesRepository->pushCriteria(new RequestCriteria($request));
-        $clientes = $this->clientesRepository->all();
-
-        return view('clientes.index')
-            ->with('clientes', $clientes);
+        //$this->clientesRepository->pushCriteria(new RequestCriteria($request));
+        //$clientes = $this->clientesRepository->all();
+        /*$clientes = Clientes::query();
+        dd($clientes);*/
+        return view('clientes.index');
+           // ->with('clientes', $clientes);
     }
 
     /**
@@ -175,4 +179,13 @@ class ClientesController extends InfyOmBaseController
 
         return view('clientes.asignahabitacion2')->with(compact('habitaciones','cliente'));
     }
+
+    public function getIndex(){
+        return view('clientes.index');
+    }
+
+    public function anyData(){
+        return Datatables::of(Clientes::query())->make(true);
+    }
+
 }
