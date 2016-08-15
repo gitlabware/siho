@@ -68,10 +68,10 @@
                 var href0 = $('td:eq(7) form a:eq(0)', nRow).attr('href').substring(1, ($('td:eq(7) form a:eq(0)', nRow).attr('href').length - 1)) + aData['id'];
                 $('td:eq(7) form a:eq(0)', nRow).attr('href', href0);
 
-                var href1 = $('td:eq(7) form a:eq(1)', nRow).attr('href').replace("/0/", "/1/");
+                var href1 = $('td:eq(7) form a:eq(1)', nRow).attr('href').replace("/0/", "/"+aData['id']+"/");
                 $('td:eq(7) form a:eq(1)', nRow).attr('href', href1);
 
-                var href2 = $('td:eq(7) form a:eq(2)', nRow).attr('href').substring(1, ($('td:eq(7) form a:eq(2)', nRow).attr('href').length - 1)) + aData['id'];
+                var href2 = $('td:eq(7) form a:eq(2)', nRow).attr('href').substring(0, ($('td:eq(7) form a:eq(2)', nRow).attr('href').length - 1)) + aData['id'];
                 $('td:eq(7) form a:eq(2)', nRow).attr('href', href2);
 
             },
