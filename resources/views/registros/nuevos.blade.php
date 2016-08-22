@@ -18,13 +18,16 @@
 </div>
 
 <div class="modal-body">
+
     <div class="form-group">
         <div class="row">
             <div class="col-md-12" style="font-size: 15px;">
-                <dl class="dl-horizontal">
-                    <dt>Cliente:</dt>
-                    <dd>{!! $cliente->nombre !!}</dd>
-                </dl>
+                <table class="table table-bordered">
+                    <tr>
+                        <td><b>Cliente:</b></td>
+                        <td>{!! $cliente->nombre !!}</td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="row">
@@ -45,6 +48,9 @@
         </div>
         @foreach($habitaciones as $idHabitacion => $habitacion)
             <?php
+
+            $registros = $habitacion['habitacion']->registrosactivos;
+
             $precio = null;
             $monto = null;
             if (isset($habitacion['registro'])) {
@@ -54,11 +60,24 @@
             }
             ?>
             <h4 class="text-center">{!! $habitacion['habitacion']->nombre.' - '.$habitacion['habitacion']->rpiso->nombre !!}</h4>
+            @if(isset($registros))
+                <table class="table table-bordered">
+                    @foreach($registros as $regi)
+                        @if(isset($registro->num_reg) && $regi->num_reg != $registro->num_reg || !isset($registro->num_reg))
+                            <tr>
+                                <td class="text-center">
+                                    {{ $regi->estado.' '.$regi->cliente->nombre.' '.$regi->fecha_ingreso.' - '.$regi->fecha_salida }}
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </table>
+            @endif
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         {!! Form::select("habitaciones[$idHabitacion][precio]", $habitacion['precios'],$precio, ['class' => 'form-control precio','placeholder' =>
-                        'Seleccione el precio','required','data-id' => $idHabitacion,'id' => 'cprecio-'.$idHabitacion]) !!}
+                        'Seleccione el precio','data-id' => $idHabitacion,'id' => 'cprecio-'.$idHabitacion]) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -130,11 +149,37 @@
                 </div>
             </div>
         @endif
-        @if($ocupado)
+
+        @if(isset($registro->id) && $registro->estado == 'Ocupando')
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        {!! Form::checkbox('ocupado',null,null,['class' => 'ch-ocupado']) !!} Desocupar habitacion
+                        {!! Form::checkbox('ocupado',null,null,['class' => 'ch-ocupado']) !!}
+                        Desocupar habitacion
+                    </div>
+                </div>
+            </div>
+        @elseif(isset($registro->id) && $registro->estado == 'Reservado')
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    {!! Form::checkbox('ocupar',null,null,['class' => 'ch-ocupar']) !!}
+                    Ocupar habitacion
+                </div>
+            </div>
+        </div>
+        @elseif(isset($registro->id) && $registro->estado != 'Reservado' || !isset($registro->id))
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::radio('estado','Ocupando',null,['class' => 'ch-ocupar']) !!}
+                        Ocupar habitacion
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::radio('estado','Reservado',null,['class' => 'ch-reservar']) !!}
+                        Reservar habitacion
                     </div>
                 </div>
             </div>
@@ -170,6 +215,7 @@
         format: 'dd/mm/yyyy',
         autoclose: true
     });
+
     function parseDate(str) {
         var mdy = str.split('/');
         return new Date(mdy[2], mdy[1] - 1, mdy[0]);
@@ -185,20 +231,21 @@
 
 
     function calculamonto() {
-        var sum_total = 0;
+        //var sum_total = 0;
         $('.precio').each(function (e, i) {
             idHambiente = $(i).attr('data-id');
             if ($('#cfechaingreso').val() != '' && $('#cfechasalida').val() != '' && $('#cprecio-' + idHambiente).val() != '') {
                 var dias = daydiff(parseDate($('#cfechaingreso').val()), parseDate($('#cfechasalida').val()));
                 var precio = parseFloat($('#cprecio-' + idHambiente).val());
                 if (dias > 0) {
-                    sum_total = sum_total + (dias * precio);
+                    //sum_total = sum_total + (dias * precio);
                     $('#cmontototal-' + idHambiente).val(dias * precio);
                 }
             }
         });
-        $('#cmontototalt').val(sum_total);
-        $('#totaltotal').val(sum_total);
+        calculamonto2();
+        //$('#cmontototalt').val(sum_total);
+        //$('#totaltotal').val(sum_total);
     }
     $('.calendario').change(function () {
         calculamonto();
@@ -207,7 +254,24 @@
         calculamonto();
     });
 
+    $('.monto').keyup(function () {
+        calculamonto2();
+    });
+
     calculamonto();
+
+    function calculamonto2() {
+        var sum_total = 0;
+        $('.precio').each(function (e, i) {
+            idHambiente = $(i).attr('data-id');
+            if ($('#cmontototal-' + idHambiente).val() != '') {
+                sum_total = sum_total + parseFloat($('#cmontototal-' + idHambiente).val());
+            }
+        });
+        $('#cmontototalt').val(sum_total);
+        $('#totaltotal').val(sum_total);
+    }
+
     //console.log(fechahoy());
 
     function fechahoy() {

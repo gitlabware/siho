@@ -46,6 +46,7 @@ class RegistroController extends InfyOmBaseController
         //$registros = $this->registroRepository->findWhere(['habitacione_id','=',1])->all();
 
         $registros = Registro::all()->where('habitacione.rpiso.hotel_id', $idHotel);
+        $registros = Registro::orderBy('id','desc')->get()->where('habitacione.rpiso.hotel_id', $idHotel);
         //dd($registros);
         return view('registros.index')
             ->with('registros', $registros);
@@ -153,10 +154,7 @@ class RegistroController extends InfyOmBaseController
      */
     public function destroy($id)
     {
-
         $registro = $this->registroRepository->findWithoutFail($id);
-
-
         //----------- Elimina el flujo de pago ---------------------
         if (!empty($registro->flujo_id)) {
 
@@ -182,21 +180,23 @@ class RegistroController extends InfyOmBaseController
         }
         //--------------------------------------------------------
 
-        //---------- Quita de la habitacion el registro -------
-        $habitacion = Habitaciones::where('registro_id', $id)->first();
-        if (isset($habitacion)) {
-            $habitacion->registro_id = null;
-            $habitacion->save();
-        }
-        //---------------------------------------------------------
-
-
         if (empty($registro)) {
             Flash::error('El registro no fue encontrado');
             return redirect(route('registros.index'));
         }
 
-        $this->registroRepository->delete($id);
+        if(!empty($registro->num_reg)){
+            //$registros = Registro::
+            //$registros = Registro::
+            $registros = Registro::where('num_reg', $registro->num_reg)->get()->all();
+            foreach ($registros as $registro) {
+                $this->registroRepository->delete($registro->id);
+            }
+        }else{
+            $this->registroRepository->delete($registro->id);
+        }
+
+
 
         Flash::success('Registro deleted successfully.');
         return redirect()->back();
@@ -208,32 +208,28 @@ class RegistroController extends InfyOmBaseController
         //dd($idRegistro);
         //return view('registros.create');
         $idHotel = Auth::user()->hotel_id;
-        $ocupado = false;
+
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
-
             $idCliente = $registro->cliente_id;
-
-            $h_ocupado = Habitaciones::where('registro_id', '=', $idRegistro)->first();
-            if (isset($h_ocupado->registro_id)) {
-                $ocupado = true;
-            }
         }
-        //dd($idHabitacion);
+        $registros = Habitaciones::find($idHabitacion)->registrosactivos;
+
         $precios = Precioshabitaciones::where('habitacione_id', $idHabitacion)->get()->lists('precio', 'precio')->all();
         //dd($precios);
         $cliente = Clientes::find($idCliente);
         $habitacion = Habitaciones::find($idHabitacion);
         $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         //dd($cajas);
-        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'ocupado', 'cajas'));
+        //dd($registro);
+        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'cajas','registros'));
     }
 
     public function guarda_registro(Request $request, $idRegistro = null)
     {
 
         $datos_reg = $request->all();
-
+        //dd($datos_reg);
         if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
         }
@@ -285,23 +281,20 @@ class RegistroController extends InfyOmBaseController
         }
         //-------------------------------------------------------
         //----------- Guarda el registro -----------------------
+        if(isset($request->ocupar)){
+            $datos_reg['estado'] = 'Ocupando';
+        }
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
             $registro = $this->registroRepository->update($datos_reg, $idRegistro);
         } else {
-            $datos_reg['estado'] = 'Ocupando';
+            //$datos_reg['estado'] = 'Ocupando';
             $registro = $this->registroRepository->create($datos_reg);
-            $habitacion = Habitaciones::find($request->habitacione_id);
-            $habitacion->registro_id = $registro->id;
-            $habitacion->save();
+
         }
         //---------------------------------------------------------
         //Desocupa la habitacion liberando del registro
         if (isset($request->ocupado) && isset($idRegistro)) {
-            $habitacion = Habitaciones::where('registro_id', $idRegistro)->first();
-            $habitacion->registro_id = null;
-            $habitacion->save();
-
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
             $datos_reg['estado'] = 'Desocupado';
             $registro = $this->registroRepository->update($datos_reg, $idRegistro);
@@ -316,7 +309,7 @@ class RegistroController extends InfyOmBaseController
         $habitaciones = $request->habitaciones;
         $datos_reg = $request->all();
         unset($datos_reg['habitaciones']);
-        //dd($datos_reg);
+
         if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
         }
@@ -365,10 +358,9 @@ class RegistroController extends InfyOmBaseController
         //-------------------------------------------------------
         //----------- Guarda el registro -----------------------
 
-
-        //
-
-        $datos_reg['estado'] = 'Ocupando';
+        if(isset($request->ocupar)){
+            $datos_reg['estado'] = 'Ocupando';
+        }
 
         if (isset($num_reg)) {
             foreach ($habitaciones as $idHabitacion => $habitacion) {
@@ -385,29 +377,13 @@ class RegistroController extends InfyOmBaseController
                 $datos_reg['precio'] = $habitacion['precio'];
                 $datos_reg['monto_total'] = $habitacion['monto_total'];
                 $registro = $this->registroRepository->create($datos_reg);
-                $habitacion = Habitaciones::find($idHabitacion);
-                $habitacion->registro_id = $registro->id;
-                $habitacion->save();
+
             }
         }
         //---------------------------------------------------------
         //Desocupa la habitacion liberando del registro
 
         if (isset($request->ocupado) && isset($num_reg)) {
-
-
-            $habitaciones = DB::table('habitaciones')
-                ->join('registros', 'habitaciones.registro_id', '=','registros.id')
-                ->where('registros.num_reg',$num_reg)
-                ->select('habitaciones.id')
-                ->get();
-            //dd($num_reg);
-            //dd($habitaciones);
-            foreach ($habitaciones as $hab){
-                $habitacion = Habitaciones::find($hab->id);
-                $habitacion->registro_id = null;
-                $habitacion->save();
-            }
 
             $registros = Registro::all()->where('num_reg', $num_reg);
             foreach ($registros as $registro){
@@ -430,22 +406,9 @@ class RegistroController extends InfyOmBaseController
         //dd($num_reg);
 
         $idHotel = Auth::user()->hotel_id;
-        $ocupado = false;
         if (isset($num_reg)) {
             $registros = Registro::all()->where('num_reg', $num_reg);
 
-            //$registro = $this->registroRepository->findWithoutFail($idRegistro);
-            //$h_ocupado = Habitaciones::all()->registro()->where('id', 19);
-
-            $h_ocupado = DB::table('habitaciones')
-                ->join('registros', 'habitaciones.registro_id', '=','registros.id')
-                ->where('registros.num_reg',$num_reg)
-                ->select('habitaciones.id')
-                ->get();
-
-            if (!empty($h_ocupado)) {
-                $ocupado = true;
-            }
             //dd($h_ocupado);
             $habitaciones = array();
             foreach ($registros as $registro) {
@@ -463,7 +426,7 @@ class RegistroController extends InfyOmBaseController
 
         $cliente = Clientes::find($idCliente);
         $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
-        return view('registros.nuevos')->with(compact('cliente', 'registro', 'ocupado', 'cajas', 'habitaciones'));
+        return view('registros.nuevos')->with(compact('cliente', 'registro', 'cajas', 'habitaciones'));
     }
 
     public function get_total($idCaja)
@@ -492,6 +455,18 @@ class RegistroController extends InfyOmBaseController
             return 1;
         }
     }
+
+
+    public function calendario(){
+        $ano = date('Y');
+        $mes = intval(date('m'));
+        $idHotel = Auth::user()->hotel_id;
+        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id',$idHotel);
+        $numero_dias = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
+        return view('registros.calendario')->with(compact('habitaciones','idhotel','numero_dias'));
+    }
+
+    
 
 
 }

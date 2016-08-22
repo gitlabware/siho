@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Habitaciones;
 use DB;
 use App\Http\Requests;
@@ -50,7 +51,8 @@ class HabitacionesController extends InfyOmBaseController
      */
     public function create()
     {
-        return view('habitaciones.create');
+        $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
+        return view('habitaciones.create')->with(compact('categorias'));
     }
 
     public function nuevaHabitacion($idHotel){
@@ -125,9 +127,8 @@ class HabitacionesController extends InfyOmBaseController
             ->where('hotel_id', $idHotel)
             ->select('id', 'nombre')
             ->get();
-        //\Debugbar::info($pisosHotel);
 
-        //\Debugbar::info($piso);
+        $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
 
         if (empty($habitaciones)) {
             Flash::error('Habitaciones not found');
@@ -135,7 +136,7 @@ class HabitacionesController extends InfyOmBaseController
             return redirect(route('habitaciones.index'));
 
         }
-        return view('habitaciones.edit')->with(compact('habitaciones', 'pisosHotel'));
+        return view('habitaciones.edit')->with(compact('habitaciones', 'pisosHotel','categorias'));
     }
 
     /**

@@ -14,42 +14,40 @@
                         <td>{!! $habitacion->nombre !!}</td>
                         <td><b>Piso:</b></td>
                         <td>{!! $habitacion->rpiso->nombre !!}</td>
+
                     </tr>
-                </table>
-                @if(isset($habitacion->registro))
-                <table class="table table-bordered">
                     <tr>
-                        <td><b>Cliente:</b></td>
+                        <td><b>Categoria:</b></td>
                         <td>
-                            @if(isset($habitacion->registro->cliente))
-                                {!! $habitacion->registro->cliente->nombre !!}
-                            @else
-                                No hay cliente!!
+                            @if(isset($habitacion->categoria->nombre))
+                                {!! $habitacion->categoria->nombre !!}
                             @endif
                         </td>
-                    </tr>
-                    <tr>
-                        <td><b>Pago:</b></td>
-                        <td>
-                            @if(isset($habitacion->registro->flujo))
-                                {!! $habitacion->registro->monto_total.' en '.$habitacion->registro->flujo->caja->nombre !!}
-                            @endif
-                        </td>
+                        <td><b></b></td>
+                        <td></td>
                     </tr>
                 </table>
-                <table class="table table-bordered">
-                    <tr>
-                        <td><b>Fecha Ingreso:</b></td>
-                        <td>
-                            {!! $habitacion->registro->fecha_ingreso !!}
-                        </td>
-                        <td><b>Fecha Salida:</b></td>
-                        <td>
-                            {!! $habitacion->registro->fecha_salida !!}
-                        </td>
-                    </tr>
-                </table>
-                @endif
+
+
+                @foreach($habitacion->registrosactivos as $registro)
+                    <?php
+                    $color_reg = 'info';
+                    if ($registro->estado == 'Ocupando') {
+                        $color_reg = 'danger';
+                    }
+                    ?>
+                    @if(!empty($registro->num_reg))
+                        <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
+                           onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
+                            {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                        </a>
+                    @else
+                        <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
+                           onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
+                            {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                        </a>
+                    @endif
+                @endforeach
             </div>
         </div>
     </div>
@@ -59,7 +57,9 @@
     <a href="{!! route('habitaciones.edit', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Editar</a>
     <a href="{!! url('ingresaPrecio', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Precios</a>
     @if (isset($habitacion->registro_id))
-        <a href="javascript:" onclick="cargarmodal('{!! route('nuevoregistro',[$habitacion->registro->cliente_id,$habitacion->id,$habitacion->registro_id]) !!}','warning')" class='btn btn-outline pull-left' title="Registro">Registro</a>
+        <a href="javascript:"
+           onclick="cargarmodal('{!! route('nuevoregistro',[$habitacion->registro->cliente_id,$habitacion->id,$habitacion->registro_id]) !!}','warning')"
+           class='btn btn-outline pull-left' title="Registro">Registro</a>
     @endif
 
     {!! Form::button('Eliminar', ['type' => 'submit', 'class' => 'btn btn-outline pull-left', 'onclick' => "return confirm('Esta seguro de eliminar?')"]) !!}

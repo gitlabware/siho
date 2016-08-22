@@ -21,6 +21,11 @@
     {!! Form::text('camas', null, ['class' => 'form-control']) !!}
 </div>
 
+<div class="form-group col-sm-6">
+    {!! Form::label('categoria_id', 'Categoria:') !!}
+    {!! Form::select('categoria_id', $categorias,null, ['class' => 'form-control','placeholder' => 'Seleccione la categoria']) !!}
+</div>
+
 <!-- Estado Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('estado', 'Estado:') !!}

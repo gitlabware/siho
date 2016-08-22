@@ -16,6 +16,8 @@ use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
+use Illuminate\Support\Facades\Auth;
+
 use App\Models\Habitaciones;
 
 class PisosController extends InfyOmBaseController
@@ -115,7 +117,7 @@ class PisosController extends InfyOmBaseController
     /**
      * Update the specified Pisos in storage.
      *
-     * @param  int              $id
+     * @param  int $id
      * @param UpdatePisosRequest $request
      *
      * @return Response
@@ -162,7 +164,36 @@ class PisosController extends InfyOmBaseController
         return redirect(route('pisos.index'));
     }
 
-    public function pisosHotel($idHotel){
+    public function piso($idPiso = null)
+    {
+        $piso = null;
+        if (isset($idPiso)) {
+            $piso = Pisos::find($idPiso);
+        }
+        return view('pisos.piso')->with('piso', $piso);
+    }
+
+    public function guarda_piso(Request $request, $idPiso = null){
+        $idHotel = Auth::user()->hotel_id;
+        //dd($idHotel);
+        if(isset($idPiso)){
+            $piso = Pisos::find($idPiso);
+            $piso->nombre = $request->nombre;
+            $piso->hotel_id = $idHotel;
+            $piso->save();
+        }else{
+            $piso = new Pisos;
+            $piso->nombre = $request->nombre;
+            $piso->hotel_id = $idHotel;
+            $piso->save();
+        }
+        Flash::success('Se ha registrado correctamente el piso!!!');
+
+        return redirect()->back();
+    }
+
+    public function pisosHotel($idHotel)
+    {
         /*$habitaciones = DB::table('habitaciones')
             ->where('hotel_id', $idHotel)
             ->leftJoin('pisos', 'habitaciones.piso_id', '=', 'pisos.id')
@@ -173,8 +204,8 @@ class PisosController extends InfyOmBaseController
         //dd($habitaciones);
         //\Debugbar::info($habitaciones);
         //dd($idHotel);
-        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id',$idHotel);
-        //dd($habitaciones);
+        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
+
 
         return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));
     }

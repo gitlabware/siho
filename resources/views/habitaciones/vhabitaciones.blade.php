@@ -10,7 +10,8 @@
             <h3 class="box-title">Hotel: {!! $hotel->nombre  !!}</h3>
             <table class="table table-bordered text-center">
                 <tr>
-                    <td><a href="#" type="button" class="btn btn-block btn-primary btn-sm">Nuevo Piso</a></td>
+                    <td><a href="javascript:" onclick="cargarmodal('{!! route('piso') !!}')" type="button"
+                           class="btn btn-block btn-primary btn-sm">Nuevo Piso</a></td>
                     <td><a href="{!! url('nuevaHabitacion', $hotel->id) !!}" type="button"
                            class="btn btn-block btn-success btn-sm">Nueva Habitacion</a></td>
                 </tr>
@@ -26,27 +27,24 @@
 
                     @foreach($piso->habitaciones as $habitacion)
 
-                        <?php
-                        $color2 = 'info';
-                        $color = 'bg-aqua';
-                        if (isset($habitacion->registro)) {
-                            $color = 'bg-yellow';
-                            $color2 = 'warning';
-                        }
-                        ?>
                         <div class="col-lg-2 col-xs-4">
                             <!-- small box -->
-                            <div class="small-box {!! $color !!}">
+                            <div class="small-box bg-aqua">
                                 <div class="inner">
                                     <h3>{!! $habitacion->nombre !!}</h3>
 
                                     <p>Habitacion</p>
+                                    <p>
+                                        @if(isset($habitacion->categoria->nombre))
+                                            {!! $habitacion->categoria->nombre !!}
+                                        @endif
+                                    </p>
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-pricetag"></i>
                                 </div>
                                 <a href="javascript:"
-                                   onclick="cargarmodal('{!! route('informacion_habitacion',[$habitacion->id]) !!}','{!! $color2 !!}')"
+                                   onclick="cargarmodal('{!! route('informacion_habitacion',[$habitacion->id]) !!}','info')"
                                    class="small-box-footer">Mas Informacion <i class="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>

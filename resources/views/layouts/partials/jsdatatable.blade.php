@@ -8,6 +8,7 @@
             "searching": true,
             "ordering": true,
             //"scrollX": true,
+            'order': [],
             "info": true,
             "autoWidth": false,
             "language": {

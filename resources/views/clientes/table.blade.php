@@ -27,8 +27,7 @@
 <div id="td-acciones" style="display: none">
     {!! Form::open(['route' => ['clientes.destroy', 0], 'method' => 'delete']) !!}
     <div class='btn-group'>
-        <a href="{!! route('clientes.show', [0]) !!}" class='btn btn-default btn-xs'><i
-                    class="glyphicon glyphicon-eye-open"></i></a>
+
         <a href="{!! route('clientes.edit', [0]) !!}" class='btn btn-default btn-xs'><i
                     class="glyphicon glyphicon-edit"></i></a>
         <a href="{!! route('asignahabitacion2', [0]) !!}" title="Registrar habitacion"
@@ -65,14 +64,12 @@
                 var acc_form = $('td:eq(7) form', nRow).attr('action').substring(1, ($('td:eq(7) form', nRow).attr('action').length - 1)) + aData['id'];
                 $('td:eq(7) form', nRow).attr('action', acc_form);
 
-                var href0 = $('td:eq(7) form a:eq(0)', nRow).attr('href').substring(1, ($('td:eq(7) form a:eq(0)', nRow).attr('href').length - 1)) + aData['id'];
-                $('td:eq(7) form a:eq(0)', nRow).attr('href', href0);
 
-                var href1 = $('td:eq(7) form a:eq(1)', nRow).attr('href').replace("/0/", "/"+aData['id']+"/");
-                $('td:eq(7) form a:eq(1)', nRow).attr('href', href1);
+                var href1 = $('td:eq(7) form a:eq(0)', nRow).attr('href').replace("/0/", "/"+aData['id']+"/");
+                $('td:eq(7) form a:eq(0)', nRow).attr('href', href1);
 
-                var href2 = $('td:eq(7) form a:eq(2)', nRow).attr('href').substring(0, ($('td:eq(7) form a:eq(2)', nRow).attr('href').length - 1)) + aData['id'];
-                $('td:eq(7) form a:eq(2)', nRow).attr('href', href2);
+                var href2 = $('td:eq(7) form a:eq(1)', nRow).attr('href').substring(0, ($('td:eq(7) form a:eq(1)', nRow).attr('href').length - 1)) + aData['id'];
+                $('td:eq(7) form a:eq(1)', nRow).attr('href', href2);
 
             },
             "language": {

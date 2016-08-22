@@ -38,6 +38,7 @@
             <li class="active"><a href="{{ url('vhabitaciones') }}"><i class='fa fa-tag'></i> <span>Cuadro Habitaciones</span></a></li>
             <li class="active"><a href="{{ url('registros') }}"><i class='fa fa-building-o'></i> <span>Registros</span></a></li>
             <li class="active"><a href="{{ url('cajas') }}"><i class='fa fa-building-o'></i> <span>Caja Chica</span></a></li>
+            <li class="active"><a href="{{ url('categorias') }}"><i class='fa fa-building-o'></i> <span>Categorias Habitacion</span></a></li>
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->

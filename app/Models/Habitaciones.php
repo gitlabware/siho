@@ -71,7 +71,7 @@ class Habitaciones extends Model
         'nombre',
         'estado',
         'observaciones',
-        'registro_id'
+        'categoria_id'
     ];
 
     /**
@@ -100,12 +100,24 @@ class Habitaciones extends Model
         //return $this->belongsTo('\App\Models\Pisos');
         return $this->belongsTo('\App\Models\Pisos', 'piso_id');
     }
-
-    public function registro(){
-        return $this->belongsTo('\App\Models\Registro');
+    public function categoria(){
+        //return $this->belongsTo('\App\Models\Pisos');
+        return $this->belongsTo('\App\Models\Categoria', 'categoria_id');
     }
+
+    /*public function registro(){
+        return $this->belongsTo('\App\Models\Registro');
+    }*/
     public function rprecios(){
         return $this->hasMany('\App\Models\Precioshabitaciones');
+    }
+
+    /*public function registros(){
+        return $this->hasMany('\App\Models\Registro','habitacione_id');
+    }*/
+
+    public function registrosactivos(){
+        return $this->hasMany('\App\Models\Registro','habitacione_id')->whereIn('estado', ['Ocupando','Reservado']);
     }
 
 }

@@ -156,8 +156,8 @@ class PrecioshabitacionesController extends InfyOmBaseController
         $this->precioshabitacionesRepository->delete($id);
 
         Flash::success('Precioshabitaciones deleted successfully.');
-
-        return redirect(route('precioshabitaciones.index'));
+        return redirect()->back();
+        //return redirect(route('precioshabitaciones.index'));
     }
 
     public function ingresaPrecio($idHabitacion){

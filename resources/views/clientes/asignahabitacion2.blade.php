@@ -18,8 +18,8 @@
                     <th></th>
                     <th>Piso</th>
                     <th>Nombre</th>
-                    <th>Cliente</th>
-                    <th>Fecha Ingreso</th>
+                    <th>Categoria</th>
+                    <th>Estado</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -28,8 +28,10 @@
                     <th></th>
                     <th>Piso</th>
                     <th>Nombre</th>
-                    <th>Cliente</th>
-                    <th>Fecha Ingreso</th>
+                    <th>Categoria</th>
+                    <th>
+                        Estado
+                    </th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -38,30 +40,46 @@
 
                 @foreach($habitaciones as $key => $habitacion)
                     <?php
-                    $color_reg = null;
-                    $color_reg2 = null;
                     $idHabitacion = $habitacion->id;
                     $regis_checkbox = Form::checkbox("habitaciones[$idHabitacion][marca]", null, null, ['class' => 'ch-marca-h']);
-                    if (isset($habitacion->registro_id)) {
-                        $color_reg = 'warning';
-                        $color_reg2 = ",'warning'";
-                        $regis_checkbox = '';
-                    }
+
                     ?>
-                    <tr class="{{ $color_reg }}">
+                    <tr>
                         <td>
                             {!! $regis_checkbox !!}
                         </td>
                         <td>{!! $habitacion->rpiso->nombre !!}</td>
                         <td>{!! $habitacion->nombre !!}</td>
-                        <td>{{ isset($habitacion->registro->cliente->nombre) ? $habitacion->registro->cliente->nombre : '' }}</td>
-                        <td>{{ isset($habitacion->registro->fecha_ingreso) ? $habitacion->registro->fecha_ingreso : '' }}</td>
+                        <td>
+                            @if(isset($habitacion->categoria->nombre))
+                                {!! $habitacion->categoria->nombre !!}
+                            @endif
+                        </td>
+                        <td>
+                            @foreach($habitacion->registrosactivos as $registro)
+                                <?php
+                                $color_reg = 'info';
+                                if ($registro->estado == 'Ocupando') {
+                                    $color_reg = 'danger';
+                                }
+                                ?>
+                                @if(!empty($registro->num_reg))
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
+                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
+                                        {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                                    </a>
+                                @else
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
+                                       onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
+                                        {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </td>
                         <td>
                             <div class='btn-group'>
-                                <a href="{!! route('habitaciones.show', [$habitacion->id]) !!}"
-                                   class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
                                 <a href="javascript:"
-                                   onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitacion->id,$habitacion->registro_id]) !!}'{{ $color_reg2 }})"
+                                   onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitacion->id]) !!}')"
                                    class='btn btn-primary btn-xs' title="Formulario"><i
                                             class="glyphicon glyphicon-edit"></i></a>
                             </div>

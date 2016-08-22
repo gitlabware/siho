@@ -11,10 +11,17 @@
                 <div class="box-body">
                     <table class="table table-bordered">
                         @foreach($precios as $p)
-                        <tr>
-                            <th>P: {!! $p->precio !!}</th>
-                            <th>Acciones</th>
-                        </tr>
+                            <tr>
+                                <th>P: {!! $p->precio !!}</th>
+                                <th>
+                                    <div class='btn-group'>
+                                        {!! Form::open(['route' => ['precioshabitaciones.destroy', $p->id], 'method' => 'delete']) !!}
+
+                                        {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Esta seguro de eliminar el precio?')"]) !!}
+                                        {!! Form::close() !!}
+                                    </div>
+                                </th>
+                            </tr>
                         @endforeach
                     </table>
                 </div>

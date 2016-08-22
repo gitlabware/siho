@@ -21,12 +21,27 @@
     <div class="form-group">
         <div class="row">
             <div class="col-md-12" style="font-size: 15px;">
-                <dl class="dl-horizontal">
-                    <dt>Cliente:</dt>
-                    <dd>{!! $cliente->nombre !!}</dd>
-                    <dt>Habitacion:</dt>
-                    <dd>{!! $habitacion->nombre.' - '.$habitacion->rpiso->nombre !!}</dd>
-                </dl>
+                <table class="table table-bordered">
+                    <tr>
+                        <td><b>Cliente:</b></td>
+                        <td>{!! $cliente->nombre !!}</td>
+                        <td><b>Habitacion:</b></td>
+                        <td>{!! $habitacion->nombre.' - '.$habitacion->rpiso->nombre !!}</td>
+                    </tr>
+                </table>
+                @if(isset($registros))
+                    <table class="table table-bordered">
+                        @foreach($registros as $regi)
+                            @if(isset($registro) && $regi->id != $registro->id || !isset($registro))
+                                <tr>
+                                    <td class="text-center">
+                                        {{ $regi->estado.' '.$regi->cliente->nombre.' '.$regi->fecha_ingreso.' - '.$regi->fecha_salida }}
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </table>
+                @endif
             </div>
         </div>
         <div class="row">
@@ -101,11 +116,37 @@
                 </div>
             </div>
         @endif
-        @if($ocupado)
+        @if(isset($registro->id) && $registro->estado == 'Ocupando')
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        {!! Form::checkbox('ocupado',null,null,['class' => 'ch-ocupado']) !!} Desocupar habitacion
+                        {!! Form::checkbox('ocupado',null,null,['class' => 'ch-ocupado']) !!}
+                        Desocupar habitacion
+                    </div>
+                </div>
+            </div>
+
+        @elseif(isset($registro->id) && $registro->estado == 'Reservado')
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        {!! Form::checkbox('ocupar',null,null,['class' => 'ch-ocupar']) !!}
+                        Ocupar habitacion
+                    </div>
+                </div>
+            </div>
+        @elseif(isset($registro->id) && $registro->estado != 'Reservado' || !isset($registro->id))
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::radio('estado','Ocupando',null,['class' => 'ch-ocupar']) !!}
+                        Ocupar habitacion
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::radio('estado','Reservado',null,['class' => 'ch-reservar']) !!}
+                        Reservar habitacion
                     </div>
                 </div>
             </div>

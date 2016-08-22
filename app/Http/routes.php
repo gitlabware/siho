@@ -39,6 +39,8 @@ Route::resource('habitaciones', 'HabitacionesController');
 Route::get('muestraHabitaciones/{idHotel}', 'HotelController@muestraHabitaciones');
 //Route::get('muestraPisos/{idHotel}', 'PisosController@muestraPisos');
 Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel');
+Route::get('piso/{idPiso?}', 'PisosController@piso')->name('piso');
+Route::post('guarda_piso/{idPiso?}', 'PisosController@guarda_piso')->name('guarda_piso');
 Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
 Route::get('ingresaPrecio/{idHabitacion}', 'PrecioshabitacionesController@ingresaPrecio');
 Route::get('asignahabitacion', 'ClientesController@asignahabitacion');
@@ -80,6 +82,7 @@ Route::get('caja/eliminaflujo/{idFlujo}', 'CajaController@eliminaflujo')->name('
 
 Route::resource('registros', 'RegistroController');
 Route::get('registros/nuevo/{idCliente}/{idHabitacion}/{idRegistro?}', 'RegistroController@nuevo')->name('nuevoregistro');
+Route::get('registros_calendario', 'RegistroController@calendario')->name('calendario');
 Route::post('registros/guarda_registro/{idRegistro?}', 'RegistroController@guarda_registro')->name('guarda_registro');
 //Route::post('registros/nuevos/{idCliente}/{num_reg?}', 'RegistroController@nuevos')->name('nuevos');
 Route::post('registros/guarda_registros/{num_reg?}', 'RegistroController@guarda_registros')->name('guarda_registros');
@@ -99,3 +102,11 @@ Route::get('vhabitaciones', 'HabitacionesController@vhabitaciones')->name('vhabi
 Route::get('informacion_habitacion/{idHabitacion}', 'HabitacionesController@informacion_habitacion')->name('informacion_habitacion');
 
 
+
+
+Route::resource('categorias', 'CategoriaController');
+
+Route::resource('facturas', 'FacturaController');
+
+Route::get('facturar/{idFlujo}', 'FacturaController@facturar')->name('facturar');
+Route::post('generar_factura', 'FacturaController@generar_factura')->name('generar_factura');

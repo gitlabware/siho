@@ -43,7 +43,15 @@
                                 <td>{!! $flu->ingreso !!}</td>
                                 <td>{!! $flu->salida !!}</td>
                                 <td>
-                                    <a href="javascript:" onclick="cargarmodal('{!! route('eliminaflujo',[$flu->id]) !!}','danger')"  class='btn btn-danger btn-xs' title="Eliminar Flujo"><i
+                                    @if($flu->ingreso != 0)
+                                        <a href="javascript:"
+                                           onclick="cargarmodal('{!! route('facturar',[$flu->id]) !!}')"
+                                           class='btn btn-info btn-xs' title="Hacer Factura"><i class="fa fa-file"></i></a>
+                                    @endif
+
+                                    <a href="javascript:"
+                                       onclick="cargarmodal('{!! route('eliminaflujo',[$flu->id]) !!}','danger')"
+                                       class='btn btn-danger btn-xs' title="Eliminar Flujo"><i
                                                 class="fa fa-remove"></i></a>
                                 </td>
                             </tr>

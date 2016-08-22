@@ -1,6 +1,6 @@
 <div class="box">
     <div class="box-body table-responsive">
-        <table class="table table-responsive" id="tabla">
+        <table class="table table-responsive table-bordered" id="tabla">
             <thead>
             <th>Cliente Id</th>
             <th>Habitacione Id</th>
@@ -40,10 +40,17 @@
                     <td>
                         {!! Form::open(['route' => ['registros.destroy', $registro->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
-                            <a href="{!! route('registros.show', [$registro->id]) !!}" class='btn btn-default btn-xs'><i
-                                        class="glyphicon glyphicon-eye-open"></i></a>
-                            <a href="{!! route('registros.edit', [$registro->id]) !!}" class='btn btn-default btn-xs'><i
-                                        class="glyphicon glyphicon-edit"></i></a>
+                            @if($registro->estado != 'Desocupado' && !empty($registro->num_reg))
+                                <a class="btn btn-info btn-xs" href="javascript:"
+                                   onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                            @elseif($registro->estado != 'Desocupado')
+                                <a class="btn btn-default btn-xs" href="javascript:"
+                                   onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                            @endif
                             {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Al el eliminar el registro significa eliminar pagos y  ocupacion de habitacion.. Esta seguro de eliminar el registro?')"]) !!}
                         </div>
                         {!! Form::close() !!}

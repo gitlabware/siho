@@ -10,10 +10,14 @@
     @include('core-templates::common.errors')
 
     <div class="row">
-        {!! Form::open(['route' => 'habitaciones.store']) !!}
-
-            @include('habitaciones.fields')
-
-        {!! Form::close() !!}
+        <div class="col-md-12">
+            <div class="box box-primary">
+                {!! Form::open(['route' => 'habitaciones.store']) !!}
+                <div class="box-body">
+                    @include('habitaciones.fields')
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
     </div>
 @endsection

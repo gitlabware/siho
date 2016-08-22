@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Registro;
 use DB;
 use Log;
 use App\Models\Habitaciones;
@@ -13,8 +14,11 @@ use App\Repositories\HotelRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use PhpParser\Node\Expr\New_;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
+
+use App\Models\Categoria;
 
 use App\User;
 
@@ -99,6 +103,14 @@ class HotelController extends InfyOmBaseController
 
         if ($hotel) {
             $idHotel = $hotel->id;
+            $idCategoria = null;
+            if(!empty($request->categoria)){
+                $categoria = new Categoria;
+                $categoria->nombre = $request->categoria;
+                $categoria->hotel_id = $idHotel;
+                $categoria->save();
+                $idCategoria = $categoria->id;
+            }
             //echo 'hotel: '.$idHotel;
             //dd($idHotel);
             for ($i = 1; $i <= $pisos; $i++) {
@@ -114,6 +126,7 @@ class HotelController extends InfyOmBaseController
                     $h->piso_id = $idPiso;
                     //$h->hotel_id = $idHotel;
                     $h->camas = $camas;
+                    $h->categoria_id = $idCategoria;
                     $h->nombre = $i.'0'.$c;
                     $h->save();
                 }
