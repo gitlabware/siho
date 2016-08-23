@@ -36,8 +36,10 @@ desired effect
 @if (! Auth::guest())
     @if(Auth::user()->rol == 'Super Administrador')
         @include('layouts.sidebar.superadmin')
-    @else
+    @elseif(Auth::user()->rol == 'Administrador')
         @include('layouts.sidebar.administrador')
+    @else
+        @include('layouts.sidebar.operario')
     @endif
 @endif
 

@@ -77,18 +77,28 @@
                             @endforeach
                         </td>
                         <td>
-                            {!! Form::open(['route' => ['hotels.destroy', $h->id], 'method' => 'delete']) !!}
-                            <div class='btn-group'>
-                                {{--<a href="{!! route('hotels.show', [$h->id]) !!}" class='btn btn-default btn-xs'><i--}}
-                                {{--class="glyphicon glyphicon-eye-open"></i></a>--}}
-                                <a href="{!! route('habitaciones.edit', [$h->id]) !!}" class='btn btn-warning btn-xs'><i
-                                            class="glyphicon glyphicon-edit"></i></a>
-                                <a href="{!! url('ingresaPrecio', [$h->id]) !!}" class='btn btn-success btn-xs'><i
-                                            class="fa fa-fw fa-dollar"></i></a>
+                            <?php
+                            $role = Auth::user()->rol;
+                            ?>
+                            @if($role != 'Operario')
+                                {!! Form::open(['route' => ['hotels.destroy', $h->id], 'method' => 'delete']) !!}
+                                <div class='btn-group'>
+                                    {{--<a href="{!! route('hotels.show', [$h->id]) !!}" class='btn btn-default btn-xs'><i--}}
+                                    {{--class="glyphicon glyphicon-eye-open"></i></a>--}}
 
-                                {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
-                            </div>
-                            {!! Form::close() !!}
+                                    <a href="{!! url('ingresaPrecio', [$h->id]) !!}" class='btn btn-success btn-xs'><i
+                                                class="fa fa-fw fa-dollar"></i></a>
+
+                                    <a href="{!! route('habitaciones.edit', [$h->id]) !!}"
+                                       class='btn btn-warning btn-xs'><i
+                                                class="glyphicon glyphicon-edit"></i></a>
+
+                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+
+                                </div>
+
+                                {!! Form::close() !!}
+                            @endif
                         </td>
                     </tr>
                 @endforeach

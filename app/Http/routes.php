@@ -70,7 +70,7 @@ Route::resource('cajas', 'CajaController');
 Route::resource('flujos', 'FlujoController');
 
 Route::get('caja/flujos/{idCaja}', 'CajaController@flujos');
-\
+
 Route::get('caja/ingreso/{idCaja}', 'CajaController@ingreso');
 Route::post('caja/guarda_ingreso', 'CajaController@guarda_ingreso');
 
@@ -110,3 +110,8 @@ Route::resource('facturas', 'FacturaController');
 
 Route::get('facturar/{idFlujo}', 'FacturaController@facturar')->name('facturar');
 Route::post('generar_factura', 'FacturaController@generar_factura')->name('generar_factura');
+Route::get('factura/{idFactura}', 'FacturaController@factura')->name('factura');
+
+//Route::get('reporte_pagos', 'ReporteController@reporte_pagos')->name('reporte_pagos');
+
+Route::match(['get', 'post'], 'reporte_pagos', 'ReporteController@reporte_pagos')->name('reporte_pagos');

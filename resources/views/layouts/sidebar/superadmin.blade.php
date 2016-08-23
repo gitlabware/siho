@@ -36,6 +36,7 @@
             <li class="active"><a href="{{ url('usuarios') }}"><i class='fa fa-users'></i> <span>Usuarios</span></a></li>
             <li class="active"><a href="{{ url('hotels') }}"><i class='fa fa-building-o'></i> <span>Hoteles</span></a></li>
             <li class="active"><a href="{{ url('clientes') }}"><i class='fa fa-building-o'></i> <span>Clientes</span></a></li>
+            <li class="active"><a href="{{ url('reporte_pagos') }}"><i class='fa fa-building-o'></i> <span>Reporte</span></a></li>
 
         </ul><!-- /.sidebar-menu -->
     </section>

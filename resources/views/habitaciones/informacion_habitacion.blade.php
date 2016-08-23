@@ -54,16 +54,20 @@
 </div>
 {!! Form::open(['route' => ['hotels.destroy', $habitacion->id], 'method' => 'delete']) !!}
 <div class="modal-footer">
-    <a href="{!! route('habitaciones.edit', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Editar</a>
-    <a href="{!! url('ingresaPrecio', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Precios</a>
-    @if (isset($habitacion->registro_id))
-        <a href="javascript:"
-           onclick="cargarmodal('{!! route('nuevoregistro',[$habitacion->registro->cliente_id,$habitacion->id,$habitacion->registro_id]) !!}','warning')"
-           class='btn btn-outline pull-left' title="Registro">Registro</a>
+    <?php
+    $role = Auth::user()->rol;
+    ?>
+    @if($role != 'Operario')
+        <a href="{!! route('habitaciones.edit', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Editar</a>
+        <a href="{!! url('ingresaPrecio', [$habitacion->id]) !!}" class='btn btn-outline pull-left'>Precios</a>
+        @if (isset($habitacion->registro_id))
+            <a href="javascript:"
+               onclick="cargarmodal('{!! route('nuevoregistro',[$habitacion->registro->cliente_id,$habitacion->id,$habitacion->registro_id]) !!}','warning')"
+               class='btn btn-outline pull-left' title="Registro">Registro</a>
+        @endif
+
+        {!! Form::button('Eliminar', ['type' => 'submit', 'class' => 'btn btn-outline pull-left', 'onclick' => "return confirm('Esta seguro de eliminar?')"]) !!}
     @endif
-
-    {!! Form::button('Eliminar', ['type' => 'submit', 'class' => 'btn btn-outline pull-left', 'onclick' => "return confirm('Esta seguro de eliminar?')"]) !!}
-
     <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
 </div>
 {!! Form::close() !!}

@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::select('rol', ['Super Administrador' => 'Super Administrador','Administrador' => 'Administrador'],null, ['class' => 'form-control','placeholder' => 'Seleccione el Rol','required']) !!}
+                    {!! Form::select('rol', ['Super Administrador' => 'Super Administrador','Administrador' => 'Administrador','Operario' => 'Operario'],null, ['class' => 'form-control','placeholder' => 'Seleccione el Rol','required']) !!}
                 </div>
             </div>
             <div class="col-md-6">
