@@ -61,6 +61,8 @@
                                 $color_reg = 'info';
                                 if ($registro->estado == 'Ocupando') {
                                     $color_reg = 'danger';
+                                }elseif($registro->estado == 'Reservado') {
+                                    $color_reg = 'warning';
                                 }
                                 ?>
                                 @if(!empty($registro->num_reg))

@@ -311,6 +311,7 @@ class RegistroController extends InfyOmBaseController
 
     public function guarda_registros(Request $request, $num_reg = null)
     {
+        $direccionar = route('registros.index');
         $habitaciones = $request->habitaciones;
         $datos_reg = $request->all();
         unset($datos_reg['habitaciones']);
@@ -359,6 +360,8 @@ class RegistroController extends InfyOmBaseController
             $total = $this->get_total($request->caja_id);
             $this->set_total($request->caja_id, ($total + $datos_reg['monto_total']));
             $datos_reg['flujo_id'] = $flujo->id;
+
+            $direccionar = route('flujos',[$request->caja_id]);
         }
         //-------------------------------------------------------
         //----------- Guarda el registro -----------------------
@@ -402,7 +405,7 @@ class RegistroController extends InfyOmBaseController
         //----------------------------------------------------------
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
         //return redirect()->back();
-        return redirect(route('registros.index'));
+        return redirect($direccionar);
     }
 
     public function nuevos(Request $request, $idCliente = null, $num_reg = null)
