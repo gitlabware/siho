@@ -59,13 +59,15 @@ class HabitacionesController extends InfyOmBaseController
         $habitacion = \App\Models\Habitaciones::find($idHotel);
         $habitacionPiso = $habitacion->piso_id;
         $piso = \App\Models\Pisos::find($habitacionPiso);
+        $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         $idHotel = $piso->hotel_id;
         $pisosHotel = DB::table('pisos')
             ->where('hotel_id', $idHotel)
             ->select('id', 'nombre')
             ->get();
         return view('habitaciones.create')
-            ->with(compact('pisosHotel'));
+            ->with(compact('pisosHotel','categorias'));
+
     }
 
     /**
