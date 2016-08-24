@@ -27,9 +27,19 @@
 
                     @foreach($piso->habitaciones as $habitacion)
 
+                        <?php
+                        $color_h = 'aqua';
+
+                        if ($habitacion->estaocupado) {
+                            $color_h = 'red';
+                        } elseif ($habitacion->estareservado) {
+                            $color_h = 'yellow';
+                        }
+                        ?>
+
                         <div class="col-lg-2 col-xs-4">
                             <!-- small box -->
-                            <div class="small-box bg-aqua">
+                            <div class="small-box bg-{!! $color_h !!}">
                                 <div class="inner">
                                     <h3>{!! $habitacion->nombre !!}</h3>
 

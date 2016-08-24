@@ -69,7 +69,7 @@ Route::resource('cajas', 'CajaController');
 
 Route::resource('flujos', 'FlujoController');
 
-Route::get('caja/flujos/{idCaja}', 'CajaController@flujos');
+Route::get('caja/flujos/{idCaja}', 'CajaController@flujos')->name('flujos');
 
 Route::get('caja/ingreso/{idCaja}', 'CajaController@ingreso');
 Route::post('caja/guarda_ingreso', 'CajaController@guarda_ingreso');

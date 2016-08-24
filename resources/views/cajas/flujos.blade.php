@@ -44,9 +44,14 @@
                                 <td>{!! $flu->salida !!}</td>
                                 <td>
                                     @if($flu->ingreso != 0)
-                                        <a href="javascript:"
-                                           onclick="cargarmodal('{!! route('facturar',[$flu->id]) !!}')"
-                                           class='btn btn-info btn-xs' title="Hacer Factura"><i class="fa fa-file"></i></a>
+                                        @if(empty($flu->factura_id))
+                                            <a href="javascript:"
+                                               onclick="cargarmodal('{!! route('facturar',[$flu->id]) !!}')"
+                                               class='btn btn-info btn-xs' title="Hacer Factura"><i
+                                                        class="fa fa-file"></i></a>
+                                        @else
+
+                                        @endif
                                     @endif
 
                                     <a href="javascript:"

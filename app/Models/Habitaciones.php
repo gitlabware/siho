@@ -109,7 +109,7 @@ class Habitaciones extends Model
         return $this->belongsTo('\App\Models\Registro');
     }*/
     public function rprecios(){
-        return $this->hasMany('\App\Models\Precioshabitaciones');
+        return $this->hasMany('\App\Models\Precioshabitaciones','habitacione_id');
     }
 
     /*public function registros(){
@@ -118,6 +118,23 @@ class Habitaciones extends Model
 
     public function registrosactivos(){
         return $this->hasMany('\App\Models\Registro','habitacione_id')->whereIn('estado', ['Ocupando','Reservado']);
+
+    }
+    public function GetEstaocupadoAttribute(){
+        $estadoo = $this->hasMany('\App\Models\Registro','habitacione_id')->where('estado', 'Ocupando')->first();
+        if(isset($estadoo)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function GetEstareservadoAttribute(){
+        $estadoo = $this->hasMany('\App\Models\Registro','habitacione_id')->where('estado', 'Reservado')->first();
+        if(isset($estadoo)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

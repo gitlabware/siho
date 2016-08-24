@@ -200,7 +200,7 @@ class HabitacionesController extends InfyOmBaseController
         $hotel = Hotel::find($idHotel);
         //dd($idHotel);
         $pisos = Pisos::all()->where('hotel_id',$idHotel);
-
+        //dd($pisos[0]->habitaciones[0]->estaocupado);
         return view('habitaciones.vhabitaciones')->with(compact('pisos','hotel'));
         //dd($pisos[0]->habitaciones[0]->nombre);
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 /**
  * @SWG\Definition(
@@ -140,4 +141,24 @@ class Factura extends Model
     public static $rules = [
         
     ];
+
+    public function getFechaAttribute($value)
+    {
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y');
+        } else {
+            return null;
+        }
+    }
+
+    public function getFechaLimiteAttribute($value)
+    {
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y');
+        } else {
+            return null;
+        }
+    }
 }

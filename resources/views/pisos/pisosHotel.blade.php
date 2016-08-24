@@ -28,6 +28,7 @@
                 <tr>
                     <th>Piso</th>
                     <th>Habitacion</th>
+                    <th>Precios</th>
                     <th>Categoria</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -38,6 +39,7 @@
                 <tr>
                     <th>Piso</th>
                     <th>Habitacion</th>
+                    <th>Precios</th>
                     <th>Categoria</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -51,6 +53,11 @@
                         <td>{!! $h->rpiso->nombre !!}</td>
                         <td>{!! $h->nombre !!}</td>
                         <td>
+                            @foreach($h->rprecios as $precio)
+                                {!! $precio->precio !!} Bs<br>
+                            @endforeach
+                        </td>
+                        <td>
                             @if(isset($h->categoria->nombre))
                                 {!! $h->categoria->nombre !!}
                             @endif
@@ -61,6 +68,8 @@
                                 $color_reg = 'info';
                                 if ($registro->estado == 'Ocupando') {
                                     $color_reg = 'danger';
+                                } elseif ($registro->estado == 'Reservado') {
+                                    $color_reg = 'warning';
                                 }
                                 ?>
                                 @if(!empty($registro->num_reg))

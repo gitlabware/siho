@@ -235,6 +235,9 @@ class FacturaController extends InfyOmBaseController
                         if ($factura->save()) {
                             $idFactura = $factura->id;
 
+                            $flujo->factura_id = $idFactura;
+                            $flujo->save();
+
                             $parametro = Parametro::find($pfactura->id);
                             $parametro->numero_ref = $numero + 1;
                             $parametro->save();
@@ -269,8 +272,8 @@ class FacturaController extends InfyOmBaseController
 
     public function factura($idFactura){
         $factura = Factura::find($idFactura);
-        //dd($factura);
-        $fecha = explode("-", $factura->fecha);
+        //dd($factura->fecha);
+        $fecha = explode("/", $factura->fecha);
         $array['01'] = 'ENERO';
         $array['02'] = 'FEBRERO';
         $array['03'] = 'MARZO';
@@ -283,10 +286,12 @@ class FacturaController extends InfyOmBaseController
         $array['10'] = 'OCTUBRE';
         $array['11'] = 'NOVIEMBRE';
         $array['12'] = 'DICIEMBRE';
-        $fecha = $fecha[2].' DE '.$array[$fecha[1]].' DE '.$fecha[0];
+        $fecha = $fecha[0].' DE '.$array[$fecha[1]].' DE '.$fecha[2];
         //debug($fecha);exit;
         $monto_decimales = explode(".", $factura->importetotal);
         $monto_decimales = $monto_decimales[1].'/100';
+
+        //dd($fecha);
         return view('facturas.factura')->with(compact('factura','fecha','monto_decimales'));
     }
 }

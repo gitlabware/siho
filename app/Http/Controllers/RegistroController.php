@@ -229,6 +229,7 @@ class RegistroController extends InfyOmBaseController
     {
 
         $datos_reg = $request->all();
+        $direccionar = route('registros.index');
         //dd($datos_reg);
         if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
@@ -263,6 +264,8 @@ class RegistroController extends InfyOmBaseController
         //----------- Crea el flujo de pago para el registro ---------
         if (isset($request->pagar) && empty($datos_reg['flujo_id'])) {
 
+
+
             $datos_reg['monto_total'];
 
             $flujo = new Flujo;
@@ -278,6 +281,8 @@ class RegistroController extends InfyOmBaseController
             $this->set_total($request->caja_id, ($total + $datos_reg['monto_total']));
 
             $datos_reg['flujo_id'] = $flujo->id;
+
+            $direccionar = route('flujos',[$request->caja_id]);
         }
         //-------------------------------------------------------
         //----------- Guarda el registro -----------------------
@@ -301,7 +306,7 @@ class RegistroController extends InfyOmBaseController
         }
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
         //return redirect()->back();
-        return redirect(route('registros.index'));
+        return redirect($direccionar);
     }
 
     public function guarda_registros(Request $request, $num_reg = null)
