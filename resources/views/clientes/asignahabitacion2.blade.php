@@ -18,6 +18,7 @@
                     <th></th>
                     <th>Piso</th>
                     <th>Nombre</th>
+                    <th>Precios</th>
                     <th>Categoria</th>
                     <th>Estado</th>
                     <th>Action</th>
@@ -28,6 +29,7 @@
                     <th></th>
                     <th>Piso</th>
                     <th>Nombre</th>
+                    <th>Precios</th>
                     <th>Categoria</th>
                     <th>
                         Estado
@@ -50,6 +52,11 @@
                         </td>
                         <td>{!! $habitacion->rpiso->nombre !!}</td>
                         <td>{!! $habitacion->nombre !!}</td>
+                        <td>
+                            @foreach($habitacion->rprecios as $precio)
+                                {!! $precio->precio !!} Bs<br>
+                            @endforeach
+                        </td>
                         <td>
                             @if(isset($habitacion->categoria->nombre))
                                 {!! $habitacion->categoria->nombre !!}
