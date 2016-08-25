@@ -61,10 +61,10 @@ class Pisos extends Model
      *
      * @var array
      */
-    protected $casts = [
+   /* protected $casts = [
         'nombre' => 'string',
         'estado' => 'string'
-    ];
+    ];*/
 
     /**
      * Validation rules
