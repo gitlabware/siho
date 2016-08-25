@@ -56,17 +56,17 @@ class HabitacionesController extends InfyOmBaseController
     }
 
     public function nuevaHabitacion($idHotel){
-        $habitacion = \App\Models\Habitaciones::find($idHotel);
-        $habitacionPiso = $habitacion->piso_id;
-        $piso = \App\Models\Pisos::find($habitacionPiso);
+        //$habitacion = \App\Models\Habitaciones::find($idHotel);
+        //$habitacionPiso = $habitacion->piso_id;
+        //$piso = \App\Models\Pisos::find($habitacionPiso);
         $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
-        $idHotel = $piso->hotel_id;
+        //$idHotel = $piso->hotel_id;
         $pisosHotel = DB::table('pisos')
             ->where('hotel_id', $idHotel)
             ->select('id', 'nombre')
             ->get();
         return view('habitaciones.create')
-            ->with(compact('pisosHotel','categorias'));
+            ->with(compact('pisosHotel','categorias','idHotel'));
 
     }
 
@@ -138,7 +138,7 @@ class HabitacionesController extends InfyOmBaseController
             return redirect(route('habitaciones.index'));
 
         }
-        return view('habitaciones.edit')->with(compact('habitaciones', 'pisosHotel','categorias'));
+        return view('habitaciones.edit')->with(compact('habitaciones', 'pisosHotel','categorias','idHotel'));
     }
 
     /**

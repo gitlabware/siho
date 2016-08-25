@@ -38,7 +38,7 @@ Route::resource('habitaciones', 'HabitacionesController');
 
 Route::get('muestraHabitaciones/{idHotel}', 'HotelController@muestraHabitaciones');
 //Route::get('muestraPisos/{idHotel}', 'PisosController@muestraPisos');
-Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel');
+Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel')->name('pisosHotel');
 Route::get('piso/{idPiso?}', 'PisosController@piso')->name('piso');
 Route::post('guarda_piso/{idPiso?}', 'PisosController@guarda_piso')->name('guarda_piso');
 Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
