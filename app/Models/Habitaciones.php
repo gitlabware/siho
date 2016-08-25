@@ -80,7 +80,7 @@ class Habitaciones extends Model
      * @var array
      */
     protected $casts = [
-        'piso_id' => 'integer',
+        //'piso_id' => 'integer',
         'nombre' => 'string',
         'estado' => 'string',
         'observaciones' => 'string'
