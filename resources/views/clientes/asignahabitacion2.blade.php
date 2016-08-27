@@ -2,7 +2,11 @@
 
 @section('content')
     {!! Form::open(['route' => ['nuevos',$cliente->id], 'method' => 'post','id' => 'ajaxform']) !!}
-    <h1 class="pull-left">Registro de {!! $cliente->nombre !!}</h1>
+    @if(isset($num_reg))
+        <h1 class="pull-left text-success">Add Registro de {!! $cliente->nombre !!} #{!! $num_reg !!}</h1>
+    @else
+        <h1 class="pull-left">Registro de {!! $cliente->nombre !!}</h1>
+    @endif
 
     <button class="btn btn-primary pull-right" type="button" onclick="envia_form();">Formulario</button>
     <div class="clearfix"></div>
@@ -21,7 +25,6 @@
                     <th>Precios</th>
                     <th>Categoria</th>
                     <th>Estado</th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <thead>
@@ -34,7 +37,6 @@
                     <th>
                         Estado
                     </th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,13 +70,13 @@
                                 $color_reg = 'info';
                                 if ($registro->estado == 'Ocupando') {
                                     $color_reg = 'danger';
-                                }elseif($registro->estado == 'Reservado') {
+                                } elseif ($registro->estado == 'Reservado') {
                                     $color_reg = 'warning';
                                 }
                                 ?>
                                 @if(!empty($registro->num_reg))
                                     <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
+                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg,$num_reg]) !!}')">
                                         {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>
                                 @else
@@ -84,15 +86,6 @@
                                     </a>
                                 @endif
                             @endforeach
-                        </td>
-                        <td>
-                            <div class='btn-group'>
-                                <a href="javascript:"
-                                   onclick="cargarmodal('{!! route('nuevoregistro',[$cliente->id,$habitacion->id]) !!}')"
-                                   class='btn btn-primary btn-xs' title="Formulario"><i
-                                            class="glyphicon glyphicon-edit"></i></a>
-                            </div>
-
                         </td>
                     </tr>
                 @endforeach
@@ -113,7 +106,7 @@
     function envia_form() {
 
         var postData = $("#ajaxform").serializeArray();
-        var formURL = '{!! route('nuevos',[$cliente->id]) !!}';
+        var formURL = '{!! route('nuevos',[$cliente->id,$num_reg]) !!}';
         $.ajax(
                 {
                     url: formURL,

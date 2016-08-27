@@ -30,33 +30,21 @@
                 </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Fecha de Ingreso:</label>
-                    {!! Form::text('fecha_ingreso', $fecha_ingreso, ['class' => 'form-control calendario','placeholder'
-                    => '','required','id' => 'cfechaingreso']) !!}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label>Fecha de salida:</label>
-                    {!! Form::text('fecha_salida', null, ['class' => 'form-control calendario calendario2','placeholder'
-                    => '','id' => 'cfechasalida']) !!}
-                </div>
-            </div>
-        </div>
+
         @foreach($habitaciones as $idHabitacion => $habitacion)
             <?php
-
             $registros = $habitacion['habitacion']->registrosactivos;
 
             $precio = null;
             $monto = null;
+            $fecha_ingreso = date('d/m/Y');
+            $fecha_salida = '';
             if (isset($habitacion['registro'])) {
                 $precio = $habitacion['registro']->precio;
                 $monto = $habitacion['registro']->monto_total;
                 echo Form::hidden("habitaciones[$idHabitacion][registro_id]", $habitacion['registro']->id);
+                $fecha_ingreso = $habitacion['registro']->fecha_ingreso;
+                $fecha_salida = $habitacion['registro']->fecha_salida;
             }
             ?>
             <h4 class="text-center">{!! $habitacion['habitacion']->nombre.' - '.$habitacion['habitacion']->rpiso->nombre !!}</h4>
@@ -73,6 +61,22 @@
                     @endforeach
                 </table>
             @endif
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Fecha de Ingreso:</label>
+                        {!! Form::text("habitaciones[$idHabitacion][fecha_ingreso]", $fecha_ingreso, ['class' => 'form-control calendario','placeholder'
+                        => '','required','id' => 'cfechaingreso-'.$idHabitacion]) !!}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Fecha de salida:</label>
+                        {!! Form::text("habitaciones[$idHabitacion][fecha_salida]", $fecha_salida, ['class' => 'form-control calendario calendario2','placeholder'
+                        => '','id' => 'cfechasalida-'.$idHabitacion]) !!}
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -160,14 +164,14 @@
                 </div>
             </div>
         @elseif(isset($registro->id) && $registro->estado == 'Reservado')
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    {!! Form::checkbox('ocupar',null,null,['class' => 'ch-ocupar']) !!}
-                    Ocupar habitacion
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        {!! Form::checkbox('ocupar',null,null,['class' => 'ch-ocupar']) !!}
+                        Ocupar habitacion
+                    </div>
                 </div>
             </div>
-        </div>
         @elseif(isset($registro->id) && $registro->estado != 'Reservado' || !isset($registro->id))
             <div class="row">
                 <div class="col-md-6">
@@ -191,6 +195,10 @@
 {!! Form::hidden('user_id',Auth::user()->id) !!}
 <div class="modal-footer">
     {!! Form::submit('Guardar', ['class' => 'btn btn-outline pull-left']) !!}
+    @if(isset($registro))
+    <a href="{!! route('asignahabitacion2',[$cliente->id,$registro->num_reg]) !!}" class="btn btn-outline pull-left" >Adicionar</a>
+    @endif
+
     @if(isset($registro->id))
         <button type="button"
                 onclick="if(confirm('Al el eliminar el registro significa eliminar pagos y  ocupacion de habitacion.. Esta seguro de eliminar el registro?')){$('#form-elimina').submit();}"
@@ -234,8 +242,8 @@
         //var sum_total = 0;
         $('.precio').each(function (e, i) {
             idHambiente = $(i).attr('data-id');
-            if ($('#cfechaingreso').val() != '' && $('#cfechasalida').val() != '' && $('#cprecio-' + idHambiente).val() != '') {
-                var dias = daydiff(parseDate($('#cfechaingreso').val()), parseDate($('#cfechasalida').val()));
+            if ($('#cfechaingreso-' + idHambiente).val() != '' && $('#cfechasalida-' + idHambiente).val() != '' && $('#cprecio-' + idHambiente).val() != '') {
+                var dias = daydiff(parseDate($('#cfechaingreso-' + idHambiente).val()), parseDate($('#cfechasalida-' + idHambiente).val()));
                 var precio = parseFloat($('#cprecio-' + idHambiente).val());
                 if (dias > 0) {
                     //sum_total = sum_total + (dias * precio);
