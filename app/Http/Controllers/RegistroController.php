@@ -314,7 +314,12 @@ class RegistroController extends InfyOmBaseController
         $datos_reg = $request->all();
         unset($datos_reg['habitaciones']);
 
-
+        if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
+            $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
+        }
+        if (isset($datos_reg['fecha_salida']) && !empty($datos_reg['fecha_salida'])) {
+            $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_salida'])->toDateTimeString();
+        }
         //----------- Elimina el flujo de pago ---------------------
         if (isset($request->repago) && !empty($datos_reg['flujo_id'])) {
 
@@ -353,7 +358,6 @@ class RegistroController extends InfyOmBaseController
             $total = $this->get_total($request->caja_id);
             $this->set_total($request->caja_id, ($total + $datos_reg['monto_total']));
             $datos_reg['flujo_id'] = $flujo->id;
-
             $direccionar = route('flujos', [$request->caja_id]);
         }
         //-------------------------------------------------------
@@ -365,18 +369,12 @@ class RegistroController extends InfyOmBaseController
 
         if (isset($num_reg)) {
             foreach ($habitaciones as $idHabitacion => $habitacion) {
-                if (isset($habitacion['fecha_ingreso']) && !empty($habitacion['fecha_ingreso'])) {
-                    $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $habitacion['fecha_ingreso'])->toDateTimeString();
-                }
-                if (isset($habitacion['fecha_salida']) && !empty($habitacion['fecha_salida'])) {
-                    $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y', $habitacion['fecha_salida'])->toDateTimeString();
-                }
                 //$datos_reg['habitacione_id'] = $idHabitacion;
                 $datos_reg['precio'] = $habitacion['precio'];
                 $datos_reg['monto_total'] = $habitacion['monto_total'];
-                if(isset($habitacion['registro_id'])){
+                if (isset($habitacion['registro_id'])) {
                     $registro = $this->registroRepository->update($datos_reg, $habitacion['registro_id']);
-                }else{
+                } else {
                     $datos_reg['num_reg'] = $num_reg;
                     $registro = $this->registroRepository->create($datos_reg);
                 }
@@ -387,14 +385,6 @@ class RegistroController extends InfyOmBaseController
             $numero_reg = $this->get_num_reg();
             $datos_reg['num_reg'] = $numero_reg;
             foreach ($habitaciones as $idHabitacion => $habitacion) {
-
-                if (isset($habitacion['fecha_ingreso']) && !empty($habitacion['fecha_ingreso'])) {
-                    $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $habitacion['fecha_ingreso'])->toDateTimeString();
-                }
-                if (isset($habitacion['fecha_salida']) && !empty($habitacion['fecha_salida'])) {
-                    $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y', $habitacion['fecha_salida'])->toDateTimeString();
-                }
-
                 $datos_reg['habitacione_id'] = $idHabitacion;
                 $datos_reg['precio'] = $habitacion['precio'];
                 $datos_reg['monto_total'] = $habitacion['monto_total'];
@@ -498,6 +488,45 @@ class RegistroController extends InfyOmBaseController
         $habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
         $numero_dias = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
         return view('registros.calendario')->with(compact('habitaciones', 'idhotel', 'numero_dias'));
+    }
+
+    public function registros_cliente($idCliente = null)
+    {
+        $idHotel = Auth::user()->hotel_id;
+        $cliente = Clientes::find($idCliente);
+        $registros = Registro::where('cliente_id', $idCliente)->where('flujo_id', 0)->get();
+        $hregistros = Registro::where('cliente_id', $idCliente)->where('flujo_id', '<>', 0)->orderBy('created_at', 'desc')->get();
+        $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
+        return view('registros.registros_cliente')->with(compact('cliente', 'registros', 'hregistros','cajas'));
+    }
+
+    public function registrar_pago(Request $request)
+    {
+        //dd($request->cliente_id);
+        $idCliente = $request->cliente_id;
+        $monto_total = $request->monto_total;
+        $registros = Registro::where('cliente_id', $idCliente)->where('flujo_id', 0)->get();
+
+        $flujo = new Flujo;
+        $flujo->detalle = 'Pago de Registro';
+        $flujo->ingreso = $monto_total;
+        $flujo->observacion = '';
+        $flujo->salida = 0;
+        $flujo->caja_id = $request->caja_id;
+        $flujo->user_id = $request->user_id;
+        $flujo->save();
+        $total = $this->get_total($request->caja_id);
+        $this->set_total($request->caja_id, ($total + $monto_total));
+        $idFlujo = $flujo->id;
+
+        foreach ($registros as $registro) {
+            $registro->flujo_id = $idFlujo;
+            $registro->save();
+        }
+        $direccionar = route('flujos', [$request->caja_id]);
+        Flash::success('El pago de los pendientes se ha registrado correctamente!!');
+        //return redirect()->back();
+        return redirect($direccionar);
     }
 
 

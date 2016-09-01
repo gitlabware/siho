@@ -86,6 +86,9 @@ Route::get('registros_calendario', 'RegistroController@calendario')->name('calen
 Route::post('registros/guarda_registro/{idRegistro?}', 'RegistroController@guarda_registro')->name('guarda_registro');
 //Route::post('registros/nuevos/{idCliente}/{num_reg?}', 'RegistroController@nuevos')->name('nuevos');
 Route::post('registros/guarda_registros/{num_reg?}', 'RegistroController@guarda_registros')->name('guarda_registros');
+Route::get('registros_cliente/{idCliente}', 'RegistroController@registros_cliente')->name('registros_cliente');
+Route::post('registrar_pago', 'RegistroController@registrar_pago')->name('registrar_pago');
+
 
 Route::match(['get', 'post'], 'registros/nuevos/{idCliente}/{num_reg?}', 'RegistroController@nuevos')->name('nuevos');
 

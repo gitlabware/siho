@@ -164,7 +164,7 @@ class ClientesController extends InfyOmBaseController
     public function asignahabitacion(){
         return view('clientes.asignahabitacion');
     }
-    public function asignahabitacion2($idCliente,$num_reg = null){
+    public function asignahabitacion2($idCliente){
 
         /*$habitacion = Habitaciones::find(1);
 
@@ -177,7 +177,7 @@ class ClientesController extends InfyOmBaseController
         $habitaciones = Habitaciones::all()->where('rpiso.hotel_id',$idHotel);
         //dd($habitaciones);
 
-        return view('clientes.asignahabitacion2')->with(compact('habitaciones','cliente','num_reg'));
+        return view('clientes.asignahabitacion2')->with(compact('habitaciones','cliente'));
     }
 
     public function getIndex(){

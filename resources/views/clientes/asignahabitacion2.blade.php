@@ -2,11 +2,7 @@
 
 @section('content')
     {!! Form::open(['route' => ['nuevos',$cliente->id], 'method' => 'post','id' => 'ajaxform']) !!}
-    @if(isset($num_reg))
-        <h1 class="pull-left text-success">Add Registro de {!! $cliente->nombre !!} #{!! $num_reg !!}</h1>
-    @else
-        <h1 class="pull-left">Registro de {!! $cliente->nombre !!}</h1>
-    @endif
+    <h1 class="pull-left">Registro de {!! $cliente->nombre !!}</h1>
 
     <button class="btn btn-primary pull-right" type="button" onclick="envia_form();">Formulario</button>
     <div class="clearfix"></div>
@@ -76,7 +72,7 @@
                                 ?>
                                 @if(!empty($registro->num_reg))
                                     <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg,$num_reg]) !!}')">
+                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
                                         {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>
                                 @else
@@ -101,12 +97,10 @@
 @push('scriptsextras')
 @include('layouts.partials.jsdatatable')
 <script>
-
-
     function envia_form() {
 
         var postData = $("#ajaxform").serializeArray();
-        var formURL = '{!! route('nuevos',[$cliente->id,$num_reg]) !!}';
+        var formURL = '{!! route('nuevos',[$cliente->id]) !!}';
         $.ajax(
                 {
                     url: formURL,

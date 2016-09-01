@@ -33,6 +33,9 @@
         <a href="{!! route('asignahabitacion2', [0]) !!}" title="Registrar habitacion"
            class='btn btn-success btn-xs'><i
                     class="fa fa-list"></i></a>
+        <a href="{!! route('registros_cliente', [0]) !!}" title="Registros de Clientes"
+           class='btn btn-primary btn-xs'><i
+                    class="fa fa-tags"></i></a>
         {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
     </div>
     {!! Form::close() !!}
@@ -70,6 +73,9 @@
 
                 var href2 = $('td:eq(7) form a:eq(1)', nRow).attr('href').substring(0, ($('td:eq(7) form a:eq(1)', nRow).attr('href').length - 1)) + aData['id'];
                 $('td:eq(7) form a:eq(1)', nRow).attr('href', href2);
+
+                var href3 = $('td:eq(7) form a:eq(2)', nRow).attr('href').substring(0, ($('td:eq(7) form a:eq(2)', nRow).attr('href').length - 1)) + aData['id'];
+                $('td:eq(7) form a:eq(2)', nRow).attr('href', href3);
 
             },
             "language": {

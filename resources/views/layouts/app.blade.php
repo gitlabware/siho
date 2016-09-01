@@ -27,7 +27,7 @@ desired effect
 |               | layout-top-nav                          |
 |               | sidebar-collapse                        |
 |               | sidebar-mini                            |
-|---------------------------------------------------------|
+|------------------------------fac---------------------------|
 -->
 <body class="skin-blue sidebar-mini">
 <div class="wrapper">

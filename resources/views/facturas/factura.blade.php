@@ -2,7 +2,7 @@
 
 @section('content')
     <h1 class="pull-left"></h1>
-    <a class="btn bg-navy btn-flat margin pull-right"  onclick="printDiv('printableArea')" style="margin-top: 25px" href="javascript:"> <i class="fa fa-print"></i> IMPRIMIR REPORTE</a>
+    <a class="btn bg-navy btn-flat margin pull-right"  onclick="printDiv('printableArea')" style="margin-top: 25px" href="javascript:"> <i class="fa fa-print"></i> IMPRIMIR FACTURA</a>
 
     <div class="clearfix"></div>
 
