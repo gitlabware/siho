@@ -132,7 +132,8 @@
 
     });
     function recargatabla(){
-        table.ajax.reload();
+        //table.ajax.reload();
+        table.ajax.reload( null, false );
     };
 
 </script>
