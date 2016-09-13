@@ -28,9 +28,16 @@
 @section('scripts')
     @parent
     <script>
-        function cargarmodal(urll,color = 'primary')
+        function cargarmodal(urll,color,largo)
         {
+            if (color === undefined) {
+                color = 'primary';
+            }
+            if (largo === undefined) {
+                largo = 'md';
+            }
             $('#mimodal').attr('class', 'modal modal-'+color);
+            $('#mimodal div.modal-dialog').addClass('modal-'+largo);
             $('#divmodal').hide();
             jQuery("#spin-cargando-mod").show(200);
             jQuery('#mimodal').modal('show', {backdrop: 'static'});

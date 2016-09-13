@@ -118,3 +118,7 @@ Route::get('factura/{idFactura}', 'FacturaController@factura')->name('factura');
 //Route::get('reporte_pagos', 'ReporteController@reporte_pagos')->name('reporte_pagos');
 
 Route::match(['get', 'post'], 'reporte_pagos', 'ReporteController@reporte_pagos')->name('reporte_pagos');
+
+Route::get('cliente/{idCliente?}', 'ClientesController@cliente')->name('cliente');
+Route::post('guarda_cliente/{idCliente?}', 'ClientesController@guarda_cliente')->name('guarda_cliente');
+Route::get('elimina_adjunto/{idAdjunto}', 'ClientesController@elimina_adjunto')->name('elimina_adjunto');
