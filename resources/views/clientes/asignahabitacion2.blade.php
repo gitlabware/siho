@@ -4,7 +4,6 @@
     {!! Form::open(['route' => ['nuevos',$cliente->id], 'method' => 'post','id' => 'ajaxform']) !!}
     <h1 class="pull-left">Registro de {!! $cliente->nombre !!}</h1>
 
-    <button class="btn btn-primary pull-right" type="button" onclick="envia_form();">Formulario</button>
     <div class="clearfix"></div>
 
     @include('flash::message')
@@ -15,17 +14,16 @@
             <table class="table table-responsive table-bordered" id="tabla">
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Piso</th>
                     <th>Nombre</th>
                     <th>Precios</th>
                     <th>Categoria</th>
                     <th>Estado</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Piso</th>
                     <th>Nombre</th>
                     <th>Precios</th>
@@ -33,6 +31,7 @@
                     <th>
                         Estado
                     </th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -45,9 +44,6 @@
 
                     ?>
                     <tr>
-                        <td>
-                            {!! $regis_checkbox !!}
-                        </td>
                         <td>{!! $habitacion->rpiso->nombre !!}</td>
                         <td>{!! $habitacion->nombre !!}</td>
                         <td>
@@ -83,6 +79,10 @@
                                 @endif
                             @endforeach
                         </td>
+                        <td>
+                            <a title="Registrar habitacion" href="{!! route('nuevoregistro',['Cliente',$cliente->id,$habitacion->id]) !!}"  class='btn btn-primary btn-xs'><i
+                                        class="fa fa-pencil"></i></a>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -97,40 +97,6 @@
 @push('scriptsextras')
 @include('layouts.partials.jsdatatable')
 <script>
-    function envia_form() {
 
-        var postData = $("#ajaxform").serializeArray();
-        var formURL = '{!! route('nuevos',[$cliente->id]) !!}';
-        $.ajax(
-                {
-                    url: formURL,
-                    type: "POST",
-                    data: postData,
-                    /*beforeSend:function (XMLHttpRequest) {
-                     alert("antes de enviar");
-                     },*/
-                    complete: function (XMLHttpRequest, textStatus) {
-                        setTimeout(function () {
-                            jQuery("#spin-cargando-mod").hide();
-                            $('#divmodal').show();
-                        }, 1500);
-                    },
-                    success: function (data, textStatus, jqXHR) {
-                        //data: return data from server
-                        //$("#parte").html(data);
-
-                        $('#mimodal').attr('class', 'modal modal-primary');
-                        $('#divmodal').hide();
-                        jQuery("#spin-cargando-mod").show(200);
-                        jQuery('#mimodal').modal('show', {backdrop: 'static'});
-                        $("#divmodal").html(data);
-
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        //if fails
-                        alert("error");
-                    }
-                });
-    }
 </script>
 @endpush

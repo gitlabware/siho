@@ -112,7 +112,9 @@ class Clientes extends Model
         'referencia',
         'estado',
         'direccion',
-        'observaciones'
+        'observaciones',
+        'deleted_at',
+        'ruser_id'
     ];
 
     /**

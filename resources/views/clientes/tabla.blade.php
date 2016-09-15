@@ -1,20 +1,14 @@
 <table class="table table-bordered table-striped" id="clientes-table">
     <thead>
     <th>Nombre</th>
-    <th>Nacionalidad</th>
     <th>Pasaporte</th>
     <th>Ci</th>
-    <th>Celular</th>
-    <th>Observaciones</th>
     <th></th>
     </thead>
     <thead>
     <th>Nombre</th>
-    <th>Nacionalidad</th>
     <th>Pasaporte</th>
     <th>Ci</th>
-    <th>Celular</th>
-    <th>Observaciones</th>
     <th>Action</th>
     </thead>
     <tbody>
@@ -28,19 +22,22 @@
 
         <a href="javascript:" onclick="editar(0)" class='btn btn-default btn-xs'><i
                     class="glyphicon glyphicon-edit"></i></a>
-        <a href="{!! route('asignahabitacion2', [0]) !!}" title="Registrar habitacion"
-           class='btn btn-success btn-xs'><i
-                    class="fa fa-list"></i></a>
-        <a href="{!! route('registros_cliente', [0]) !!}" title="Registros de Clientes"
-           class='btn btn-primary btn-xs'><i
-                    class="fa fa-tags"></i></a>
-        {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+
+        <a href="javascript:" onclick="addhuesped(0)" class='btn btn-primary btn-xs'><i
+                    class="fa fa-mail-reply-all"></i></a>
+
     </div>
     {!! Form::close() !!}
 </div>
 <style>
     .observado{
         background-color: rgb(252, 209, 130);
+    }
+    #clientes-table_filter{
+        display: none;
+    }
+    #clientes-table_length{
+        display: none;
     }
 </style>
 
@@ -60,26 +57,24 @@
             ajax: '{!! route('datatables.data') !!}',
             columns: [
                 {data: 'nombre', name: 'nombre'},
-                {data: 'nacionalidad', name: 'nacionalidad'},
                 {data: 'pasaporte', name: 'pasaporte'},
                 {data: 'ci', name: 'ci'},
-                {data: 'celular', name: 'celular'},
-                {data: 'observaciones', name: 'observaciones'},
                 {data: 'id', name: 'id'}
             ],
             fnCreatedRow: function (nRow, aData, iDataIndex) {
+                //console.log(aData);
                 var acciones = $('#td-acciones').html();
-                $('td:eq(6)', nRow).html(acciones);
+                $('td:eq(3)', nRow).html(acciones);
                 if(aData['observaciones'] != ''){
                     $('td', nRow).addClass('observado');
                 }
-                var acc_form = $('td:eq(6) form', nRow).attr('action').substring(1, ($('td:eq(6) form', nRow).attr('action').length - 1)) + aData['id'];
-                $('td:eq(6) form', nRow).attr('action', acc_form);
-                $('td:eq(6) form a:eq(0)', nRow).attr('onclick', 'editar('+aData['id']+')');
-                var href2 = $('td:eq(6) form a:eq(1)', nRow).attr('href').substring(0, ($('td:eq(6) form a:eq(1)', nRow).attr('href').length - 1)) + aData['id'];
-                $('td:eq(6) form a:eq(1)', nRow).attr('href', href2);
-                var href3 = $('td:eq(6) form a:eq(2)', nRow).attr('href').substring(0, ($('td:eq(6) form a:eq(2)', nRow).attr('href').length - 1)) + aData['id'];
-                $('td:eq(6) form a:eq(2)', nRow).attr('href', href3);
+                var acc_form = $('td:eq(3) form', nRow).attr('action').substring(1, ($('td:eq(3) form', nRow).attr('action').length - 1)) + aData['id'];
+                $('td:eq(3) form', nRow).attr('action', acc_form);
+                $('td:eq(3) form a:eq(0)', nRow).attr('onclick', 'editar('+aData['id']+')');
+                var acc_form2 = $('td:eq(3) form', nRow).attr('action').substring(1, ($('td:eq(3) form', nRow).attr('action').length - 1)) + aData['id'];
+                $('td:eq(3) form', nRow).attr('action', acc_form2);
+                $('td:eq(3) form a:eq(1)', nRow).attr('onclick', 'addhuesped('+aData+')');
+
             },
             "language": {
                 "sProcessing":     "Procesando...",
