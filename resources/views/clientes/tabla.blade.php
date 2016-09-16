@@ -16,19 +16,6 @@
     </tbody>
 </table>
 
-<div id="td-acciones" style="display: none">
-    {!! Form::open(['route' => ['clientes.destroy', 0], 'method' => 'delete']) !!}
-    <div class='btn-group'>
-
-        <a href="javascript:" onclick="editar(0)" class='btn btn-default btn-xs'><i
-                    class="glyphicon glyphicon-edit"></i></a>
-
-        <a href="javascript:" onclick="addhuesped(0)" class='btn btn-primary btn-xs'><i
-                    class="fa fa-mail-reply-all"></i></a>
-
-    </div>
-    {!! Form::close() !!}
-</div>
 <style>
     .observado{
         background-color: rgb(252, 209, 130);
@@ -54,6 +41,7 @@
             processing: true,
             serverSide: true,
             'order': [],
+            "bSort": false,
             ajax: '{!! route('datatables.data') !!}',
             columns: [
                 {data: 'nombre', name: 'nombre'},
@@ -63,17 +51,14 @@
             ],
             fnCreatedRow: function (nRow, aData, iDataIndex) {
                 //console.log(aData);
-                var acciones = $('#td-acciones').html();
+
+                var ac_editar = '<a href="javascript:" onclick="editar('+aData['id']+')" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-edit"></i></a>';
+                var ac_add_cli = '<a href="javascript:" onclick="addcli(this);" data-nombre="'+aData['nombre']+'" data-pasaporte="'+aData['pasaporte']+'" data-ci="'+aData['ci']+'" data-id="'+aData['id']+'" class="btn btn-primary btn-xs add-cli"><i class="fa fa-mail-reply-all"></i></a>';
+                var acciones = ac_editar+' '+ac_add_cli;
                 $('td:eq(3)', nRow).html(acciones);
                 if(aData['observaciones'] != ''){
                     $('td', nRow).addClass('observado');
                 }
-                var acc_form = $('td:eq(3) form', nRow).attr('action').substring(1, ($('td:eq(3) form', nRow).attr('action').length - 1)) + aData['id'];
-                $('td:eq(3) form', nRow).attr('action', acc_form);
-                $('td:eq(3) form a:eq(0)', nRow).attr('onclick', 'editar('+aData['id']+')');
-                var acc_form2 = $('td:eq(3) form', nRow).attr('action').substring(1, ($('td:eq(3) form', nRow).attr('action').length - 1)) + aData['id'];
-                $('td:eq(3) form', nRow).attr('action', acc_form2);
-                $('td:eq(3) form a:eq(1)', nRow).attr('onclick', 'addhuesped('+aData+')');
 
             },
             "language": {

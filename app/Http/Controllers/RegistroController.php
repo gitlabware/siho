@@ -202,7 +202,7 @@ class RegistroController extends InfyOmBaseController
         //return redirect(route('registros.index'));
     }
 
-    public function nuevo($idCliente = null, $idHabitacion = null, $idRegistro = null)
+    public function nuevo($tipo,$idCliente = null, $idHabitacion = null, $idRegistro = null)
     {
         //dd($idRegistro);
         //return view('registros.create');
@@ -216,7 +216,11 @@ class RegistroController extends InfyOmBaseController
 
         $precios = Precioshabitaciones::where('habitacione_id', $idHabitacion)->get()->lists('precio', 'precio')->all();
         //dd($precios);
-        $cliente = Clientes::find($idCliente);
+        $cliente = array();
+        if($tipo == 'Cliente' && empty($idRegistro)){
+            $cliente = Clientes::find($idCliente);
+        }
+
         $habitacion = Habitaciones::find($idHabitacion);
         $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         //dd($cajas);
@@ -229,63 +233,17 @@ class RegistroController extends InfyOmBaseController
 
         $datos_reg = $request->all();
         $direccionar = route('registros.index');
-        //dd($datos_reg);
+        dd($datos_reg);
         if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
         }
         if (isset($datos_reg['fecha_salida']) && !empty($datos_reg['fecha_salida'])) {
             $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_salida'])->toDateTimeString();
         }
-        //----------- Elimina el flujo de pago ---------------------
-        if (isset($request->repago) && !empty($datos_reg['flujo_id'])) {
 
-            $flujo = Flujo::find($datos_reg['flujo_id']);
-            $total = $this->get_total($flujo->caja_id);
-
-            if ($flujo->ingreso != 0) {
-                if ($total >= $flujo->ingreso) {
-                    $this->set_total($flujo->caja_id, ($total - $flujo->ingreso));
-                } else {
-                    //dd($request->all());
-                    Flash::error('No se ha guardado porque no se ha podido eliminar el pago por que el total es solo ' . $total);
-                    return redirect()->back();
-                }
-            } else {
-                $this->set_total($flujo->caja_id, ($total + $flujo->salida));
-            }
-            $flujo->deleted_at = date('Y-m-d H:m:i');
-            $flujo->observacion = 'Eliminado desde Registro';
-            $flujo->save();
-
-            $datos_reg['flujo_id'] = null;
-        }
-        //--------------------------------------------------------
-        //----------- Crea el flujo de pago para el registro ---------
-        if (isset($request->pagar) && empty($datos_reg['flujo_id'])) {
-
-
-            $datos_reg['monto_total'];
-
-            $flujo = new Flujo;
-            $flujo->detalle = 'Pago de Registro';
-            $flujo->ingreso = $datos_reg['monto_total'];
-            $flujo->observacion = '';
-            $flujo->salida = 0;
-            $flujo->caja_id = $request->caja_id;
-            $flujo->user_id = $request->user_id;
-            $flujo->save();
-
-            $total = $this->get_total($request->caja_id);
-            $this->set_total($request->caja_id, ($total + $datos_reg['monto_total']));
-
-            $datos_reg['flujo_id'] = $flujo->id;
-
-            $direccionar = route('flujos', [$request->caja_id]);
-        }
-        //-------------------------------------------------------
         //----------- Guarda el registro -----------------------
-        if (isset($request->ocupar)) {
-            $datos_reg['estado'] = 'Ocupando';
+        if($request->estado == 'Ocupando'){
+            $datos_reg['fech_ini_reserva'] = date('Y-m-d H:i:s');
         }
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
@@ -293,8 +251,8 @@ class RegistroController extends InfyOmBaseController
         } else {
             //$datos_reg['estado'] = 'Ocupando';
             $registro = $this->registroRepository->create($datos_reg);
-
         }
+
         //---------------------------------------------------------
         //Desocupa la habitacion liberando del registro
         if (isset($request->ocupado) && isset($idRegistro)) {

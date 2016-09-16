@@ -57,6 +57,7 @@
             processing: true,
             serverSide: true,
             'order': [],
+            "bSort": false,
             ajax: '{!! route('datatables.data') !!}',
             columns: [
                 {data: 'nombre', name: 'nombre'},
