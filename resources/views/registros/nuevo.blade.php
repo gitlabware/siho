@@ -7,6 +7,10 @@
         <div class="col-sm-12">
             <h1 class="pull-left">Registro de
                 Habitacion {!! $habitacion->nombre.' - ',$habitacion->rpiso->nombre !!}</h1>
+            @if(isset($registro->grupo_id))
+                <a class="btn btn-primary pull-right" style="margin-top: 25px"
+                   href="{!! route('registrosgrupos',[$registro->grupo_id]) !!}">Ir a Grupo</a>
+            @endif
         </div>
     </div>
 
@@ -21,6 +25,7 @@
                     {!! Form::open(['route' => ['guarda_registro']]) !!}
                 @endif
                 <div class="box-body">
+                    @if(isset($registro) && $registro->estado != 'Ocupando' || !isset($registro))
                     <div class="form-group col-sm-6">
                         {!! Form::radio('estado','Ocupando',null,['class' => 'ch-ocupar']) !!}
                         Ocupar habitacion
@@ -29,6 +34,7 @@
                         {!! Form::radio('estado','Reservado',null,['class' => 'ch-reservar']) !!}
                         Reservar habitacion
                     </div>
+                    @endif
                     <div class="form-group col-sm-6">
                         <label>Fecha inicial Reserva</label>
                         {!! Form::text('fech_ini_reserva', null, ['class' => 'form-control fechas']) !!}
@@ -39,35 +45,44 @@
                         <label>Fecha Final Reserva</label>
                         {!! Form::text('fech_fin_reserva', null, ['class' => 'form-control fechas']) !!}
                     </div>
-                    <div id="nuevo-grupo">
-                        <div class="form-group col-sm-10">
-                            <label>Nombre del Grupo</label>
-                            {!! Form::text('nuevogrupo', null, ['class' => 'form-control','placeholder' => 'Ingrese el nombre del nuevo grupo']) !!}
+                    @if(!isset($registro) && !empty($cliente))
+                        <div id="nuevo-grupo">
+                            <div class="form-group col-sm-10">
+                                <label>Nombre del Grupo</label>
+                                {!! Form::text('nuevogrupo', $cliente->nombre, ['class' => 'form-control','placeholder' => 'Ingrese el nombre del nuevo grupo']) !!}
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <label>&nbsp;</label>
+                                <a href="javascript:"
+                                   onclick="m_selec_grupo();"
+                                   class="btn btn-block btn-info" title="Seleccionar un grupo"><i
+                                            class="fa fa-exchange"></i></a>
+                            </div>
                         </div>
-                        <div class="form-group col-sm-2">
-                            <label>&nbsp;</label>
-                            <a href="javascript:"
-                               onclick="m_selec_grupo();"
-                               class="btn btn-block btn-info" title="Seleccionar un grupo"><i
-                                        class="fa fa-exchange"></i></a>
+                        <div id="seleccion-grupo" style="display: none;">
+                            <div class="form-group col-sm-10">
+                                <label>Seleccione el Grupo</label>
+                                {!! Form::select('grupo_id', $grupos,null, ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="form-group col-sm-2">
+                                <label>&nbsp;</label>
+                                <a href="javascript:"
+                                   onclick="m_nuev_grupo();"
+                                   class="btn btn-block btn-success" title="Nuevo Grupo"><i class="fa fa-exchange"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="seleccion-grupo" style="display: none;">
-                        <div class="form-group col-sm-10">
-                            <label>Seleccione el Grupo</label>
-                            {!! Form::select('grupo_id', [],null, ['class' => 'form-control']) !!}
+                    @else
+                        <div>
+                            <div class="form-group col-sm-12">
+                                <label>Seleccione el Grupo</label>
+                                {!! Form::select('grupo_id', $grupos,null, ['class' => 'form-control']) !!}
+                            </div>
                         </div>
-                        <div class="form-group col-sm-2">
-                            <label>&nbsp;</label>
-                            <a href="javascript:"
-                               onclick="m_nuev_grupo();"
-                               class="btn btn-block btn-success" title="Nuevo Grupo"><i class="fa fa-exchange"></i></a>
-                        </div>
-                    </div>
+                    @endif
 
                     <div class="form-group col-sm-6">
                         <label>Equipaje</label>
-                        {!! Form::select('quepaje', ['Sin equipaje' => 'Sin equipaje','Poco equipaje' => 'Poco equipaje','Con equipaje' => 'Con equipaje'],null, ['class' => 'form-control','required']) !!}
+                        {!! Form::select('equipaje', [null => '','Sin equipaje' => 'Sin equipaje','Poco equipaje' => 'Poco equipaje','Con equipaje' => 'Con equipaje'],null, ['class' => 'form-control','required']) !!}
                     </div>
                     <div class="form-group col-sm-6">
                         <label>Seleccione el precio</label>
@@ -85,6 +100,25 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @if(!empty($hospedantes))
+                                @foreach($hospedantes as $hospedante)
+                                    <tr class="success">
+                                        <td>{!! $hospedante->cliente->nombre !!}</td>
+                                        <td>{!! $hospedante->cliente->pasaporte !!}</td>
+                                        <td>{!! $hospedante->cliente->ci !!}</td>
+                                        <td>
+                                            <a href="javascript:" title="Eliminar Hospedante del registro"
+                                               onclick="if(confirm('Esta seguro de quitar el huesped del registro??')){window.location.href = '{!! route('quitarhuesped',[$hospedante->id]) !!}';}"
+                                               class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+                                            @if($hospedante->estado == 'Ocupando')
+                                                <a href="javascript:" title="Marcar salida de huesped"
+                                                   onclick="if(confirm('Esta seguro de Marcar salida del huesped??')){window.location.href = '{!! route('msalidahuesped',[$hospedante->id]) !!}';}"
+                                                   class="btn btn-info btn-xs"><i class="fa fa-sign-out"></i></a>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             @if(!empty($cliente))
                                 <tr id="huesped-{!! $cliente->id !!}">
                                     <td>{!! $cliente->nombre !!}</td>
@@ -93,6 +127,8 @@
                                     <td>
                                         <a href="javascript:" onclick="quitarhues({!! $cliente->id !!})"
                                            class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>
+                                        <input type="hidden" name="huespedes[{!! $cliente->id !!}][cliente_id]"
+                                               value="{!! $cliente->id !!}" class="form-control">
                                     </td>
                                 </tr>
                                 {!! Form::hidden('cliente_id',$cliente->id) !!}
@@ -109,6 +145,7 @@
                 </div>
 
                 {!! Form::hidden('user_id',Auth::user()->id) !!}
+                {!! Form::hidden('habitacione_id',$habitacion->id) !!}
                 {!! Form::close() !!}
             </div>
         </div>
@@ -165,11 +202,11 @@
      }*/
 </script>
 <script>
-
+    @if(!isset($registro) && !empty($cliente))
     function m_selec_grupo() {
         $('#nuevo-grupo').hide(400);
         $('#seleccion-grupo').show(400);
-        $('#nuevo-grupo input').attr('required', false);
+        $('#nuevo-grupo input').attr('required', false).val('');
         $('#seleccion-grupo select').attr('required', true);
     }
     function m_nuev_grupo() {
@@ -179,5 +216,6 @@
         $('#seleccion-grupo select').attr('required', false);
     }
     m_nuev_grupo();
+    @endif
 </script>
 @endpush

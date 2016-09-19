@@ -40,14 +40,9 @@
                     <td>
                         {!! Form::open(['route' => ['registros.destroy', $registro->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
-                            @if($registro->estado != 'Desocupado' && !empty($registro->num_reg))
-                                <a class="btn btn-info btn-xs" href="javascript:"
-                                   onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
-                                    <i class="glyphicon glyphicon-edit"></i>
-                                </a>
-                            @elseif($registro->estado != 'Desocupado')
-                                <a class="btn btn-default btn-xs" href="javascript:"
-                                   onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
+
+                            @if($registro->estado != 'Desocupado')
+                                <a class="btn btn-default btn-xs" href="{!! route('nuevoregistro',['Cliente',$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </a>
                             @endif

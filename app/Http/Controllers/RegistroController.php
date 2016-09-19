@@ -21,6 +21,9 @@ use App\Models\Habitaciones;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Registro;
 use Illuminate\Support\Facades\DB;
+use App\Hospedante;
+use App\Pago;
+use App\Grupo;
 
 class RegistroController extends InfyOmBaseController
 {
@@ -202,38 +205,58 @@ class RegistroController extends InfyOmBaseController
         //return redirect(route('registros.index'));
     }
 
-    public function nuevo($tipo,$idCliente = null, $idHabitacion = null, $idRegistro = null)
+    public function nuevo($tipo, $idCliente = null, $idHabitacion = null, $idRegistro = null)
     {
         //dd($idRegistro);
         //return view('registros.create');
         $idHotel = Auth::user()->hotel_id;
-
+        $hospedantes = array();
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
             $idCliente = $registro->cliente_id;
+            $hospedantes = Hospedante::WhereIn('estado',['Reservado','Ocupando'])->where('registro_id',$idRegistro)->get();
         }
+
         $registros = Habitaciones::find($idHabitacion)->registrosactivos;
 
         $precios = Precioshabitaciones::where('habitacione_id', $idHabitacion)->get()->lists('precio', 'precio')->all();
         //dd($precios);
         $cliente = array();
-        if($tipo == 'Cliente' && empty($idRegistro)){
+        if ($tipo == 'Cliente' && empty($idRegistro)) {
             $cliente = Clientes::find($idCliente);
         }
 
         $habitacion = Habitaciones::find($idHabitacion);
-        $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
+        //$cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         //dd($cajas);
         //dd($registro);
-        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'cajas', 'registros'));
+        $grupos = Registro::whereIn('estado',['Ocupando','Reservado'])->get()->lists('grupo.nombre', 'grupo.id')->all();
+
+
+        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros','grupos','hospedantes'));
+    }
+
+    public function quitarhuesped($idHuesped){
+        Hospedante::destroy($idHuesped);
+        Flash::success('Se ha eliminado al huesped del registro correctamente!!');
+        return redirect()->back();
+        //return redirect(route('registros.index'));
+    }
+    public function msalidahuesped($idHuesped){
+        $hospedante = Hospedante::find($idHuesped);
+        $hospedante->estado = 'Desocupado';
+        $hospedante->fecha_salida = date('Y-m-d H:i:s');
+        $hospedante->save();
+        Flash::success('Se ha marcado la salida del huesped correctamente!!');
+        return redirect()->back();
+        //return redirect(route('registros.index'));
     }
 
     public function guarda_registro(Request $request, $idRegistro = null)
     {
-
+        //dd($request->all());
         $datos_reg = $request->all();
-        $direccionar = route('registros.index');
-        dd($datos_reg);
+
         if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
         }
@@ -241,32 +264,63 @@ class RegistroController extends InfyOmBaseController
             $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_salida'])->toDateTimeString();
         }
 
+        //-------------- Registrar al grupo-------------------
+        if (isset($request->nuevogrupo) && !empty($request->nuevogrupo)) {
+            $grupo = new Grupo;
+            $grupo->nombre = $request->nuevogrupo;
+            $grupo->hotel_id = Auth::user()->hotel_id;
+            $grupo->save();
+
+            $idGrupo = $grupo->id;
+            $datos_reg['grupo_id'] = $idGrupo;
+        }
+        //---------------------------------------------------
+
         //----------- Guarda el registro -----------------------
-        if($request->estado == 'Ocupando'){
-            $datos_reg['fech_ini_reserva'] = date('Y-m-d H:i:s');
+        if (isset($request->estado) && $request->estado == 'Ocupando') {
+            $datos_reg['fecha_ingreso'] = date('Y-m-d H:i:s');
         }
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
             $registro = $this->registroRepository->update($datos_reg, $idRegistro);
         } else {
-            //$datos_reg['estado'] = 'Ocupando';
             $registro = $this->registroRepository->create($datos_reg);
+            $idRegistro = $registro->id;
         }
-
         //---------------------------------------------------------
-        //Desocupa la habitacion liberando del registro
-        if (isset($request->ocupado) && isset($idRegistro)) {
-            $registro = $this->registroRepository->findWithoutFail($idRegistro);
-            $datos_reg['estado'] = 'Desocupado';
-            $registro = $this->registroRepository->update($datos_reg, $idRegistro);
+        //------------- Registra el primer pago -------------------
+        $fecha_hu_in = null;
+        if (isset($request->estado) && $request->estado == 'Ocupando') {
+            $pago = new Pago;
+            $pago->registro_id = $idRegistro;
+            $pago->precio = $request->precio;
+            $pago->monto_total = $request->precio;
+            $pago->fecha = $datos_reg['fecha_ingreso'];
+            $pago->estado = 'Deuda';
+            $pago->save();
+            $fecha_hu_in = $datos_reg['fecha_ingreso'];
         }
+        //---------------------------------------------------
+        // ------------ Registra Huespedes ----------------
+        if (isset($request->huespedes) && isset($request->estado)) {
+            foreach ($request->huespedes as $huesped) {
+                $hospedante = new Hospedante;
+                $hospedante->cliente_id = $huesped['cliente_id'];
+                $hospedante->registro_id = $idRegistro;
+                $hospedante->estado = $request->estado;
+                $hospedante->fecha_ingreso = $fecha_hu_in;
+                $hospedante->save();
+            }
+        }
+        //--------------------------------------------
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
         //return redirect()->back();
-        return redirect($direccionar);
+        return redirect(route('registrosgrupos',[$datos_reg['grupo_id']]));
     }
 
     public function guarda_registros(Request $request, $num_reg = null)
     {
+
         $direccionar = route('registros.index');
         $habitaciones = $request->habitaciones;
         $datos_reg = $request->all();
@@ -455,7 +509,7 @@ class RegistroController extends InfyOmBaseController
         $registros = Registro::where('cliente_id', $idCliente)->where('flujo_id', 0)->get();
         $hregistros = Registro::where('cliente_id', $idCliente)->where('flujo_id', '<>', 0)->orderBy('created_at', 'desc')->get();
         $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
-        return view('registros.registros_cliente')->with(compact('cliente', 'registros', 'hregistros','cajas'));
+        return view('registros.registros_cliente')->with(compact('cliente', 'registros', 'hregistros', 'cajas'));
     }
 
     public function registrar_pago(Request $request)

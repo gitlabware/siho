@@ -81,7 +81,7 @@ Route::post('caja/eliminar_flujo/{idFlujo}', 'CajaController@eliminar_flujo');
 Route::get('caja/eliminaflujo/{idFlujo}', 'CajaController@eliminaflujo')->name('eliminaflujo');
 
 Route::resource('registros', 'RegistroController');
-Route::get('registros/nuevo/tipo/{idCliGru}/{idHabitacion}/{idRegistro?}', 'RegistroController@nuevo')->name('nuevoregistro');
+Route::get('registros/nuevo/{tipo}/{idCliGru}/{idHabitacion}/{idRegistro?}', 'RegistroController@nuevo')->name('nuevoregistro');
 Route::get('registros_calendario', 'RegistroController@calendario')->name('calendario');
 Route::post('registros/guarda_registro/{idRegistro?}', 'RegistroController@guarda_registro')->name('guarda_registro');
 //Route::post('registros/nuevos/{idCliente}/{num_reg?}', 'RegistroController@nuevos')->name('nuevos');
@@ -120,3 +120,13 @@ Route::match(['get', 'post'], 'reporte_pagos', 'ReporteController@reporte_pagos'
 Route::get('cliente/{idCliente?}', 'ClientesController@cliente')->name('cliente');
 Route::post('guarda_cliente/{idCliente?}', 'ClientesController@guarda_cliente')->name('guarda_cliente');
 Route::get('elimina_adjunto/{idAdjunto}', 'ClientesController@elimina_adjunto')->name('elimina_adjunto');
+
+Route::get('quitarhuesped/{idHospedante}', 'RegistroController@quitarhuesped')->name('quitarhuesped');
+
+Route::get('msalidahuesped/{idHospedante}', 'RegistroController@msalidahuesped')->name('msalidahuesped');
+
+Route::get('grupos', 'GrupoController@index')->name('grupos');
+Route::get('registrosgrupos/{idGrupo}', 'GrupoController@registrosgrupos')->name('registrosgrupos');
+Route::get('grupo/{idGrupo?}', 'GrupoController@grupo')->name('grupo');
+Route::get('eliminargrupo/{idGrupo}', 'GrupoController@eliminargrupo')->name('eliminargrupo');
+Route::post('registrapagosg', 'GrupoController@registrapagosg')->name('registrapagosg');

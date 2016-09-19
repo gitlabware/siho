@@ -88,10 +88,11 @@ class Registro extends Model
         'fecha_salida',
         'observacion',
         'precio',
-        'monto_total',
         'user_id',
-        'flujo_id',
-        'num_reg'
+        'grupo_id',
+        'equipaje',
+        'fech_ini_reserva',
+        'fech_fin_reserva'
     ];
 
     /**
@@ -124,15 +125,41 @@ class Registro extends Model
 
     public function getFechaIngresoAttribute($value)
     {
-        $fecha = Carbon::parse($value);
-        return $fecha->format('d/m/Y');
+        //dd($this->habitacione_id);
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y H:m:i');
+        } else {
+            return null;
+        }
     }
 
     public function getFechaSalidaAttribute($value)
     {
         if (!empty($value) && "0000-00-00 00:00:00" != $value) {
             $fecha = Carbon::parse($value);
-            return $fecha->format('d/m/Y');
+            return $fecha->format('d/m/Y H:m:i');
+        } else {
+            return null;
+        }
+    }
+
+    public function getFechIniReserva2Attribute()
+    {
+        $value = $this->fech_ini_reserva;
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y H:m:i');
+        } else {
+            return null;
+        }
+    }
+    public function getFechFinReserva2Attribute()
+    {
+        $value = $this->fech_fin_reserva;
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y H:m:i');
         } else {
             return null;
         }
@@ -140,8 +167,13 @@ class Registro extends Model
     public function habitacione(){
         return $this->belongsTo('\App\Models\Habitaciones');
     }
-    public function flujo(){
-        return $this->belongsTo('\App\Models\Flujo');
+    public function grupo(){
+        return $this->belongsTo('\App\Grupo','grupo_id');
+    }
+
+    public function hospedantes(){
+        return $this->hasMany('\App\Hospedante','registro_id');
     }
 
 }
+
