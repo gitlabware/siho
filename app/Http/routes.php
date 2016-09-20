@@ -130,3 +130,8 @@ Route::get('registrosgrupos/{idGrupo}', 'GrupoController@registrosgrupos')->name
 Route::get('grupo/{idGrupo?}', 'GrupoController@grupo')->name('grupo');
 Route::get('eliminargrupo/{idGrupo}', 'GrupoController@eliminargrupo')->name('eliminargrupo');
 Route::post('registrapagosg', 'GrupoController@registrapagosg')->name('registrapagosg');
+
+
+Route::get('marcasalida/{idRegistro}', 'GrupoController@marcasalida')->name('marcasalida');
+Route::get('cancelaregistro/{idRegistro}', 'GrupoController@cancelaregistro')->name('cancelaregistro');
+Route::get('generadeudasgrupos', 'GrupoController@generadeudasgrupos')->name('generadeudasgrupos');

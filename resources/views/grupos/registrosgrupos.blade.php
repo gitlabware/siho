@@ -28,19 +28,22 @@
                             <a href="{!!route('nuevoregistro',['Grupo',$grupo->id,$registro->habitacione->id,$registro->id])!!}"
                                class="btn btn-default btn-box-tool"><b>
                                     EDITAR</b></a>
-                            <a href="javascript:" class="btn btn-primary btn-box-tool" style="color: white;"
-                               onclick="cargarmodal('{!!url('caja/egreso',[0])!!}}','primary')"><b>
+                            <a href="javascript:"
+                               onclick="if(confirm('Esta seguro que desea marcar la salida de este registro??')){window.location.href = '{!! route('marcasalida',[$registro->id]) !!}';}"
+                               class="btn btn-primary btn-box-tool" style="color: white;"><b>
                                     MARCAR SALIDA</b></a>
-                            <a href="javascript:" class="btn btn-danger btn-box-tool" style="color: white;"
-                               onclick="cargarmodal('{!!url('caja/egreso',[0])!!}}','primary')"><b>
-                                    CANCELAR</b></a>
+                            @if($registro->estado != 'Salida')
+                                <a href="javascript:" class="btn btn-danger btn-box-tool" style="color: white;"
+                                   onclick="if(confirm('Esta seguro de cancelar el registro??')){window.location.href = '{!! route('cancelaregistro',[$registro->id]) !!}';}"><b>
+                                        CANCELAR</b></a>
+                            @endif
                         </div>
                     </div>
                     <div class="box-body">
                         <table class="table table-bordered">
                             <tr>
                                 <td class="text-{!! $color2 !!} text-bold">Fecha Ingreso</td>
-                                <td>{!! $registro->fecha_ingreso !!}</td>
+                                <td>{!! $registro->fecha_ingreso2 !!}</td>
                                 <td class="text-{!! $color2 !!} text-bold">Fecha Salida</td>
                                 <td>{!! $registro->fecha_salida !!}</td>
                             </tr>
@@ -99,7 +102,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($pagos as $pago)
+                        @foreach($pagos_pendientes as $pago)
                             <tr>
                                 <td>
                                     {!! Form::checkbox("pagos[".$pago->id."][marcado]", 'value',null,['class' => 'c-pagos'])!!}
@@ -110,15 +113,49 @@
                             </tr>
                         @endforeach
                         </tbody>
-                    </table><br>
+                    </table>
+                    <br>
+
+                    <div class="form-group col-sm-12">
+                        {!! Form::select('caja_id', $cajas,null, ['class' => 'form-control','required']) !!}
+                    </div>
                     <div class="form-group col-sm-12">
                         {!! Form::button('<i class="fa fa-save"></i> Registrar', ['type' => 'submit', 'class' => 'btn btn-primary', 'onclick' => "return confirm('Esta seguro de que realizar el pago?')"]) !!}
                     </div>
+                    {!! Form::hidden('grupo_id',$grupo->id) !!}
+                    {!! Form::hidden('user_id',Auth::user()->id) !!}
                     {!! Form::close() !!}
+                </div>
+            </div>
+            <div class="box box-success">
+                <div class="box-header">
+                    <h3 class="box-title">Pagos Recibidos</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Modificado</th>
+                            <th>Habitacion</th>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($pagos_recibidos as $pago)
+                            <tr>
+                                <td>{!! $pago->modificado !!}</td>
+                                <td>{!! $pago->registro->habitacione->nombre !!}</td>
+                                <td>{!! $pago->fecha2 !!}</td>
+                                <td>{!! $pago->monto_total !!}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-
-
 @endsection
+
+

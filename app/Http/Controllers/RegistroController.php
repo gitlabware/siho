@@ -214,7 +214,7 @@ class RegistroController extends InfyOmBaseController
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
             $idCliente = $registro->cliente_id;
-            $hospedantes = Hospedante::WhereIn('estado',['Reservado','Ocupando'])->where('registro_id',$idRegistro)->get();
+            $hospedantes = Hospedante::WhereIn('estado', ['Reservado', 'Ocupando'])->where('registro_id', $idRegistro)->get();
         }
 
         $registros = Habitaciones::find($idHabitacion)->registrosactivos;
@@ -230,19 +230,22 @@ class RegistroController extends InfyOmBaseController
         //$cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         //dd($cajas);
         //dd($registro);
-        $grupos = Registro::whereIn('estado',['Ocupando','Reservado'])->get()->lists('grupo.nombre', 'grupo.id')->all();
+        $grupos = Registro::whereIn('estado', ['Ocupando', 'Reservado'])->get()->lists('grupo.nombre', 'grupo.id')->all();
 
 
-        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros','grupos','hospedantes'));
+        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros', 'grupos', 'hospedantes'));
     }
 
-    public function quitarhuesped($idHuesped){
+    public function quitarhuesped($idHuesped)
+    {
         Hospedante::destroy($idHuesped);
         Flash::success('Se ha eliminado al huesped del registro correctamente!!');
         return redirect()->back();
         //return redirect(route('registros.index'));
     }
-    public function msalidahuesped($idHuesped){
+
+    public function msalidahuesped($idHuesped)
+    {
         $hospedante = Hospedante::find($idHuesped);
         $hospedante->estado = 'Desocupado';
         $hospedante->fecha_salida = date('Y-m-d H:i:s');
@@ -288,7 +291,7 @@ class RegistroController extends InfyOmBaseController
             $idRegistro = $registro->id;
         }
         //---------------------------------------------------------
-        //------------- Registra el primer pago -------------------
+        //------------- Registra el primer pago y huespedes registrados los ocupa -------------------
         $fecha_hu_in = null;
         if (isset($request->estado) && $request->estado == 'Ocupando') {
             $pago = new Pago;
@@ -299,6 +302,14 @@ class RegistroController extends InfyOmBaseController
             $pago->estado = 'Deuda';
             $pago->save();
             $fecha_hu_in = $datos_reg['fecha_ingreso'];
+
+            //----------------HUESPEDES --------------------------------//
+            $a_hospedantes = Hospedante::where('registro_id', $idRegistro)->get();
+            foreach ($a_hospedantes as $a_hospedante) {
+                $a_hospedante->estado = 'Ocupando';
+                $a_hospedante->save();
+            }
+            //-----------------------------------------------------//
         }
         //---------------------------------------------------
         // ------------ Registra Huespedes ----------------
@@ -315,7 +326,7 @@ class RegistroController extends InfyOmBaseController
         //--------------------------------------------
         Flash::success('El registro de habitacion se ha realizado correctamente!!');
         //return redirect()->back();
-        return redirect(route('registrosgrupos',[$datos_reg['grupo_id']]));
+        return redirect(route('registrosgrupos', [$datos_reg['grupo_id']]));
     }
 
     public function guarda_registros(Request $request, $num_reg = null)

@@ -122,8 +122,34 @@ class Registro extends Model
         return $this->belongsTo('\App\Models\Clientes');
     }
 
+    public function getFechaIngreso2Attribute()
+    {
+        $value = $this->fecha_ingreso;
 
-    public function getFechaIngresoAttribute($value)
+        //dd($this->habitacione_id);
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            //dd($value);
+            $fecha = Carbon::parse($value);
+            return $fecha->format('d/m/Y H:m:i');
+        } else {
+            return null;
+        }
+    }
+    public function getFechaIngreso3Attribute()
+    {
+        $value = $this->fecha_ingreso;
+
+        //dd($this->habitacione_id);
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            //dd($value);
+            $fecha = Carbon::parse($value);
+            return $fecha->format('Y-m-d');
+        } else {
+            return null;
+        }
+    }
+
+    /*public function getFechaIngresoAttribute($value)
     {
         //dd($this->habitacione_id);
         if (!empty($value) && "0000-00-00 00:00:00" != $value) {
@@ -132,7 +158,7 @@ class Registro extends Model
         } else {
             return null;
         }
-    }
+    }*/
 
     public function getFechaSalidaAttribute($value)
     {
