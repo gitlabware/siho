@@ -63,6 +63,32 @@
                     <td style="width: 50%;">NIT: {!! $factura->nit !!}</td>
                 </tr>
             </table>
+            <div style="width: 100%" align="center">
+                <span class="text-center text-bold">DETALLE DE FACTURA</span>
+                @if(empty($flujo->descripcion))
+                    <table class="table table-bordered">
+
+                        <tbody>
+                        <tr>
+                            <td>
+                                {!! $flujo->detalle !!}
+                            </td>
+                            <td>
+                                {!! $flujo->ingreso !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>TOTAL: </b></td>
+                            <td>{!! $flujo->ingreso !!}</td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                @else
+                    {!! $flujo->descripcion !!}
+                @endif
+            </div>
+            <!--
             <table style="width: 100%;">
                 <tr>
                     <td style="width: 50%;">Concepto:</td>
@@ -71,14 +97,14 @@
                 <tr>
                     <td style="width: 50%; text-align: center;"> SERVICIO DE HOSPEDAJE</td>
                     <td style="width: 20%;">Bs</td>
-                    <td><?php echo $factura->importetotal ?></td>
+                    <td><?php //echo $factura->importetotal ?></td>
                 </tr>
                 <tr>
                     <td style="width: 50%; text-align: center;"> TOTAL:</td>
                     <td style="width: 20%;">Bs</td>
-                    <td><?php echo $factura->importetotal ?></td>
+                    <td><?php //echo $factura->importetotal ?></td>
                 </tr>
-            </table>
+            </table>-->
             <table style="width: 100%;">
                 <tr>
                     <td colspan="2">

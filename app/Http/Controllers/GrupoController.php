@@ -11,6 +11,7 @@ use App\Hospedante;
 use App\Pago;
 use App\Models\Flujo;
 use App\Models\Caja;
+use Carbon\Carbon;
 use Flash;
 class GrupoController extends Controller
 {
@@ -22,7 +23,7 @@ class GrupoController extends Controller
      */
     public function index(){
         $idHotel = Auth::user()->hotel_id;
-        $grupos = Grupo::where('hotel_id',$idHotel)->get();
+        $grupos = Grupo::where('hotel_id',$idHotel)->orderBy('id','desc')->get();
         return view('grupos.index')->with(compact('grupos'));
     }
 
@@ -32,10 +33,10 @@ class GrupoController extends Controller
         $registros = Registro::where('grupo_id',$idGrupo)->get();
         //$pagos = Pago::where('registro.grupo_id',$idGrupo)->get();
 
-        $pagos_pendientes = Pago::where('estado', 'Deuda')->whereHas('registro', function ($query) use ($idGrupo){
+        $pagos_pendientes = Pago::whereIn('estado', ['Deuda','Deuda Extra'])->whereHas('registro', function ($query) use ($idGrupo){
             $query->where('grupo_id', $idGrupo);
         })->get();
-        $pagos_recibidos = Pago::where('estado', 'Pagado')->whereHas('registro', function ($query) use ($idGrupo){
+        $pagos_recibidos = Pago::whereIn('estado', ['Pagado','Pagado Extra'])->whereHas('registro', function ($query) use ($idGrupo){
             $query->where('grupo_id', $idGrupo);
         })->get();
 
@@ -132,28 +133,29 @@ class GrupoController extends Controller
         return redirect()->back();
     }
 
-    public function generadeudasgrupos(){
-        //dd(date('H:i'));
+    public function generadeudasgrupos($idGrupo){
         $fecha_actual = date('Y-m-d');
         if(date('H') < 12){
             $fecha_actual = date('Y-m-d', strtotime($fecha_actual . ' -1 day'));
         }
-
-        //dd($this->createDateRangeArray('2016-09-08','2016-09-19'));
-        $idHotel = Auth::user()->hotel_id;
-        //$registros = Registro::where();
-        $registros = Registro::where('estado','Ocupando')->whereHas('habitacione', function ($query) use ($idHotel){
-            $query->whereHas('rpiso', function ($query) use ($idHotel){
-                $query->where('hotel_id',$idHotel);
-            });
-        })->get();
+        $registros = Registro::where('estado','Ocupando')->where('grupo_id',$idGrupo)->get();
         foreach ($registros as $registro){
-
-            dd($registro->fecha_ingreso3);
             $fechas = $this->createDateRangeArray($registro->fecha_ingreso3,$fecha_actual);
-
+            foreach ($fechas as $fecha){
+                $si_pago = Pago::where('registro_id',$registro->id)->where('fecha',$fecha)->first();
+                if(!isset($si_pago)){
+                    $pago = new Pago;
+                    $pago->registro_id = $registro->id;
+                    $pago->precio = $registro->precio;
+                    $pago->monto_total = $registro->precio;
+                    $pago->fecha = $fecha;
+                    $pago->estado = 'Deuda';
+                    $pago->save();
+                }
+            }
         }
-        dd($registros);
+        //Flash::success('Se ha actualizado correctamente los pagos pendientes!!');
+        return redirect()->back();
     }
 
 
@@ -180,6 +182,41 @@ class GrupoController extends Controller
             }
         }
         return $aryRange;
+    }
+
+    public function grupo($idGrupo){
+        $grupo = Grupo::find($idGrupo);
+        return view('grupos.grupo')->with(compact('grupo'));
+    }
+
+    public function guarda_grupo(Request $request, $idGrupo){
+        //dd($idHotel);
+        $grupo = Grupo::find($idGrupo);
+        $grupo->nombre = $request->nombre;
+        $grupo->save();
+        Flash::success('Se ha registrado correctamente el grupo!!!');
+        return redirect()->back();
+    }
+
+    public function addpagoextra($idRegistro){
+        $registro = Registro::find($idRegistro);
+        return view('grupos.addpagoextra')->with(compact('registro'));
+    }
+
+    public function guarda_pagoextra(Request $request){
+        if (isset($request->fecha) && !empty($request->fecha)) {
+            $fecha_p = Carbon::createFromFormat('d/m/Y', $request->fecha)->toDateTimeString();
+            $pago = new Pago;
+            $pago->registro_id = $request->registro_id;
+            $pago->precio = $request->monto_total;
+            $pago->monto_total = $request->monto_total;
+            $pago->fecha = $fecha_p;
+            $pago->estado = 'Deuda Extra';
+            $pago->save();
+            Flash::success('Se ha registrado correctamente el pago extra!!!');
+            return redirect()->back();
+        }
+
     }
 
 }

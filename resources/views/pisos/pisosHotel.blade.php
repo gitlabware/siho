@@ -47,8 +47,6 @@
                 </thead>
                 <tbody>
                 @foreach($habitaciones as $h)
-
-
                     <tr>
                         <td>{!! $h->rpiso->nombre !!}</td>
                         <td>{!! $h->nombre !!}</td>
@@ -73,14 +71,12 @@
                                 }
                                 ?>
                                 @if(!empty($registro->num_reg))
-                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
-                                        {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:">
+                                        {{ $registro->estado.' '.$registro->grupo->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>
                                 @else
-                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                                       onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
-                                        {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:">
+                                        {{ $registro->estado.' '.$registro->grupo->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>
                                 @endif
                             @endforeach
@@ -94,18 +90,13 @@
                                 <div class='btn-group'>
                                     {{--<a href="{!! route('hotels.show', [$h->id]) !!}" class='btn btn-default btn-xs'><i--}}
                                     {{--class="glyphicon glyphicon-eye-open"></i></a>--}}
-
                                     <a href="{!! url('ingresaPrecio', [$h->id]) !!}" class='btn btn-success btn-xs'><i
                                                 class="fa fa-fw fa-dollar"></i></a>
-
                                     <a href="{!! route('habitaciones.edit', [$h->id]) !!}"
                                        class='btn btn-warning btn-xs'><i
                                                 class="glyphicon glyphicon-edit"></i></a>
-
                                     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
-
                                 </div>
-
                                 {!! Form::close() !!}
                             @endif
                         </td>

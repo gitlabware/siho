@@ -213,7 +213,7 @@ class RegistroController extends InfyOmBaseController
         $hospedantes = array();
         if (isset($idRegistro)) {
             $registro = $this->registroRepository->findWithoutFail($idRegistro);
-            $idCliente = $registro->cliente_id;
+            //$idCliente = $registro->cliente_id;
             $hospedantes = Hospedante::WhereIn('estado', ['Reservado', 'Ocupando'])->where('registro_id', $idRegistro)->get();
         }
 
@@ -222,8 +222,14 @@ class RegistroController extends InfyOmBaseController
         $precios = Precioshabitaciones::where('habitacione_id', $idHabitacion)->get()->lists('precio', 'precio')->all();
         //dd($precios);
         $cliente = array();
+        $grupo = array();
+        $sel_grupo_i = null;
         if ($tipo == 'Cliente' && empty($idRegistro)) {
             $cliente = Clientes::find($idCliente);
+        }elseif ($tipo == 'Grupo'){
+            $grupo = Grupo::find($idCliente);
+
+            $sel_grupo_i = $grupo->id;
         }
 
         $habitacion = Habitaciones::find($idHabitacion);
@@ -232,8 +238,9 @@ class RegistroController extends InfyOmBaseController
         //dd($registro);
         $grupos = Registro::whereIn('estado', ['Ocupando', 'Reservado'])->get()->lists('grupo.nombre', 'grupo.id')->all();
 
-
-        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros', 'grupos', 'hospedantes'));
+        $ocupado = Registro::where('habitacione_id',$idHabitacion)->where('estado','Ocupando')->first();
+        //dd($ocupado);
+        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros', 'grupos', 'hospedantes','ocupado','grupo','sel_grupo_i'));
     }
 
     public function quitarhuesped($idHuesped)

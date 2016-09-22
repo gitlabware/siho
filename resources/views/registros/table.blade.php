@@ -2,7 +2,7 @@
     <div class="box-body table-responsive">
         <table class="table table-responsive table-bordered" id="tabla">
             <thead>
-            <th>Cliente Id</th>
+            <th>Grupo</th>
             <th>Habitacione Id</th>
             <th>Estado</th>
             <th>Fecha Ingreso</th>
@@ -14,7 +14,7 @@
             <th></th>
             </thead>
             <thead>
-            <th>Cliente Id</th>
+            <th>Grupo</th>
             <th>Habitacione Id</th>
             <th>Estado</th>
             <th>Fecha Ingreso</th>
@@ -28,7 +28,7 @@
             <tbody>
             @foreach($registros as $registro)
                 <tr>
-                    <td>{!! $registro->cliente->nombre !!}</td>
+                    <td>{!! $registro->grupo->nombre !!}</td>
                     <td>{!! $registro->habitacione->nombre.' - '.$registro->habitacione->rpiso->nombre !!}</td>
                     <td>{!! $registro->estado !!}</td>
                     <td>{!! $registro->fecha_ingreso !!}</td>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Grupo;
 use App\Http\Requests;
 use App\Http\Requests\CreateClientesRequest;
 use App\Http\Requests\UpdateClientesRequest;
@@ -270,21 +271,26 @@ class ClientesController extends InfyOmBaseController
         return view('clientes.asignahabitacion');
     }
 
-    public function asignahabitacion2($idCliente)
+    public function asignahabitacion2($tipo,$idCliGrupo)
     {
 
         /*$habitacion = Habitaciones::find(1);
 
         dd($habitacion->registro->cliente->nombre);*/
+        if($tipo == 'Cliente'){
+            $cliente = $this->clientesRepository->find($idCliGrupo);
+        }else{
+            $cliente = Grupo::find($idCliGrupo);
+        }
 
-        $cliente = $this->clientesRepository->find($idCliente);
+
         //dd($cliente);
         $idHotel = Auth::user()->hotel_id;
         //dd($idHotel);exit;
         $habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
         //dd($habitaciones);
 
-        return view('clientes.asignahabitacion2')->with(compact('habitaciones', 'cliente'));
+        return view('clientes.asignahabitacion2')->with(compact('habitaciones', 'cliente','tipo'));
     }
 
     public function getIndex()

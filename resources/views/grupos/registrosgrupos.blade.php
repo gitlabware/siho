@@ -3,6 +3,11 @@
 @section('content')
     <h1 class="pull-left">Grupo: {!! $grupo->nombre !!}</h1>
 
+
+    <a class="btn btn-primary pull-right" style="margin-top: 25px"
+       href="{!! route('asignahabitacion2', ['Grupo',$grupo->id]) !!}"><i class="fa fa-plus"></i> Registro</a>
+    <a class="btn btn-success pull-right" style="margin-top: 25px"
+       onclick="cargarmodal('{!! route('grupo',[$grupo->id]) !!}');"><i class="fa fa-edit"></i> Editar</a>
     <div class="clearfix"></div>
 
     @include('flash::message')
@@ -16,6 +21,9 @@
                 if ($registro->estado == 'Reservado') {
                     $color = 'yellow';
                     $color2 = 'warning';
+                } elseif ($registro->estado == 'Salida') {
+                    $color = 'green';
+                    $color2 = 'success';
                 }
 
                 ?>
@@ -25,14 +33,20 @@
                             <span class="badge bg-{!! $color !!}">{!! $registro->estado !!}</span>
                         </h3>
                         <div class="box-tools pull-right">
-                            <a href="{!!route('nuevoregistro',['Grupo',$grupo->id,$registro->habitacione->id,$registro->id])!!}"
-                               class="btn btn-default btn-box-tool"><b>
-                                    EDITAR</b></a>
-                            <a href="javascript:"
-                               onclick="if(confirm('Esta seguro que desea marcar la salida de este registro??')){window.location.href = '{!! route('marcasalida',[$registro->id]) !!}';}"
-                               class="btn btn-primary btn-box-tool" style="color: white;"><b>
-                                    MARCAR SALIDA</b></a>
                             @if($registro->estado != 'Salida')
+                                <a href="javascript:" style="color: white;"
+                                   onclick="cargarmodal('{!! route('addpagoextra',[$registro->id]) !!}')"
+                                   class="btn btn-success btn-box-tool"> <i class="fa fa-plus"></i><b>
+                                        Pago </b></a>
+                                <a href="{!!route('nuevoregistro',['Grupo',$grupo->id,$registro->habitacione->id,$registro->id])!!}"
+                                   class="btn btn-default btn-box-tool"><b>
+                                        EDITAR</b></a>
+
+                                <a href="javascript:"
+                                   onclick="if(confirm('Esta seguro que desea marcar la salida de este registro??')){window.location.href = '{!! route('marcasalida',[$registro->id]) !!}';}"
+                                   class="btn btn-primary btn-box-tool" style="color: white;"><b>
+                                        MARCAR SALIDA</b></a>
+
                                 <a href="javascript:" class="btn btn-danger btn-box-tool" style="color: white;"
                                    onclick="if(confirm('Esta seguro de cancelar el registro??')){window.location.href = '{!! route('cancelaregistro',[$registro->id]) !!}';}"><b>
                                         CANCELAR</b></a>
@@ -87,6 +101,11 @@
             <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title">Pagos Pendientes</h3>
+                    <div class="box-tools pull-right">
+                        <a href="{!!route('generadeudasgrupos',[$grupo->id])!!}" title="Actualizar pagos pendientes"
+                           class="btn btn-default btn-box-tool"><b>
+                                <i class="fa fa-refresh"></i></b></a>
+                    </div>
                 </div>
                 <div class="box-body">
                     {!! Form::open(['route' => ['registrapagosg']]) !!}
@@ -102,18 +121,40 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <?php
+                        $total_p_p = 0.00;
+                        ?>
                         @foreach($pagos_pendientes as $pago)
-                            <tr>
-                                <td>
-                                    {!! Form::checkbox("pagos[".$pago->id."][marcado]", 'value',null,['class' => 'c-pagos'])!!}
-                                </td>
-                                <td>{!! $pago->registro->habitacione->nombre !!}</td>
-                                <td>{!! $pago->fecha !!}</td>
-                                <td>{!! $pago->monto_total !!}</td>
-                            </tr>
-                        @endforeach
+                            <?php $total_p_p = $total_p_p + $pago->monto_total;?>
+                            @if($pago->estado == 'Deuda Extra')
+                                <tr class="info">
+                            @else
+                                <tr>
+                                    @endif
+
+                                    <td>
+                                        {!! Form::checkbox("pagos[".$pago->id."][marcado]", 'value',null,['class' => 'c-todos-pt'])!!}
+                                    </td>
+                                    <td>{!! $pago->registro->habitacione->nombre !!}</td>
+                                    <td>{!! $pago->fecha !!}</td>
+                                    <td>{!! $pago->monto_total !!}</td>
+                                </tr>
+                                @endforeach
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>TOTAL</b></td>
+                                    <td><b>{!! $total_p_p.' Bs.' !!}</b></td>
+                                </tr>
                         </tbody>
                     </table>
+                    @push('scriptsextras')
+                    <script>
+                        $('#c-todos-p').click(function () {
+                            $('.c-todos-pt').prop('checked', $('#c-todos-p').prop('checked'));
+                        });
+                    </script>
+                    @endpush
                     <br>
 
                     <div class="form-group col-sm-12">
@@ -142,14 +183,28 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <?php
+                        $total_p_r = 0.00;
+                        ?>
                         @foreach($pagos_recibidos as $pago)
-                            <tr>
-                                <td>{!! $pago->modificado !!}</td>
-                                <td>{!! $pago->registro->habitacione->nombre !!}</td>
-                                <td>{!! $pago->fecha2 !!}</td>
-                                <td>{!! $pago->monto_total !!}</td>
-                            </tr>
-                        @endforeach
+                            <?php $total_p_r = $total_p_r + $pago->monto_total;?>
+                            @if($pago->estado == 'Deuda Extra')
+                                <tr class="info">
+                            @else
+                                <tr>
+                                    @endif
+                                    <td>{!! $pago->modificado !!}</td>
+                                    <td>{!! $pago->registro->habitacione->nombre !!}</td>
+                                    <td>{!! $pago->fecha2 !!}</td>
+                                    <td>{!! $pago->monto_total !!}</td>
+                                </tr>
+                                @endforeach
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>TOTAL</b></td>
+                                    <td><b>{!! $total_p_r.' Bs.' !!}</b></td>
+                                </tr>
                         </tbody>
                     </table>
                 </div>
@@ -157,5 +212,6 @@
         </div>
     </div>
 @endsection
+
 
 

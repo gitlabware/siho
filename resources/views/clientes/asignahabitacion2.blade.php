@@ -2,7 +2,7 @@
 
 @section('content')
     {!! Form::open(['route' => ['nuevos',$cliente->id], 'method' => 'post','id' => 'ajaxform']) !!}
-    <h1 class="pull-left">Registro de {!! $cliente->nombre !!}</h1>
+    <h1 class="pull-left">Registro de {!! $tipo.' '.$cliente->nombre !!}</h1>
 
     <div class="clearfix"></div>
 
@@ -67,20 +67,18 @@
                                 }
                                 ?>
                                 @if(!empty($registro->num_reg))
-                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                                       onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
-                                        {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:" >
+                                        {{ $registro->estado.' '.$registro->grupo->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>
                                 @else
-                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                                       onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
-                                        {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:">
+                                        {{ $registro->estado.' '.$registro->grupo->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>
                                 @endif
                             @endforeach
                         </td>
                         <td>
-                            <a title="Registrar habitacion" href="{!! route('nuevoregistro',['Cliente',$cliente->id,$habitacion->id]) !!}"  class='btn btn-primary btn-xs'><i
+                            <a title="Registrar habitacion" href="{!! route('nuevoregistro',[$tipo,$cliente->id,$habitacion->id]) !!}"  class='btn btn-primary btn-xs'><i
                                         class="fa fa-pencil"></i></a>
                         </td>
                     </tr>

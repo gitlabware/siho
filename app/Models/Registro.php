@@ -201,5 +201,9 @@ class Registro extends Model
         return $this->hasMany('\App\Hospedante','registro_id');
     }
 
+    public function pagos(){
+        return $this->hasMany('\App\Pago','registro_id');
+    }
+
 }
 

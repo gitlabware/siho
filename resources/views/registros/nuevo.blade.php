@@ -10,6 +10,9 @@
             @if(isset($registro->grupo_id))
                 <a class="btn btn-primary pull-right" style="margin-top: 25px"
                    href="{!! route('registrosgrupos',[$registro->grupo_id]) !!}">Ir a Grupo</a>
+            @elseif(isset($grupo->id))
+                <a class="btn btn-primary pull-right" style="margin-top: 25px"
+                   href="{!! route('registrosgrupos',[$grupo->id]) !!}">Ir a Grupo</a>
             @endif
         </div>
     </div>
@@ -25,15 +28,47 @@
                     {!! Form::open(['route' => ['guarda_registro']]) !!}
                 @endif
                 <div class="box-body">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            @foreach($habitacion->registrosactivos as $registro2)
+                                <?php
+                                $color_reg = 'info';
+                                if ($registro2->estado == 'Ocupando') {
+                                    $color_reg = 'danger';
+                                } elseif ($registro2->estado == 'Reservado') {
+                                    $color_reg = 'warning';
+                                }
+                                ?>
+                                @if(!empty($registro2->num_reg))
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:" >
+                                        {{ $registro2->estado.' '.$registro2->grupo->nombre.' '.$registro2->fecha_ingreso.' - '.$registro2->fecha_salida }}
+                                    </a>
+                                @else
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:">
+                                        {{ $registro2->estado.' '.$registro2->grupo->nombre.' '.$registro2->fecha_ingreso.' - '.$registro2->fecha_salida }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+
                     @if(isset($registro) && $registro->estado != 'Ocupando' || !isset($registro))
-                    <div class="form-group col-sm-6">
-                        {!! Form::radio('estado','Ocupando',null,['class' => 'ch-ocupar']) !!}
-                        Ocupar habitacion
-                    </div>
-                    <div class="form-group col-sm-6">
-                        {!! Form::radio('estado','Reservado',null,['class' => 'ch-reservar']) !!}
-                        Reservar habitacion
-                    </div>
+                        @if(isset($ocupado))
+                            <div class="form-group col-sm-12">
+                                {!! Form::radio('estado','Reservado',null,['class' => 'ch-reservar']) !!}
+                                Reservar habitacion
+                            </div>
+                        @else
+                            <div class="form-group col-sm-6">
+                                {!! Form::radio('estado','Ocupando',null,['class' => 'ch-ocupar']) !!}
+                                Ocupar habitacion
+                            </div>
+                            <div class="form-group col-sm-6">
+                                {!! Form::radio('estado','Reservado',null,['class' => 'ch-reservar']) !!}
+                                Reservar habitacion
+                            </div>
+                        @endif
+
                     @endif
                     <div class="form-group col-sm-6">
                         <label>Fecha inicial Reserva</label>
@@ -75,7 +110,7 @@
                         <div>
                             <div class="form-group col-sm-12">
                                 <label>Seleccione el Grupo</label>
-                                {!! Form::select('grupo_id', $grupos,null, ['class' => 'form-control']) !!}
+                                {!! Form::select('grupo_id', $grupos,$sel_grupo_i, ['class' => 'form-control']) !!}
                             </div>
                         </div>
                     @endif

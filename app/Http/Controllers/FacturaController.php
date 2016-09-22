@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Requests\CreateFacturaRequest;
 use App\Http\Requests\UpdateFacturaRequest;
+use App\Pago;
 use App\Repositories\FacturaRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
@@ -166,14 +167,19 @@ class FacturaController extends InfyOmBaseController
         //$codigo_control = $nuevocodigo->generar(29040011007, 1503, 4189179011, "20070702", round(2500), "9rCB7Sv4X29d)5k7N%3ab89p-3(5[A");
         $flujo = Flujo::find($idFlujo);
         //dd($flujo->registros[0]->cliente->nombre);
+        $pagos_cli = Pago::where('flujo_id',$idFlujo)->whereHas('registro',function($query){
+            $query->whereNotNull('cliente_id');
+        })->first();
+
+
         $cliente = "";
         $nit_ci = "";
-        if(isset($flujo->registros[0]) && isset($flujo->registros[0]->cliente->nombre)){
-            $cliente = $flujo->registros[0]->cliente->nombre;
+
+        if(isset($pagos_cli)){
+            $cliente = $pagos_cli->registro->cliente->nombre;
+            $nit_ci = $pagos_cli->registro->cliente->ci;
         }
-        if(isset($flujo->registros[0]) && isset($flujo->registros[0]->cliente->ci)){
-            $nit_ci = $flujo->registros[0]->cliente->ci;
-        }
+
         return view('facturas.facturar')->with(compact('flujo','cliente','nit_ci'));
 
     }
@@ -291,7 +297,8 @@ class FacturaController extends InfyOmBaseController
         $monto_decimales = explode(".", $factura->importetotal);
         $monto_decimales = $monto_decimales[1].'/100';
 
+        $flujo = Flujo::where('factura_id',$idFactura)->first();
         //dd($fecha);
-        return view('facturas.factura')->with(compact('factura','fecha','monto_decimales'));
+        return view('facturas.factura')->with(compact('factura','fecha','monto_decimales','flujo'));
     }
 }

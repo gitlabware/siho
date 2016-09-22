@@ -28,7 +28,7 @@
 
         <a href="javascript:" onclick="editar(0)" class='btn btn-default btn-xs'><i
                     class="glyphicon glyphicon-edit"></i></a>
-        <a href="{!! route('asignahabitacion2', [0]) !!}" title="Registrar habitacion"
+        <a href="{!! route('asignahabitacion2', ['Cliente',0]) !!}" title="Registrar habitacion"
            class='btn btn-success btn-xs'><i
                     class="fa fa-list"></i></a>
         <a href="{!! route('registros_cliente', [0]) !!}" title="Registros de Clientes"

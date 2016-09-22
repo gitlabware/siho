@@ -108,8 +108,8 @@ class Flujo extends Model
         return $this->belongsTo('\App\Models\Caja');
     }
 
-    public function registros(){
-        return $this->hasMany('App\Models\Registro','flujo_id');
+    public function pagos(){
+        return $this->hasMany('App\Pago','flujo_id');
     }
 }
 

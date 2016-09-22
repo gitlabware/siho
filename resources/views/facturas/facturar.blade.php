@@ -18,31 +18,40 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <table class="table table-cordered">
-                <thead>
-                <tr>
-                    <th>Detalle</th>
-                    <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        {!! $flujo->detalle !!}
-                    </td>
-                    <td>
-                        {!! $flujo->ingreso !!}
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>{!! $flujo->ingreso !!}</td>
-                </tr>
-                </tbody>
 
-            </table>
+        <div class="row">
+            <div class="col-md-12">
+                @if(empty($flujo->descripcion))
+                    <table class="table table-cordered">
+                        <thead>
+                        <tr>
+                            <th>Detalle</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                {!! $flujo->detalle !!}
+                            </td>
+                            <td>
+                                {!! $flujo->ingreso !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>{!! $flujo->ingreso !!}</td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                @else
+                    {!! $flujo->descripcion !!}
+                @endif
+            </div>
+
         </div>
+
     </div>
 </div>
 

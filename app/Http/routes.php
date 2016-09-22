@@ -44,7 +44,7 @@ Route::post('guarda_piso/{idPiso?}', 'PisosController@guarda_piso')->name('guard
 Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
 Route::get('ingresaPrecio/{idHabitacion}', 'PrecioshabitacionesController@ingresaPrecio');
 Route::get('asignahabitacion', 'ClientesController@asignahabitacion');
-Route::get('asignahabitacion2/{idCliente}/{num_reg?}', 'ClientesController@asignahabitacion2')->name('asignahabitacion2');
+Route::get('asignahabitacion2/{tipo}/{idCliente}/{num_reg?}', 'ClientesController@asignahabitacion2')->name('asignahabitacion2');
 /*Route::controller('datatables', 'PisosController', [
     'anyData'  => 'datatables.data',
     'muestraPisos' => 'datatables',
@@ -134,4 +134,9 @@ Route::post('registrapagosg', 'GrupoController@registrapagosg')->name('registrap
 
 Route::get('marcasalida/{idRegistro}', 'GrupoController@marcasalida')->name('marcasalida');
 Route::get('cancelaregistro/{idRegistro}', 'GrupoController@cancelaregistro')->name('cancelaregistro');
-Route::get('generadeudasgrupos', 'GrupoController@generadeudasgrupos')->name('generadeudasgrupos');
+Route::get('generadeudasgrupos/{idGrupo}', 'GrupoController@generadeudasgrupos')->name('generadeudasgrupos');
+
+Route::get('grupo/{idGrupo}', 'GrupoController@grupo')->name('grupo');
+Route::post('guarda_grupo/{idGrupo}', 'GrupoController@guarda_grupo')->name('guarda_grupo');
+Route::get('addpagoextra/{idRegistro}', 'GrupoController@addpagoextra')->name('addpagoextra');
+Route::post('guarda_pagoextra', 'GrupoController@guarda_pagoextra')->name('guarda_pagoextra');
