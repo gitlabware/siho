@@ -118,6 +118,7 @@
                             <th>Habitacion</th>
                             <th>Fecha</th>
                             <th>Monto</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -138,6 +139,12 @@
                                     <td>{!! $pago->registro->habitacione->nombre !!}</td>
                                     <td>{!! $pago->fecha !!}</td>
                                     <td>{!! $pago->monto_total !!}</td>
+                                    <td>
+                                        <a href="javascript:"
+                                           onclick="cargarmodal('{!! route('eliminapago',[$pago->id]) !!}','danger')"
+                                           class='btn btn-danger btn-xs' title="Eliminar Pago"><i
+                                                    class="fa fa-remove"></i></a>
+                                    </td>
                                 </tr>
                                 @endforeach
                                 <tr>
@@ -145,6 +152,7 @@
                                     <td></td>
                                     <td><b>TOTAL</b></td>
                                     <td><b>{!! $total_p_p.' Bs.' !!}</b></td>
+                                    <td></td>
                                 </tr>
                         </tbody>
                     </table>

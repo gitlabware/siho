@@ -6,111 +6,87 @@
     @include('flash::message')
     <div class="clearfix"></div>
 
-    @if(isset($registros[0]))
-        {!! Form::open(['route' => ['registrar_pago'], 'method' => 'post']) !!}
-        <div class="box box-warning">
-            <div class="box-header">
-                <h3 class="box-title">REGISTROS PENDIENTES</h3>
-            </div>
-            <div class="box-body">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Nro</th>
-                        <th>Habitacion</th>
-                        <th>Fecha Ingreso</th>
-                        <th>Fecha Salida</th>
-                        <th>Estado</th>
-                        <th>Precio</th>
-                        <th>Monto Total</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $total_monto = 0;
-                    ?>
-                    @foreach($registros as $key => $registro)
-                        <?php $total_monto = $total_monto + $registro->monto_total ?>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">HISTORIAL DE CLIENTE
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <thead>
                         <tr>
-                            <td>{!! $key+1 !!}</td>
-                            <td>{!! $registro->habitacione->nombre.' - '.$registro->habitacione->rpiso->nombre !!}</td>
-                            <td>{!! $registro->fecha_ingreso !!}</td>
-                            <td>{!! $registro->fecha_salida !!}</td>
-                            <td>{!! $registro->estado !!}</td>
-                            <td>{!! $registro->precio !!}</td>
-                            <td>{!! $registro->monto_total !!}</td>
-                            <td>
-                                <a class="btn btn-block btn-primary btn-xs" href="javascript:" title="Editar"
-                                   onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                            </td>
+                            <th>Fecha Ingreso</th>
+                            <th>Fecha Salida</th>
+                            <th>Grupo</th>
+                            <th>Habitacion</th>
+                            <th>Estado</th>
+                            <th>Deudas</th>
+                            <th></th>
                         </tr>
-                    @endforeach
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            {!! Form::select('caja_id', $cajas,null, ['class' => 'form-control caja','required','id' =>
-                        'ccaja']) !!}
-                        </td>
-                        <td>
-
-                            {!! Form::button('<i class="fa fa-money"></i> PAGAR TOTAL', ['type' => 'submit', 'class' => 'btn btn-success btn-xs', 'onclick' => "return confirm('Se registrara el pago de todos los pendientes. Desea continuar??')"]) !!}
-
-                        </td>
-                        <td class="text-warning"><b>TOTAL</b></td>
-                        <td class="text-warning"><b>{!! $total_monto !!}</b></td>
-                        <td>
-
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        @foreach($hosp_registros as $hospe)
+                            <tr>
+                                <td>{!! $hospe->fecha_ingreso !!}</td>
+                                <td>{!! $hospe->fecha_salida !!}</td>
+                                <td>{!! $hospe->registro->grupo->nombre !!}</td>
+                                <td>{!! $hospe->registro->habitacione->nombre !!}</td>
+                                <td>{!! $hospe->estado !!}</td>
+                                <td>{!! $hospe->registro->grupo->deudas.' Bs.' !!}</td>
+                                <td>
+                                    <a href="{!! route('registrosgrupos', [$hospe->registro->grupo->id]) !!}"
+                                       title="Registros"
+                                       class='btn btn-primary btn-xs'><i class="fa fa-list"></i></a>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        {!! Form::hidden('monto_total', $total_monto) !!}
-        {!! Form::hidden('cliente_id', $cliente->id) !!}
-        {!! Form::hidden('user_id',Auth::user()->id) !!}
-        {!! Form::close() !!}
-    @else
-        <h3 class="text-success">NO TIENE REGISTROS PENDIENTES.</h3>
-    @endif
+        <div class="col-md-5">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">ACTIVIDADES DEL CLIENTE
+                    </h3>
+                    <div class="box-tools pull-right">
+                        <a href="javascript:" class="btn btn-success btn-box-tool" style="color: white;"
+                           onclick="cargarmodal('{!!route('actividad',[$cliente->id])!!}','info')"> <i
+                                    class="fa fa-plus"></i><b>
+                                Actividad</b></a>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Descripcion</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($cliente->actividades as $actividad)
+                            <tr
+                                    @if($actividad->fecha > date('Y-m-d H:s:i'))
+                                    class="info"
+                                    @endif
+                            >
+                                <td>{!! $actividad->fecha !!}</td>
+                                <td>{!! $actividad->descripcion !!}</td>
+                                <td>
 
-    <div class="box box-success">
-        <div class="box-header">
-            <h3 class="box-title">HISTORIAL DE REGISTROS</h3>
-        </div>
-        <div class="box-body">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Nro</th>
-                    <th>Habitacion</th>
-                    <th>Fecha Ingreso</th>
-                    <th>Fecha Salida</th>
-                    <th>Estado</th>
-                    <th>Precio</th>
-                    <th>Monto Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($hregistros as $key => $registro)
-                    <tr>
-                        <td>{!! $key+1 !!}</td>
-                        <td>{!! $registro->habitacione->nombre.' - '.$registro->habitacione->rpiso->nombre !!}</td>
-                        <td>{!! $registro->fecha_ingreso !!}</td>
-                        <td>{!! $registro->fecha_salida !!}</td>
-                        <td>{!! $registro->estado !!}</td>
-                        <td>{!! $registro->precio !!}</td>
-                        <td>{!! $registro->monto_total !!}</td>
-                    </tr>
-                @endforeach
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                </tbody>
-            </table>
         </div>
     </div>
 

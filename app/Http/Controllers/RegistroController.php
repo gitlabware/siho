@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\DB;
 use App\Hospedante;
 use App\Pago;
 use App\Grupo;
+use App\Models\Actividad;
+
 
 class RegistroController extends InfyOmBaseController
 {
@@ -522,12 +524,12 @@ class RegistroController extends InfyOmBaseController
 
     public function registros_cliente($idCliente = null)
     {
-        $idHotel = Auth::user()->hotel_id;
+        //$idHotel = Auth::user()->hotel_id;guarda_registros
         $cliente = Clientes::find($idCliente);
-        $registros = Registro::where('cliente_id', $idCliente)->where('flujo_id', 0)->get();
-        $hregistros = Registro::where('cliente_id', $idCliente)->where('flujo_id', '<>', 0)->orderBy('created_at', 'desc')->get();
-        $cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
-        return view('registros.registros_cliente')->with(compact('cliente', 'registros', 'hregistros', 'cajas'));
+
+        $hosp_registros = Hospedante::where('cliente_id',$idCliente)->orderBy('updated_at','desc')->get();
+        //dd($hosp_registros);
+        return view('registros.registros_cliente')->with(compact('cliente', 'hosp_registros'));
     }
 
     public function registrar_pago(Request $request)

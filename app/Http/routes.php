@@ -140,3 +140,11 @@ Route::get('grupo/{idGrupo}', 'GrupoController@grupo')->name('grupo');
 Route::post('guarda_grupo/{idGrupo}', 'GrupoController@guarda_grupo')->name('guarda_grupo');
 Route::get('addpagoextra/{idRegistro}', 'GrupoController@addpagoextra')->name('addpagoextra');
 Route::post('guarda_pagoextra', 'GrupoController@guarda_pagoextra')->name('guarda_pagoextra');
+
+Route::match(['get', 'post'], 'pasajeros_reporte', 'ReporteController@pasajeros_reporte')->name('pasajeros_reporte');
+
+Route::resource('actividads', 'ActividadController');
+Route::get('actividad/{idCliente}/{idActividad?}', 'ActividadController@actividad')->name('actividad');
+Route::post('guarda_actividad/{idActividad?}', 'ActividadController@guarda_actividad')->name('guarda_actividad');
+Route::get('grupos/eliminapago/{idPago}', 'GrupoController@eliminapago')->name('eliminapago');
+Route::post('grupos/eliminar_pago/{idPago}', 'GrupoController@eliminar_pago');

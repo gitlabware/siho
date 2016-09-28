@@ -40,6 +40,8 @@
             <li class="active"><a href="{{ url('registros') }}"><i class='fa fa-building-o'></i> <span>Registros</span></a></li>
             <li class="active"><a href="{{ url('cajas') }}"><i class='fa fa-building-o'></i> <span>Caja Chica</span></a></li>
             <li class="active"><a href="{{ url('categorias') }}"><i class='fa fa-building-o'></i> <span>Categorias Habitacion</span></a></li>
+            <li class="active"><a href="{{ url('pasajeros_reporte') }}"><i class='fa fa-building-o'></i> <span>Movimiento de Pasajeros</span></a></li>
+            <li class="active"><a href="{{ url('actividads') }}"><i class='fa fa-building-o'></i> <span>Actividades</span></a></li>
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->

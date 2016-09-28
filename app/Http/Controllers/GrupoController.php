@@ -205,6 +205,7 @@ class GrupoController extends Controller
 
     public function guarda_pagoextra(Request $request){
         if (isset($request->fecha) && !empty($request->fecha)) {
+            $idUser = Auth::user()->id;
             $fecha_p = Carbon::createFromFormat('d/m/Y', $request->fecha)->toDateTimeString();
             $pago = new Pago;
             $pago->registro_id = $request->registro_id;
@@ -212,11 +213,31 @@ class GrupoController extends Controller
             $pago->monto_total = $request->monto_total;
             $pago->fecha = $fecha_p;
             $pago->estado = 'Deuda Extra';
+            $pago->user_id =$idUser;
             $pago->save();
             Flash::success('Se ha registrado correctamente el pago extra!!!');
             return redirect()->back();
         }
 
+    }
+
+    public function eliminapago($idPago)
+    {
+        $pago = Pago::find($idPago);
+        return view('grupos.eliminapago')->with(compact('idPago', 'pago'));
+    }
+    public function eliminar_pago(Request $request, $idPago)
+    {
+
+        $idUser = Auth::user()->id;
+        $pago = Pago::find($idPago);
+        $pago->estado = 'Eliminado';
+        $pago->observacion = $request->observacion;
+        $pago->user_id = $idUser;
+        $pago->save();
+
+        Flash::success('Se ha eliminado correctamente el pago!!');
+        return redirect()->back();
     }
 
 }

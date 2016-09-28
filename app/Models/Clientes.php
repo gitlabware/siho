@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 /**
  * @SWG\Definition(
@@ -145,4 +146,36 @@ class Clientes extends Model
     public static $rules = [
         'nombre' => 'required'
     ];
+
+
+
+    public function getEdad2Attribute()
+    {
+        $value = $this->edad;
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            //$fecha = Carbon::parse($value);
+            //return $fecha->format('y-m-d');
+            $fecha = Carbon::parse($value);
+            return $fecha->diff(Carbon::now())->format('%y');
+        } else {
+            return null;
+        }
+    }
+
+    public function getIdentidadAttribute()
+    {
+        if(!empty($this->ci)){
+            return $this->ci;
+        }elseif (!empty($this->pasaporte)){
+            return $this->pasaporte;
+        }else{
+            return null;
+        }
+    }
+
+    public function actividades(){
+        return $this->hasMany('\App\Models\Actividad','cliente_id')->orderBy('id','desc');
+    }
+
 }
+
