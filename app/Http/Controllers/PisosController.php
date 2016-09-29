@@ -204,7 +204,11 @@ class PisosController extends InfyOmBaseController
         //dd($habitaciones);
         //\Debugbar::info($habitaciones);
         //dd($idHotel);
-        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
+        //$habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
+        $habitaciones = Habitaciones::whereHas('rpiso', function($query) use ($idHotel){
+            $query->where('hotel_id',$idHotel);
+        })->get();
+
 
 
         return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));

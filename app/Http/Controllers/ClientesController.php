@@ -287,7 +287,10 @@ class ClientesController extends InfyOmBaseController
         //dd($cliente);
         $idHotel = Auth::user()->hotel_id;
         //dd($idHotel);exit;
-        $habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
+        //$habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
+        $habitaciones = Habitaciones::whereHas('rpiso', function($query) use ($idHotel){
+            $query->where('hotel_id',$idHotel);
+        })->get();
         //dd($habitaciones);
 
         return view('clientes.asignahabitacion2')->with(compact('habitaciones', 'cliente','tipo'));
