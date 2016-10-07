@@ -21,7 +21,12 @@ class Grupo extends Model
             ->whereIn('pagos.estado',['Deuda','Deuda Extra'])
             ->groupBy('registros.grupo_id')
             ->first();
-        return $deuda->monto_total;
+        if(isset($deuda)){
+            return $deuda->monto_total;
+        }else{
+            return 0.00;
+        }
+
 
     }
 }

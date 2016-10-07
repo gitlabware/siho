@@ -228,7 +228,7 @@ class RegistroController extends InfyOmBaseController
         $sel_grupo_i = null;
         if ($tipo == 'Cliente' && empty($idRegistro)) {
             $cliente = Clientes::find($idCliente);
-        }elseif ($tipo == 'Grupo'){
+        } elseif ($tipo == 'Grupo') {
             $grupo = Grupo::find($idCliente);
 
             $sel_grupo_i = $grupo->id;
@@ -238,11 +238,13 @@ class RegistroController extends InfyOmBaseController
         //$cajas = Caja::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         //dd($cajas);
         //dd($registro);
-        $grupos = Registro::whereIn('estado', ['Ocupando', 'Reservado'])->get()->lists('grupo.nombre', 'grupo.id')->all();
+        $grupos = Registro::whereHas('grupo', function ($query) use ($idHotel) {
+            $query->where('hotel_id',$idHotel);
+        })->whereIn('estado', ['Ocupando', 'Reservado'])->get()->lists('grupo.nombre', 'grupo.id')->all();
 
-        $ocupado = Registro::where('habitacione_id',$idHabitacion)->where('estado','Ocupando')->first();
+        $ocupado = Registro::where('habitacione_id', $idHabitacion)->where('estado', 'Ocupando')->first();
         //dd($ocupado);
-        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros', 'grupos', 'hospedantes','ocupado','grupo','sel_grupo_i'));
+        return view('registros.nuevo')->with(compact('precios', 'habitacion', 'cliente', 'registro', 'registros', 'grupos', 'hospedantes', 'ocupado', 'grupo', 'sel_grupo_i'));
     }
 
     public function quitarhuesped($idHuesped)
@@ -256,7 +258,7 @@ class RegistroController extends InfyOmBaseController
     public function msalidahuesped($idHuesped)
     {
         $hospedante = Hospedante::find($idHuesped);
-        $hospedante->estado = 'Desocupado';
+        $hospedante->estado = 'Salida';
         $hospedante->fecha_salida = date('Y-m-d H:i:s');
         $hospedante->save();
         Flash::success('Se ha marcado la salida del huesped correctamente!!');
@@ -269,12 +271,12 @@ class RegistroController extends InfyOmBaseController
         //dd($request->all());
         $datos_reg = $request->all();
 
-        if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
+        /*if (isset($datos_reg['fecha_ingreso']) && !empty($datos_reg['fecha_ingreso'])) {
             $datos_reg['fecha_ingreso'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_ingreso'])->toDateTimeString();
         }
         if (isset($datos_reg['fecha_salida']) && !empty($datos_reg['fecha_salida'])) {
             $datos_reg['fecha_salida'] = Carbon::createFromFormat('d/m/Y', $datos_reg['fecha_salida'])->toDateTimeString();
-        }
+        }*/
 
         //-------------- Registrar al grupo-------------------
         if (isset($request->nuevogrupo) && !empty($request->nuevogrupo)) {
@@ -322,6 +324,7 @@ class RegistroController extends InfyOmBaseController
         }
         //---------------------------------------------------
         // ------------ Registra Huespedes ----------------
+        //dd($request->estado);
         if (isset($request->huespedes) && isset($request->estado)) {
             foreach ($request->huespedes as $huesped) {
                 $hospedante = new Hospedante;
@@ -527,7 +530,7 @@ class RegistroController extends InfyOmBaseController
         //$idHotel = Auth::user()->hotel_id;guarda_registros
         $cliente = Clientes::find($idCliente);
 
-        $hosp_registros = Hospedante::where('cliente_id',$idCliente)->orderBy('updated_at','desc')->get();
+        $hosp_registros = Hospedante::where('cliente_id', $idCliente)->orderBy('updated_at', 'desc')->get();
         //dd($hosp_registros);
         return view('registros.registros_cliente')->with(compact('cliente', 'hosp_registros'));
     }

@@ -37,9 +37,7 @@
         <div class="row">
             <div class="col-xs-8">
                 <div class="checkbox icheck">
-                    <label>
-                        <input type="checkbox" name="remember"> {{ trans('adminlte_lang::message.remember') }}
-                    </label>
+
                 </div>
             </div><!-- /.col -->
             <div class="col-xs-4">
@@ -51,7 +49,7 @@
     {{--@include('auth.partials.social_login')--}}
 
     {{--<a href="{{ url('/password/reset') }}">{{ trans('adminlte_lang::message.forgotpassword') }}</a><br>--}}
-    <a href="{{ url('/register') }}" class="text-center">{{ trans('adminlte_lang::message.registermember') }}</a>
+    {{--<a href="{{ url('/register') }}" class="text-center">{{ trans('adminlte_lang::message.registermember') }}</a> --}}
 
 </div><!-- /.login-box-body -->
 

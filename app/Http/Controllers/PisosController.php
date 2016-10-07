@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hotel;
 use DB;
 use Log;
 use App\Http\Requests;
@@ -161,30 +162,31 @@ class PisosController extends InfyOmBaseController
 
         Flash::success('Pisos deleted successfully.');
 
-        return redirect(route('pisos.index'));
+        return redirect()->back();
     }
 
-    public function piso($idPiso = null)
+    public function piso($idHotel,$idPiso = null)
     {
         $piso = null;
         if (isset($idPiso)) {
             $piso = Pisos::find($idPiso);
         }
-        return view('pisos.piso')->with('piso', $piso);
+        return view('pisos.piso')->with(compact('piso','idHotel'));
     }
 
-    public function guarda_piso(Request $request, $idPiso = null){
-        $idHotel = Auth::user()->hotel_id;
+    public function guarda_piso(Request $request,$idPiso = null){
+
+        //$idHotel = Auth::user()->hotel_id;
         //dd($idHotel);
         if(isset($idPiso)){
             $piso = Pisos::find($idPiso);
             $piso->nombre = $request->nombre;
-            $piso->hotel_id = $idHotel;
+            $piso->hotel_id = $request->hotel_id;
             $piso->save();
         }else{
             $piso = new Pisos;
             $piso->nombre = $request->nombre;
-            $piso->hotel_id = $idHotel;
+            $piso->hotel_id = $request->hotel_id;
             $piso->save();
         }
         Flash::success('Se ha registrado correctamente el piso!!!');
@@ -212,6 +214,12 @@ class PisosController extends InfyOmBaseController
 
 
         return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));
+    }
+
+    public function pisos($idHotel){
+        $hotel = Hotel::find($idHotel);
+        $pisos = Pisos::where('hotel_id',$idHotel)->get();
+        return view('pisos.pisos')->with(compact('pisos','hotel'));
     }
 
     /*public function muestraPisos($idHotel){

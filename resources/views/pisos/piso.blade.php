@@ -25,5 +25,7 @@
     {!! Form::submit('Guardar', ['class' => 'btn btn-outline pull-left']) !!}
     <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
 </div>
+
+{!! Form::hidden('hotel_id',$idHotel) !!}
 {!! Form::close() !!}
 

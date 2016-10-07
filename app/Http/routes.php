@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -11,11 +11,12 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     //return view('welcome');
     return view('auth.login');
-});
+});*/
 
+Route::get('/', 'UserController@direcciona');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +40,8 @@ Route::resource('habitaciones', 'HabitacionesController');
 Route::get('muestraHabitaciones/{idHotel}', 'HotelController@muestraHabitaciones');
 //Route::get('muestraPisos/{idHotel}', 'PisosController@muestraPisos');
 Route::get('pisosHotel/{idHotel}', 'PisosController@pisosHotel')->name('pisosHotel');
-Route::get('piso/{idPiso?}', 'PisosController@piso')->name('piso');
+Route::get('piso/{idHotel}/{idPiso?}', 'PisosController@piso')->name('piso');
+Route::get('pisos/{idHotel}', 'PisosController@pisos')->name('pisos');
 Route::post('guarda_piso/{idPiso?}', 'PisosController@guarda_piso')->name('guarda_piso');
 Route::get('nuevaHabitacion/{idHotel}', 'HabitacionesController@nuevahabitacion');
 Route::get('ingresaPrecio/{idHabitacion}', 'PrecioshabitacionesController@ingresaPrecio');
@@ -116,6 +118,7 @@ Route::get('factura/{idFactura}', 'FacturaController@factura')->name('factura');
 //Route::get('reporte_pagos', 'ReporteController@reporte_pagos')->name('reporte_pagos');
 
 Route::match(['get', 'post'], 'reporte_pagos', 'ReporteController@reporte_pagos')->name('reporte_pagos');
+Route::match(['get', 'post'], 'repo_pago_regis', 'ReporteController@repo_pago_regis')->name('repo_pago_regis');
 
 Route::get('cliente/{idCliente?}', 'ClientesController@cliente')->name('cliente');
 Route::post('guarda_cliente/{idCliente?}', 'ClientesController@guarda_cliente')->name('guarda_cliente');
@@ -142,9 +145,11 @@ Route::get('addpagoextra/{idRegistro}', 'GrupoController@addpagoextra')->name('a
 Route::post('guarda_pagoextra', 'GrupoController@guarda_pagoextra')->name('guarda_pagoextra');
 
 Route::match(['get', 'post'], 'pasajeros_reporte', 'ReporteController@pasajeros_reporte')->name('pasajeros_reporte');
+Route::match(['get', 'post'], 'reporte_registros', 'ReporteController@reporte_registros')->name('reporte_registros');
 
 Route::resource('actividads', 'ActividadController');
 Route::get('actividad/{idCliente}/{idActividad?}', 'ActividadController@actividad')->name('actividad');
 Route::post('guarda_actividad/{idActividad?}', 'ActividadController@guarda_actividad')->name('guarda_actividad');
 Route::get('grupos/eliminapago/{idPago}', 'GrupoController@eliminapago')->name('eliminapago');
 Route::post('grupos/eliminar_pago/{idPago}', 'GrupoController@eliminar_pago');
+Route::get('crono_genera_pagos', 'GrupoController@crono_genera_pagos');

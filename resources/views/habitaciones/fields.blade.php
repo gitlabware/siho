@@ -2,12 +2,8 @@
 <div class="form-group col-sm-6">
     {{--    {!! dd($pisosHotel) !!}--}}
     {!! Form::label('piso_id', 'Piso:') !!}
+    {!! Form::select('piso_id', $pisosHotel,null, ['class' => 'form-control','placeholder' => 'Seleccione el piso','required']) !!}
 
-    <select name="piso_id" class="form-control">
-        <?php foreach($pisosHotel as $p): ?>
-        <option value="<?php echo $p->id; ?>"><?php echo $p->nombre; ?></option>
-        <?php endforeach ?>
-    </select>
 </div>
 
 <!-- Nombre Field -->
@@ -23,16 +19,13 @@
 
 <div class="form-group col-sm-6">
     {!! Form::label('categoria_id', 'Categoria:') !!}
-    {!! Form::select('categoria_id', $categorias,null, ['class' => 'form-control','placeholder' => 'Seleccione la categoria']) !!}
+    {!! Form::select('categoria_id', $categorias,null, ['class' => 'form-control','placeholder' => 'Seleccione la categoria','required']) !!}
 </div>
 
 <!-- Estado Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('estado', 'Estado:') !!}
-    <select name="estado" class="form-control">
-        <option value="habilitado">Habilitado</option>
-        <option value="Deshabilitado">Deshabilitado</option>
-    </select>
+    {!! Form::select('estado', ['Habilitado' => 'Habilitado','Deshabilitado' => 'Deshabilitado'],null, ['class' => 'form-control','placeholder' => 'Seleccione el estado']) !!}
 </div>
 
 <!-- Observaciones Field -->

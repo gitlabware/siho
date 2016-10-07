@@ -66,7 +66,7 @@
                                     $color_reg = 'warning';
                                 }
                                 ?>
-                                @if(!empty($registro->num_reg))
+                                @if(!empty($registro->grupo_id))
                                     <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:" >
                                         {{ $registro->estado.' '.$registro->grupo->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
                                     </a>

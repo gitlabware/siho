@@ -8,14 +8,10 @@
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Hotel: {!! $hotel->nombre  !!}</h3>
-            <table class="table table-bordered text-center">
-                <tr>
-                    <td><a href="javascript:" onclick="cargarmodal('{!! route('piso') !!}')" type="button"
-                           class="btn btn-block btn-primary btn-sm">Nuevo Piso</a></td>
-                    <td><a href="{!! url('nuevaHabitacion', $hotel->id) !!}" type="button"
-                           class="btn btn-block btn-success btn-sm">Nueva Habitacion</a></td>
-                </tr>
-            </table>
+            <div class="box-tools pull-right">
+                <a href="{!! url('nuevaHabitacion', $hotel->id) !!}" class="btn btn-success btn-box-tool" style="color: white;"><b>NUEVA HABITACION</b></a>
+
+            </div>
         </div>
     </div>
     <div class="row">

@@ -62,10 +62,30 @@ class UserController extends Controller
         //return redirect(route('usuarios'));
     }
 
-    public function eliminar($idUsuario){
+    public function eliminar($idUsuario)
+    {
         $usuario = User::find($idUsuario);
         $usuario->delete();
         Flash::success('Se ha eliminado correctamente el usuario');
         return redirect(route('usuarios'));
+    }
+
+    public function direcciona()
+    {
+        //dd(Auth::user());
+        $usuario = Auth::user();
+        ///dd(isset($usuario));
+        if (isset($usuario)) {
+            if ($usuario->rol == 'Administrador' || $usuario->rol == 'Operario') {
+                return redirect(route('grupos'));
+            }elseif ($usuario->rol == 'Super Administrador'){
+                return redirect(url('/usuarios'));
+            }
+            else{
+                return view('auth.login');
+            }
+        } else {
+            return view('auth.login');
+        }
     }
 }

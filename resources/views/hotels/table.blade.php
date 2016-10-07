@@ -17,6 +17,8 @@
 
                     <a href="{!! route('hotels.edit', [$hotel->id]) !!}" class='btn btn-default btn-xs' title="Editar"><i
                                 class="glyphicon glyphicon-edit"></i></a>
+                    <a href="{!! route('pisos',[$hotel->id]) !!}" class='btn btn-success btn-xs' title="Pisos"><i
+                            class="fa fa-list"></i></a>
                     <a href="{!! url('pisosHotel',[$hotel->id]) !!}" class='btn btn-info btn-xs' title="Ambientes"><i
                                 class="glyphicon glyphicon-th"></i></a>
                     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs','title' => 'Eliminar Hotel', 'onclick' => "return confirm('Esta seguro de eliminar?')"]) !!}

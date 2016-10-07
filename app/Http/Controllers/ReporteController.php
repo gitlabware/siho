@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\Caja;
+use App\Pago;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
@@ -20,6 +22,7 @@ class ReporteController extends Controller
     public function reporte_pagos(Request $request)
     {
         $datos = array();
+        $salidas = array();
         //SI ES POST HARA LA CONSULTA
         if ($request->method() == "POST") {
             $f_ini = $this->conv_fecha($request->fecha_ini);
@@ -38,6 +41,23 @@ class ReporteController extends Controller
                     $query->where(DB::raw('DATE(created_at)'), '>=', $f_ini);
                     $query->where(DB::raw('DATE(created_at)'), '<=', $f_fin);
                     $query->where('ingreso', '<>', 0);
+                    return $query;
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $salidas = Flujo::whereHas('caja', function ($query) use ($request) {
+                if (!empty($request->hotel_id)) {
+                    $query->where('hotel_id', '=', $request->hotel_id);
+                }
+                return $query;
+            })
+                ->where(function ($query) use ($request) {
+                    $f_ini = $this->conv_fecha($request->fecha_ini);
+                    $f_fin = $this->conv_fecha($request->fecha_fin);
+                    $query->where(DB::raw('DATE(created_at)'), '>=', $f_ini);
+                    $query->where(DB::raw('DATE(created_at)'), '<=', $f_fin);
+                    $query->where('salida', '<>', 0);
                     return $query;
                 })
                 ->orderBy('created_at', 'desc')
@@ -64,7 +84,13 @@ class ReporteController extends Controller
         //dd($fecha_ini);
         $hoteles = Hotel::lists('nombre', 'id')->all();
 
-        return view('reportes.reporte_pagos')->with(compact('datos', 'hoteles', 'fecha_ini', 'fecha_fin', 'hotel_id'));
+        $cajas = Caja::where(function ($query) use ($request) {
+            if (!empty($request->hotel_id)) {
+                $query->where('hotel_id', '=', $request->hotel_id);
+            }
+        })->get();
+
+        return view('reportes.reporte_pagos')->with(compact('datos', 'hoteles', 'fecha_ini', 'fecha_fin', 'hotel_id', 'salidas', 'cajas'));
     }
 
     public function conv_fecha($fecha)
@@ -82,11 +108,14 @@ class ReporteController extends Controller
         $ingresos = array();
         $salidas = array();
         $datos_f = array();
+        $hotel = array();
         if ($request->method() == "POST" && !empty($request->fecha_ini) && !empty($request->fecha_fin)) {
             //dd($request->tipo_r);
 
             $dfecha_inicial = explode("/", $request->fecha_ini);
             $dfecha_final = explode("/", $request->fecha_fin);
+
+            $hotel = Hotel::find($request->hotel_id);
 
             $datos_f['dia_ini'] = $dfecha_inicial[0];
             $datos_f['dia_fin'] = $dfecha_final[0];
@@ -151,14 +180,14 @@ class ReporteController extends Controller
                 $contador_r = 0;
 
                 $pdf->SetFont('', '', 10);
-                $pdf->Text(25,42,Auth::user()->hotel->nombre);
-                $pdf->Text(130,42,Auth::user()->hotel->direccion);
-                $pdf->Text(35,52,Auth::user()->hotel->telefonos);
-                $pdf->Text(100,52,$datos_f['dia_ini']);
-                $pdf->Text(135,52,$datos_f['dia_fin']);
-                $pdf->Text(160,52,$datos_f['mes']);
-                $pdf->Text(200,52,$datos_f['ano']);
-                $pdf->Text(60,304,Auth::user()->name);
+                $pdf->Text(25, 42, $hotel->nombre);
+                $pdf->Text(130, 42, $hotel->direccion);
+                $pdf->Text(35, 52, $hotel->telefonos);
+                $pdf->Text(100, 52, $datos_f['dia_ini']);
+                $pdf->Text(135, 52, $datos_f['dia_fin']);
+                $pdf->Text(160, 52, $datos_f['mes']);
+                $pdf->Text(200, 52, $datos_f['ano']);
+                $pdf->Text(60, 304, Auth::user()->name);
                 //------------------------------ PERMANENTES --------------------------------
                 $pdf->SetFont('', '', 15);
                 $contador_r++;
@@ -166,19 +195,19 @@ class ReporteController extends Controller
                 $pdf->MultiCell(74, $h_cel, "PERMANENTES", 0, 'C', 1, 1, 30, $y_pag, true, 0, false, true, $h_cel, 'M', true);
                 $y_pag = $y_pag + $h_cel;
                 $pdf->SetFont('', '', 15);
-                foreach ($permanentes as $per){
+                foreach ($permanentes as $per) {
                     $contador_r++;
-                    if($contador_r == 46){
+                    if ($contador_r == 46) {
                         $pdf->AddPage();
                         $pdf->SetFont('', '', 10);
-                        $pdf->Text(25,42,Auth::user()->hotel->nombre);
-                        $pdf->Text(130,42,Auth::user()->hotel->direccion);
-                        $pdf->Text(35,52,Auth::user()->hotel->telefonos);
-                        $pdf->Text(100,52,$datos_f['dia_ini']);
-                        $pdf->Text(135,52,$datos_f['dia_fin']);
-                        $pdf->Text(160,52,$datos_f['mes']);
-                        $pdf->Text(200,52,$datos_f['ano']);
-                        $pdf->Text(60,304,Auth::user()->name);
+                        $pdf->Text(25, 42, $hotel->nombre);
+                        $pdf->Text(130, 42, $hotel->direccion);
+                        $pdf->Text(35, 52, $hotel->telefonos);
+                        $pdf->Text(100, 52, $datos_f['dia_ini']);
+                        $pdf->Text(135, 52, $datos_f['dia_fin']);
+                        $pdf->Text(160, 52, $datos_f['mes']);
+                        $pdf->Text(200, 52, $datos_f['ano']);
+                        $pdf->Text(60, 304, Auth::user()->name);
                         $pdf->SetFont('', '', 15);
                         $y_pag = 74;
                     }
@@ -200,17 +229,17 @@ class ReporteController extends Controller
                 //------------------------------ SALIDAS --------------------------------
                 $pdf->SetFont('', '', 15);
                 $contador_r++;
-                if($contador_r == 46){
+                if ($contador_r == 46) {
                     $pdf->AddPage();
                     $pdf->SetFont('', '', 10);
-                    $pdf->Text(25,42,Auth::user()->hotel->nombre);
-                    $pdf->Text(130,42,Auth::user()->hotel->direccion);
-                    $pdf->Text(35,52,Auth::user()->hotel->telefonos);
-                    $pdf->Text(100,52,$datos_f['dia_ini']);
-                    $pdf->Text(135,52,$datos_f['dia_fin']);
-                    $pdf->Text(160,52,$datos_f['mes']);
-                    $pdf->Text(200,52,$datos_f['ano']);
-                    $pdf->Text(60,304,Auth::user()->name);
+                    $pdf->Text(25, 42, $hotel->nombre);
+                    $pdf->Text(130, 42, $hotel->direccion);
+                    $pdf->Text(35, 52, $hotel->telefonos);
+                    $pdf->Text(100, 52, $datos_f['dia_ini']);
+                    $pdf->Text(135, 52, $datos_f['dia_fin']);
+                    $pdf->Text(160, 52, $datos_f['mes']);
+                    $pdf->Text(200, 52, $datos_f['ano']);
+                    $pdf->Text(60, 304, Auth::user()->name);
                     $pdf->SetFont('', '', 15);
                     $y_pag = 74;
                 }
@@ -218,19 +247,19 @@ class ReporteController extends Controller
                 $pdf->MultiCell(74, $h_cel, "SALIDAS", 0, 'C', 1, 1, 30, $y_pag, true, 0, false, true, $h_cel, 'M', true);
                 $y_pag = $y_pag + $h_cel;
                 $pdf->SetFont('', '', 15);
-                foreach ($salidas as $per){
+                foreach ($salidas as $per) {
                     $contador_r++;
-                    if($contador_r == 46){
+                    if ($contador_r == 46) {
                         $pdf->AddPage();
                         $pdf->SetFont('', '', 10);
-                        $pdf->Text(25,42,Auth::user()->hotel->nombre);
-                        $pdf->Text(130,42,Auth::user()->hotel->direccion);
-                        $pdf->Text(35,52,Auth::user()->hotel->telefonos);
-                        $pdf->Text(100,52,$datos_f['dia_ini']);
-                        $pdf->Text(135,52,$datos_f['dia_fin']);
-                        $pdf->Text(160,52,$datos_f['mes']);
-                        $pdf->Text(200,52,$datos_f['ano']);
-                        $pdf->Text(60,304,Auth::user()->name);
+                        $pdf->Text(25, 42, $hotel->nombre);
+                        $pdf->Text(130, 42, $hotel->direccion);
+                        $pdf->Text(35, 52, $hotel->telefonos);
+                        $pdf->Text(100, 52, $datos_f['dia_ini']);
+                        $pdf->Text(135, 52, $datos_f['dia_fin']);
+                        $pdf->Text(160, 52, $datos_f['mes']);
+                        $pdf->Text(200, 52, $datos_f['ano']);
+                        $pdf->Text(60, 304, Auth::user()->name);
                         $pdf->SetFont('', '', 15);
                         $y_pag = 74;
                     }
@@ -252,17 +281,17 @@ class ReporteController extends Controller
                 //------------------------------ INGRESOS --------------------------------
                 $pdf->SetFont('', '', 15);
                 $contador_r++;
-                if($contador_r == 46){
+                if ($contador_r == 46) {
                     $pdf->AddPage();
                     $pdf->SetFont('', '', 10);
-                    $pdf->Text(25,42,Auth::user()->hotel->nombre);
-                    $pdf->Text(130,42,Auth::user()->hotel->direccion);
-                    $pdf->Text(35,52,Auth::user()->hotel->telefonos);
-                    $pdf->Text(100,52,$datos_f['dia_ini']);
-                    $pdf->Text(135,52,$datos_f['dia_fin']);
-                    $pdf->Text(160,52,$datos_f['mes']);
-                    $pdf->Text(200,52,$datos_f['ano']);
-                    $pdf->Text(60,304,Auth::user()->name);
+                    $pdf->Text(25, 42, $hotel->nombre);
+                    $pdf->Text(130, 42, $hotel->direccion);
+                    $pdf->Text(35, 52, $hotel->telefonos);
+                    $pdf->Text(100, 52, $datos_f['dia_ini']);
+                    $pdf->Text(135, 52, $datos_f['dia_fin']);
+                    $pdf->Text(160, 52, $datos_f['mes']);
+                    $pdf->Text(200, 52, $datos_f['ano']);
+                    $pdf->Text(60, 304, Auth::user()->name);
                     $pdf->SetFont('', '', 15);
                     $y_pag = 74;
                 }
@@ -270,19 +299,19 @@ class ReporteController extends Controller
                 $pdf->MultiCell(74, $h_cel, "INGRESOS", 0, 'C', 1, 1, 30, $y_pag, true, 0, false, true, $h_cel, 'M', true);
                 $y_pag = $y_pag + $h_cel;
                 $pdf->SetFont('', '', 15);
-                foreach ($ingresos as $per){
+                foreach ($ingresos as $per) {
                     $contador_r++;
-                    if($contador_r == 46){
+                    if ($contador_r == 46) {
                         $pdf->AddPage();
                         $pdf->SetFont('', '', 10);
-                        $pdf->Text(25,42,Auth::user()->hotel->nombre);
-                        $pdf->Text(130,42,Auth::user()->hotel->direccion);
-                        $pdf->Text(35,52,Auth::user()->hotel->telefonos);
-                        $pdf->Text(100,52,$datos_f['dia_ini']);
-                        $pdf->Text(135,52,$datos_f['dia_fin']);
-                        $pdf->Text(160,52,$datos_f['mes']);
-                        $pdf->Text(200,52,$datos_f['ano']);
-                        $pdf->Text(60,304,Auth::user()->name);
+                        $pdf->Text(25, 42, $hotel->nombre);
+                        $pdf->Text(130, 42, $hotel->direccion);
+                        $pdf->Text(35, 52, $hotel->telefonos);
+                        $pdf->Text(100, 52, $datos_f['dia_ini']);
+                        $pdf->Text(135, 52, $datos_f['dia_fin']);
+                        $pdf->Text(160, 52, $datos_f['mes']);
+                        $pdf->Text(200, 52, $datos_f['ano']);
+                        $pdf->Text(60, 304, Auth::user()->name);
                         $pdf->SetFont('', '', 15);
                         $y_pag = 74;
                     }
@@ -321,7 +350,112 @@ class ReporteController extends Controller
             $fecha_fin = $request->fecha_fin;
         }
         //-------------------------------------------------
-        return view('reportes.pasajeros_reporte')->with(compact('fecha_ini', 'fecha_fin', 'permanentes', 'ingresos', 'salidas', 'datos_f'));
+
+        $hoteles = Hotel::lists('nombre', 'id')->all();
+        return view('reportes.pasajeros_reporte')->with(compact('fecha_ini', 'fecha_fin', 'permanentes', 'ingresos', 'salidas', 'datos_f', 'hoteles', 'hotel'));
         //dd("dsadsa");
     }
+
+    //Reporte de pagos de registros
+    public function repo_pago_regis(Request $request)
+    {
+        //REVISA LAS FECHA PARA PONER DEFAULT FECHA HOY
+        //-------------------------------------------------
+        $pagos = array();
+        $hoteles = Hotel::lists('nombre', 'id')->all();
+        if ($request->method() == "POST" && !empty($request->fecha_ini) && !empty($request->fecha_fin)) {
+            //dd($request->all());
+            $f_ini = $this->conv_fecha($request->fecha_ini);
+            $f_fin = $this->conv_fecha($request->fecha_fin);
+            $pagos = Pago::where(DB::raw('DATE(fecha)'), '>=', $f_ini)
+                ->where(DB::raw('DATE(fecha)'), '<=', $f_fin)
+                ->where(function ($query) use ($request) {
+                    if (!empty($request->estado)) {
+                        $query->where('estado', $request->estado);
+                    }
+                })
+                ->whereHas('registro', function ($query) use ($request) {
+                    $query->whereHas('habitacione', function ($query) use ($request) {
+                        $query->whereHas('rpiso', function ($query) use ($request) {
+                            if (!empty($request->hotel_id)) {
+                                $query->where('hotel_id', $request->hotel_id);
+                            }
+                        });
+                    });
+                })->get();
+            //dd($pagos);
+        }
+        if (empty($request->fecha_ini)) {
+            $fecha_ini = date('d/m/Y');
+        } else {
+            $fecha_ini = $request->fecha_ini;
+        }
+        if (empty($request->fecha_fin)) {
+            $fecha_fin = date('d/m/Y');
+        } else {
+            $fecha_fin = $request->fecha_fin;
+        }
+
+        $hotel_id = '';
+        if (!empty($request->hotel_id)) {
+            $hotel_id = $request->hotel_id;
+        }
+        $estado = '';
+        if (!empty($request->estado)) {
+            $estado = $request->estado;
+        }
+        return view('reportes.repo_pago_regis')->with(compact('fecha_ini', 'fecha_fin', 'hoteles', 'pagos', 'hotel_id', 'estado'));
+    }
+
+    public function reporte_registros(Request $request)
+    {
+
+        $registros = array();
+
+        if ($request->method() == "POST" && !empty($request->fecha_ini) && !empty($request->fecha_fin)) {
+            //dd($request->all());
+            $f_ini = $this->conv_fecha($request->fecha_ini);
+            $f_fin = $this->conv_fecha($request->fecha_fin);
+
+            $registros = Registro::whereHas('habitacione', function ($query) use ($request) {
+                $query->whereHas('rpiso', function ($query) use ($request) {
+                    if (!empty($request->hotel_id)) {
+                        $query->where('hotel_id', $request->hotel_id);
+                    }
+                });
+            })
+                ->where(DB::raw('DATE(created_at)'), '>=', $f_ini)
+                ->where(DB::raw('DATE(created_at)'), '<=', $f_fin)
+                ->where(function ($query) use ($request) {
+                    if (!empty($request->estado)) {
+                        $query->where('estado', $request->estado);
+                    }
+                })->get();
+            //dd($registros);
+        }
+
+
+        if (empty($request->fecha_ini)) {
+            $fecha_ini = date('d/m/Y');
+        } else {
+            $fecha_ini = $request->fecha_ini;
+        }
+        if (empty($request->fecha_fin)) {
+            $fecha_fin = date('d/m/Y');
+        } else {
+            $fecha_fin = $request->fecha_fin;
+        }
+        $hotel_id = '';
+        if (!empty($request->hotel_id)) {
+            $hotel_id = $request->hotel_id;
+        }
+        $estado = '';
+        if (!empty($request->estado)) {
+            $estado = $request->estado;
+        }
+        $hoteles = Hotel::lists('nombre', 'id')->all();
+        return view('reportes.reporte_registros')->with(compact('fecha_ini', 'fecha_fin', 'hoteles', 'hotel_id', 'estado', 'registros'));
+    }
+
+
 }

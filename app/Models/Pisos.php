@@ -82,4 +82,5 @@ class Pisos extends Model
     public function hotel(){
         return $this->belongsTo('\App\Models\Hotel');
     }
+
 }

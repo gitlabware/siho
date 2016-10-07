@@ -21,13 +21,19 @@
             <th>Fecha Salida</th>
             <th>Observacion</th>
             <th>Precio</th>
-            <th>Monto Total</th>
+            <th>Deuda</th>
             <th>User Id</th>
             <th>Action</th>
             </thead>
             <tbody>
             @foreach($registros as $registro)
-                <tr>
+                <tr
+                        @if($registro->grupo->deudas > 0)
+                        class="info"
+                        @endif
+
+                >
+
                     <td>{!! $registro->grupo->nombre !!}</td>
                     <td>{!! $registro->habitacione->nombre.' - '.$registro->habitacione->rpiso->nombre !!}</td>
                     <td>{!! $registro->estado !!}</td>
@@ -35,14 +41,16 @@
                     <td>{!! $registro->fecha_salida !!}</td>
                     <td>{!! $registro->observacion !!}</td>
                     <td>{!! $registro->precio !!}</td>
-                    <td>{!! $registro->monto_total !!}</td>
+                    <td>{!! $registro->grupo->deudas !!}</td>
                     <td>{!! $registro->user_id !!}</td>
                     <td>
                         {!! Form::open(['route' => ['registros.destroy', $registro->id], 'method' => 'delete']) !!}
                         <div class='btn-group'>
 
                             @if($registro->estado != 'Desocupado')
-                                <a class="btn btn-default btn-xs" href="{!! route('nuevoregistro',['Cliente',$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}">
+
+                                <a class="btn btn-default btn-xs"
+                                   href="{!! route('registrosgrupos',[$registro->grupo_id]) !!}">
                                     <i class="glyphicon glyphicon-edit"></i>
                                 </a>
                             @endif

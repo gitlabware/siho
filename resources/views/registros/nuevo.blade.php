@@ -40,7 +40,7 @@
                                 }
                                 ?>
                                 @if(!empty($registro2->num_reg))
-                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:" >
+                                    <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:">
                                         {{ $registro2->estado.' '.$registro2->grupo->nombre.' '.$registro2->fecha_ingreso.' - '.$registro2->fecha_salida }}
                                     </a>
                                 @else
@@ -68,7 +68,8 @@
                                 Reservar habitacion
                             </div>
                         @endif
-
+                    @elseif(isset($registro) && $registro->estado == 'Ocupando')
+                        {!! Form::hidden('estado') !!}
                     @endif
                     <div class="form-group col-sm-6">
                         <label>Fecha inicial Reserva</label>
@@ -117,7 +118,7 @@
 
                     <div class="form-group col-sm-6">
                         <label>Equipaje</label>
-                        {!! Form::select('equipaje', [null => '','Sin equipaje' => 'Sin equipaje','Poco equipaje' => 'Poco equipaje','Con equipaje' => 'Con equipaje'],null, ['class' => 'form-control','required']) !!}
+                        {!! Form::select('equipaje', [null => '','Sin equipaje' => 'Sin equipaje','Poco equipaje' => 'Poco equipaje','Con equipaje' => 'Con equipaje'],null, ['class' => 'form-control']) !!}
                     </div>
                     <div class="form-group col-sm-6">
                         <label>Seleccione el precio</label>

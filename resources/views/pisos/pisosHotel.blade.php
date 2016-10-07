@@ -12,14 +12,10 @@
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Hotel: {!! $hotel->nombre  !!}</h3>
-            <table class="table table-bordered text-center">
-                <tr>
-                    <td><a href="javascript:" onclick="cargarmodal('{!! route('piso') !!}')" type="button"
-                           class="btn btn-block btn-primary btn-sm">Nuevo Piso</a></td>
-                    <td><a href="{!! url('nuevaHabitacion', $hotel->id) !!}" type="button"
-                           class="btn btn-block btn-success btn-sm">Nueva Habitacion</a></td>
-                </tr>
-            </table>
+            <div class="box-tools pull-right">
+                <a href="{!! url('nuevaHabitacion', $hotel->id) !!}" class="btn btn-success btn-box-tool" style="color: white;"><b>NUEVA HABITACION</b></a>
+
+            </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body table-responsive">
@@ -47,7 +43,11 @@
                 </thead>
                 <tbody>
                 @foreach($habitaciones as $h)
-                    <tr>
+                    <tr
+                            @if($h->estado == 'Deshabilitado')
+                            style="background-color: lightgrey;"
+                            @endif
+                    >
                         <td>{!! $h->rpiso->nombre !!}</td>
                         <td>{!! $h->nombre !!}</td>
                         <td>
@@ -86,7 +86,7 @@
                             $role = Auth::user()->rol;
                             ?>
                             @if($role != 'Operario')
-                                {!! Form::open(['route' => ['hotels.destroy', $h->id], 'method' => 'delete']) !!}
+                                {!! Form::open(['route' => ['habitaciones.destroy', $h->id], 'method' => 'delete']) !!}
                                 <div class='btn-group'>
                                     {{--<a href="{!! route('hotels.show', [$h->id]) !!}" class='btn btn-default btn-xs'><i--}}
                                     {{--class="glyphicon glyphicon-eye-open"></i></a>--}}
@@ -95,7 +95,7 @@
                                     <a href="{!! route('habitaciones.edit', [$h->id]) !!}"
                                        class='btn btn-warning btn-xs'><i
                                                 class="glyphicon glyphicon-edit"></i></a>
-                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Esta seguro de eliminar la habitacion?')"]) !!}
                                 </div>
                                 {!! Form::close() !!}
                             @endif

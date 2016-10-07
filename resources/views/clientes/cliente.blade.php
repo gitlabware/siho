@@ -32,7 +32,7 @@
         <div class="row">
             <div class="col-md-6">
                 {!! Form::label('edad', 'Edad:') !!}
-                {!! Form::date('edad', null, ['class' => 'form-control']) !!}
+                {!! Form::date('edad', $edad, ['class' => 'form-control']) !!}
             </div>
             <div class="col-md-6">
                 {!! Form::label('procedencia', 'Procedencia:') !!}

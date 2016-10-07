@@ -24,6 +24,9 @@
                 } elseif ($registro->estado == 'Salida') {
                     $color = 'green';
                     $color2 = 'success';
+                }elseif ($registro->estado == 'Cancelado') {
+                    $color = 'red';
+                    $color2 = 'danger';
                 }
 
                 ?>
@@ -33,7 +36,7 @@
                             <span class="badge bg-{!! $color !!}">{!! $registro->estado !!}</span>
                         </h3>
                         <div class="box-tools pull-right">
-                            @if($registro->estado != 'Salida')
+                            @if($registro->estado != 'Salida' && $registro->estado != 'Cancelado')
                                 <a href="javascript:" style="color: white;"
                                    onclick="cargarmodal('{!! route('addpagoextra',[$registro->id]) !!}')"
                                    class="btn btn-success btn-box-tool"> <i class="fa fa-plus"></i><b>
@@ -134,7 +137,8 @@
                                     @endif
 
                                     <td>
-                                        {!! Form::checkbox("pagos[".$pago->id."][marcado]", 'value',null,['class' => 'c-todos-pt'])!!}
+                                        {!! Form::checkbox("pagos[".$pago->id."][marcado]", $pago->estado,null,['class' => 'c-todos-pt'])!!}
+
                                     </td>
                                     <td>{!! $pago->registro->habitacione->nombre !!}</td>
                                     <td>{!! $pago->fecha !!}</td>
@@ -169,7 +173,7 @@
                         {!! Form::select('caja_id', $cajas,null, ['class' => 'form-control','required']) !!}
                     </div>
                     <div class="form-group col-sm-12">
-                        {!! Form::button('<i class="fa fa-save"></i> Registrar', ['type' => 'submit', 'class' => 'btn btn-primary', 'onclick' => "return confirm('Esta seguro de que realizar el pago?')"]) !!}
+                        {!! Form::button('<i class="fa fa-save"></i> Registrar', ['type' => 'submit', 'class' => 'btn btn-primary', 'onclick' => "return confirm('Esta seguro de realizar el pago?')"]) !!}
                     </div>
                     {!! Form::hidden('grupo_id',$grupo->id) !!}
                     {!! Form::hidden('user_id',Auth::user()->id) !!}

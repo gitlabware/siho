@@ -118,12 +118,17 @@ class ClientesController extends InfyOmBaseController
     {
         $cliente = null;
         $adjuntos = array();
+        $edad = null;
         if (!empty($id)) {
             $cliente = $this->clientesRepository->findWithoutFail($id);
             $adjuntos = Adjunto::where('cliente_id',$id)->whereNull('deleted_at')->get();
+
+            $edad = $cliente->edad3;
+
         }
+        //dd($edad);
         //dd($adjuntos[0]->nombre_original);
-        return view('clientes.cliente')->with(compact('cliente','adjuntos'));
+        return view('clientes.cliente')->with(compact('cliente','adjuntos','edad'));
     }
 
     /**
@@ -288,7 +293,7 @@ class ClientesController extends InfyOmBaseController
         $idHotel = Auth::user()->hotel_id;
         //dd($idHotel);exit;
         //$habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
-        $habitaciones = Habitaciones::whereHas('rpiso', function($query) use ($idHotel){
+        $habitaciones = Habitaciones::where('estado','<>','Deshabilitado')->whereHas('rpiso', function($query) use ($idHotel){
             $query->where('hotel_id',$idHotel);
         })->get();
         //dd($habitaciones);

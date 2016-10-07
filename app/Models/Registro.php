@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use DB;
 
 /**
  * @SWG\Definition(
@@ -193,9 +194,10 @@ class Registro extends Model
     public function habitacione(){
         return $this->belongsTo('\App\Models\Habitaciones');
     }
-    public function grupo(){
-        return $this->belongsTo('\App\Grupo','grupo_id');
+    public function user(){
+        return $this->belongsTo('\App\User');
     }
+
 
     public function hospedantes(){
         return $this->hasMany('\App\Hospedante','registro_id');
@@ -205,7 +207,23 @@ class Registro extends Model
         return $this->hasMany('\App\Pago','registro_id');
     }
 
-    
+    public function grupo(){
+        return $this->belongsTo('\App\Grupo','grupo_id');
+    }
 
+    public function getDeudasAttribute()
+    {
+        $deuda = DB::table('pagos')
+            ->leftJoin('registros', 'pagos.registro_id', '=', 'registros.id')
+            ->select(DB::raw('SUM(pagos.monto_total) as monto_total'))
+            ->where('registros.id', '=', $this->id)
+            ->whereIn('pagos.estado',['Deuda','Deuda Extra'])
+            ->groupBy('registros.grupo_id')
+            ->first();
+        if(isset($deuda)){
+            return $deuda->monto_total;
+        }else{
+            return 0.00;
+        }
+    }
 }
-

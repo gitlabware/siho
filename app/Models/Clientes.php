@@ -177,5 +177,16 @@ class Clientes extends Model
         return $this->hasMany('\App\Models\Actividad','cliente_id')->orderBy('id','desc');
     }
 
+    public function getEdad3Attribute()
+    {
+        $value = $this->edad;
+        if (!empty($value) && "0000-00-00 00:00:00" != $value) {
+            $fecha = Carbon::parse($value);
+            return $fecha->format('Y-m-d');
+        } else {
+            return null;
+        }
+    }
+
 }
 

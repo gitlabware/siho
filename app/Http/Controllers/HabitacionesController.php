@@ -52,6 +52,7 @@ class HabitacionesController extends InfyOmBaseController
     public function create()
     {
         $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
+        //$pisosHotel = Pisos::where('hotel_id',$idHotel)->get()->lists('nombre','id');
         return view('habitaciones.create')->with(compact('categorias'));
     }
 
@@ -61,10 +62,11 @@ class HabitacionesController extends InfyOmBaseController
         //$piso = \App\Models\Pisos::find($habitacionPiso);
         $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
         //$idHotel = $piso->hotel_id;
-        $pisosHotel = DB::table('pisos')
+        /*$pisosHotel = DB::table('pisos')
             ->where('hotel_id', $idHotel)
             ->select('id', 'nombre')
-            ->get();
+            ->get();*/
+        $pisosHotel = Pisos::where('hotel_id',$idHotel)->get()->lists('nombre','id');
         return view('habitaciones.create')
             ->with(compact('pisosHotel','categorias','idHotel'));
 
@@ -125,11 +127,11 @@ class HabitacionesController extends InfyOmBaseController
         $habitacionPiso = $habitacion->piso_id;
         $piso = \App\Models\Pisos::find($habitacionPiso);
         $idHotel = $piso->hotel_id;
-        $pisosHotel = DB::table('pisos')
+        /*$pisosHotel = DB::table('pisos')
             ->where('hotel_id', $idHotel)
             ->select('id', 'nombre')
-            ->get();
-
+            ->get();*/
+        $pisosHotel = Pisos::where('hotel_id',$idHotel)->get()->lists('nombre','id');
         $categorias = Categoria::where('hotel_id', $idHotel)->get()->lists('nombre', 'id')->all();
 
         if (empty($habitaciones)) {
@@ -193,7 +195,7 @@ class HabitacionesController extends InfyOmBaseController
 
         Flash::success('Habitaciones deleted successfully.');
 
-        return redirect(route('habitaciones.index'));
+        return redirect()->back();
     }
 
     public function vhabitaciones()

@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" href="{{ asset('/plugins/datepicker/datepicker3.css') }}">
 @section('content')
-    <h1 class="pull-left">Reporte de Ingresos por Hotel</h1>
+    <h1 class="pull-left">Reporte de Pasajeros</h1>
     <a class="btn bg-navy btn-flat margin pull-right" onclick="printDiv('printableArea')" style="margin-top: 25px"
        href="javascript:"> <i class="fa fa-print"></i> IMPRIMIR REPORTE</a>
 
@@ -17,26 +17,33 @@
             <div class="box box-primary">
                 {!! Form::open(['route' => 'pasajeros_reporte','id' => 'form-rep-pa']) !!}
                 <div class="box-body">
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         {!! Form::label('fecha_ini', 'Fecha Inicial:') !!}
                         {!! Form::text('fecha_ini', $fecha_ini, ['class' => 'form-control calendario','placeholder' => '','required','id' => 'cfechaingreso']) !!}
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         {!! Form::label('fecha_fin', 'Fecha Final:') !!}
                         {!! Form::text('fecha_fin', $fecha_fin, ['class' => 'form-control calendario','placeholder' => '','required','id' => 'cfechaingreso']) !!}
                     </div>
-                    <div class="form-group col-sm-3">
+                    @if(Auth::user()->rol == 'Super Administrador')
+                        <div class="form-group col-sm-4">
+                            {!! Form::label('hotel', 'Seleccione el Hotel:') !!}
+                            {!! Form::select('hotel_id', $hoteles,null, ['class' => 'form-control','placeholder' => 'Seleccione el Hotel','required']) !!}
+                        </div>
+                    @else
+                        {!! Form::hidden('hotel_id',Auth::user()->hotel_id) !!}
+                    @endif
+                    <div class="form-group col-sm-2">
                         <label>&nbsp;</label>
                         {!! Form::submit('Generar', ['class' => 'btn btn-primary form-control']) !!}
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         <label>&nbsp;</label>
                         <a href="javascript:" class="btn btn-warning form-control" onclick="$('#hi-tipo').val('pdf');$('#form-rep-pa').submit();">PDF</a>
                     </div>
                 </div>
 
                 {!! Form::hidden('tipo_r','html',['id' => 'hi-tipo']) !!}
-                {!! Form::hidden('hotel_id',Auth::user()->hotel_id) !!}
                 {!! Form::close() !!}
             </div>
         </div>
@@ -49,13 +56,13 @@
                     <table class="table table-bordered">
                         <tr>
                             <td class="text-bold">Hotel: </td>
-                            <td>{!! Auth::user()->hotel->nombre !!}</td>
+                            <td>{!! $hotel->nombre !!}</td>
                             <td class="text-bold">Direccion: </td>
-                            <td>{!! Auth::user()->hotel->direccion !!}</td>
+                            <td>{!! $hotel->direccion !!}</td>
                         </tr>
                         <tr>
                             <td class="text-bold">Telefonos: </td>
-                            <td>{!! Auth::user()->hotel->telefonos !!}</td>
+                            <td>{!! $hotel->telefonos !!}</td>
                             <td class="text-bold">Parte del dia: </td>
                             <td>{!! $datos_f['dia_ini'] !!} <b>al</b> {!! $datos_f['dia_fin'] !!} <b>de</b> {!! $datos_f['mes'] !!} <b>de 20</b>{!! $datos_f['ano'] !!}</td>
                         </tr>

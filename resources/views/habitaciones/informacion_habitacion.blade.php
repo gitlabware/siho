@@ -28,33 +28,36 @@
                     </tr>
                 </table>
 
+                <table class="table table-bordered">
 
-                @foreach($habitacion->registrosactivos as $registro)
-                    <?php
-                    $color_reg = 'info';
-                    if ($registro->estado == 'Ocupando') {
-                        $color_reg = 'danger';
-                    }elseif($registro->estado == 'Reservado'){
-                        $color_reg = 'warning';
-                    }
-                    ?>
-                    @if(!empty($registro->num_reg))
-                        <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                           onclick="cargarmodal('{!! route('nuevos',[$registro->cliente_id,$registro->num_reg]) !!}')">
-                            {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
-                        </a>
-                    @else
-                        <a class="btn btn-block btn-{!! $color_reg !!} btn-xs" href="javascript:"
-                           onclick="cargarmodal('{!! route('nuevoregistro',[$registro->cliente_id,$registro->habitacione_id,$registro->id]) !!}')">
-                            {{ $registro->estado.' '.$registro->cliente->nombre.' '.$registro->fecha_ingreso.' - '.$registro->fecha_salida }}
-                        </a>
-                    @endif
-                @endforeach
+                    @foreach($habitacion->registrosactivos as $registro)
+                        <?php
+                        $color_reg = 'info';
+                        $fechass = "";
+                        if ($registro->estado == 'Ocupando') {
+                            $color_reg = 'danger';
+                            $fechass = $registro->fecha_ingreso;
+                        } elseif ($registro->estado == 'Reservado') {
+                            $color_reg = 'warning';
+                            $fechass = $registro->fech_ini_reserva2 . ' - ' . $registro->fech_fin_reserva2;
+                        }
+                        ?>
+                        <tr class="btn-{!! $color_reg !!}" style="cursor: pointer;" onclick="window.location.href = '{!! route('registrosgrupos',[$registro->grupo_id]) !!}';">
+                            <td>{!! $registro->estado !!}</td>
+                            <td>{!! $registro->grupo->nombre !!}</td>
+                            <td>
+                                {!! $fechass !!}
+                            </td>
+                            <td><b>{!! $registro->grupo->deudas !!} </b>Bs</td>
+                        </tr>
+                    @endforeach
+                </table>
+
             </div>
         </div>
     </div>
 </div>
-{!! Form::open(['route' => ['hotels.destroy', $habitacion->id], 'method' => 'delete']) !!}
+{!! Form::open(['route' => ['habitaciones.destroy', $habitacion->id], 'method' => 'delete']) !!}
 <div class="modal-footer">
     <?php
     $role = Auth::user()->rol;

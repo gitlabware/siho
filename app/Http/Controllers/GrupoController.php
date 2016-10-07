@@ -52,14 +52,19 @@ class GrupoController extends Controller
             $total = 0.00;
             $descripcion = '';
             foreach ($request->pagos as $idPago => $pago) {
+                if($request->pagos[$idPago]['marcado'] == 'Deuda Extra'){
+                    $estado_n = 'Pagado Extra';
+                }else{
+                    $estado_n = 'Pagado';
+                }
                 $pago = Pago::find($idPago);
-                $pago->estado = 'Pagado';
+                $pago->estado = $estado_n;
                 $pago->save();
                 $total = $total + $pago->monto_total;
                 $descripcion = $descripcion.'<tr><td> Habitacion: '.$pago->registro->habitacione->nombre.' ('.$pago->registro->habitacione->categoria->nombre.') por fecha '.$pago->fecha.'</td><td>'.$pago->monto_total.' Bs. </td></tr>';
             }
             $descripcion = $descripcion.'<tr><td><b>TOTAL:</b></td><td><b>'.$total.' Bs.</b></td></tr>';
-            $descripcion = '<table class="table table-bordered"'.$descripcion.'</table>';
+            $descripcion = '<table class="mitablar"'.$descripcion.'</table>';
 
             $flujo = new Flujo;
             $flujo->detalle = 'Pago de Registro '.$grupo->nombre;
@@ -104,10 +109,12 @@ class GrupoController extends Controller
     public function marcasalida($idRegistro){
         $registro = Registro::find($idRegistro);
         $registro->estado = 'Salida';
+        $registro->fecha_salida = date('Y-m-d H:i:s');
         $registro->save();
         $hospedantes = Hospedante::where('registro_id',$idRegistro)->where('estado','Ocupando')->get();
         foreach ($hospedantes as $hospedante) {
             $hospedante->estado = 'Salida';
+            $hospedante->fecha_salida = date('Y-m-d H:i:s');
             $hospedante->save();
         }
         Flash::success('Se ha registrado la salida del registro correctamente!!');
@@ -156,6 +163,40 @@ class GrupoController extends Controller
         }
         //Flash::success('Se ha actualizado correctamente los pagos pendientes!!');
         return redirect()->back();
+    }
+
+    public function crono_genera_pagos(){
+        $grupos = Registro::where('estado', 'Ocupando')->get()->lists('grupo.nombre', 'grupo.id')->all();
+
+        foreach ($grupos as $idGrupo => $grupo){
+            $this->generadeudasgrupos($idGrupo);
+        }
+        exit;
+    }
+    public function generadeudasgrupos2($idGrupo){
+        $fecha_actual = date('Y-m-d');
+        if(date('H') < 12){
+            $fecha_actual = date('Y-m-d', strtotime($fecha_actual . ' -1 day'));
+        }
+        $registros = Registro::where('estado','Ocupando')->where('grupo_id',$idGrupo)->get();
+        foreach ($registros as $registro){
+            $fechas = $this->createDateRangeArray($registro->fecha_ingreso3,$fecha_actual);
+            foreach ($fechas as $fecha){
+                $si_pago = Pago::where('registro_id',$registro->id)->where('fecha',$fecha)->first();
+                if(!isset($si_pago)){
+                    $pago = new Pago;
+                    $pago->registro_id = $registro->id;
+                    $pago->precio = $registro->precio;
+                    $pago->monto_total = $registro->precio;
+                    $pago->fecha = $fecha;
+                    $pago->estado = 'Deuda';
+                    $pago->save();
+                }
+            }
+        }
+
+        //Flash::success('Se ha actualizado correctamente los pagos pendientes!!');
+        //return redirect()->back();
     }
 
 
