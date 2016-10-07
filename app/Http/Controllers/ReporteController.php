@@ -431,7 +431,7 @@ class ReporteController extends Controller
                         $query->where('estado', $request->estado);
                     }
                 })->get();
-            //dd($registros);
+            //\dd($registros);
         }
 
 

@@ -167,7 +167,6 @@ class GrupoController extends Controller
 
     public function crono_genera_pagos(){
         $grupos = Registro::where('estado', 'Ocupando')->get()->lists('grupo.nombre', 'grupo.id')->all();
-
         foreach ($grupos as $idGrupo => $grupo){
             $this->generadeudasgrupos($idGrupo);
         }

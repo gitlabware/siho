@@ -36,15 +36,32 @@
         <ul class="sidebar-menu">
             <li class="header">{{ trans('adminlte_lang::message.header') }}</li>
             <!-- Optionally, you can add icons to the links -->
-            <li class="active"><a href="{{ url('clientes') }}"><i class='fa fa-building-o'></i>
-                    <span>Clientes</span></a></li>
-            <li class="active"><a href="{{ url('pisosHotel',[Auth::user()->hotel_id]) }}"><i
-                            class='fa fa-building-o'></i> <span>Lista Habitaciones</span></a></li>
-            <li class="active"><a href="{{ url('vhabitaciones') }}"><i class='fa fa-tag'></i>
-                    <span>Cuadro Habitaciones</span></a></li>
-            <li class="active"><a href="{{ url('registros') }}"><i class='fa fa-building-o'></i> <span>Registros</span></a>
+            <li class=""><a href="{{ url('clientes') }}"><i class='fa fa-user-secret'></i> <span>Clientes</span></a></li>
+            <li class=""><a href="{{ url('grupos') }}"><i class='fa fa-group'></i> <span>Grupos</span></a></li>
+            <li class=""><a href="{{ url('pisosHotel',[Auth::user()->hotel_id]) }}"><i class='fa fa-building-o'></i>
+                    <span>Lista Habitaciones</span></a></li>
+            <li class=""><a href="{{ url('vhabitaciones') }}"><i class='fa fa-cubes'></i> <span>Cuadro Habitaciones</span></a>
             </li>
-            <li class="active"><a href="{{ url('cajas') }}"><i class='fa fa-building-o'></i> <span>Caja Chica</span></a>
+            <li class=""><a href="{{ url('registros') }}"><i class='fa fa-database'></i> <span>Registros</span></a>
+            </li>
+            <li class=""><a href="{{ url('cajas') }}"><i class='fa fa-money'></i> <span>Caja Chica</span></a></li>
+            <li class=""><a href="{{ url('actividads') }}"><i class='fa fa-bell'></i> <span>Actividades</span></a>
+            </li>
+            <li class=" treeview">
+                <a href="#">
+                    <i class="fa fa-book"></i> <span>REPORTES</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="active"><a href="{{ url('pasajeros_reporte') }}"><i class="fa fa-circle-o"></i> <span>Reporte de Pasajeros</span></a>
+                    </li>
+                    <li class="active"><a href="{{ url('reporte_pagos') }}"><i class='fa fa-circle-o'></i> <span>Reporte de Cajas</span></a>
+                    </li>
+                    <li class="active"><a href="{{ url('repo_pago_regis') }}"><i class='fa fa-circle-o'></i> <span>Reporte de Pagos</span></a>
+                    </li>
+                </ul>
             </li>
         </ul><!-- /.sidebar-menu -->
     </section>
