@@ -8,10 +8,16 @@
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Hotel: {!! $hotel->nombre  !!}</h3>
-            <div class="box-tools pull-right">
-                <a href="{!! url('nuevaHabitacion', $hotel->id) !!}" class="btn btn-success btn-box-tool" style="color: white;"><b>NUEVA HABITACION</b></a>
+            <?php
+            $role = Auth::user()->rol;
+            ?>
+            @if($role != 'Operario')
+                <div class="box-tools pull-right">
+                    <a href="{!! url('nuevaHabitacion', $hotel->id) !!}" class="btn btn-success btn-box-tool"
+                       style="color: white;"><b>NUEVA HABITACION</b></a>
 
-            </div>
+                </div>
+            @endif
         </div>
     </div>
     <div class="row">
