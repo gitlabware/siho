@@ -29,7 +29,7 @@ desired effect
 |               | sidebar-mini                            |
 |------------------------------fac---------------------------|
 -->
-<body class="skin-blue sidebar-mini">
+<body class="skin-blue sidebar-mini" onload="startTime()">
 <div class="wrapper">
 
 @include('layouts.partials.mainheader')
