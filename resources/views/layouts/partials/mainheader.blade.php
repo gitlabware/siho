@@ -20,13 +20,13 @@
             <ul class="nav navbar-nav">
 
 
-
                 @if (Auth::guest())
                     <li><a href="{{ url('/register') }}">{{ trans('adminlte_lang::message.register') }}</a></li>
                     <li><a href="{{ url('/login') }}">{{ trans('adminlte_lang::message.login') }}</a></li>
                 @else
-                    <!-- User Account Menu -->
-                    <li><a href="javascript" style="font-weight: bold; font-size: 22px;" id="reloj">20:00:00</a></li>
+                <!-- User Account Menu -->
+                    <li><a href="javascript:" style="font-weight: bold; font-size: 22px;" id="reloj">20:00:00</a></li>
+                    <li><a href="javascript:" style="font-weight: bold; font-size: 22px;" >{!! date('d/m/Y') !!}</a></li>
                     <li class="dropdown user user-menu">
                         <!-- Menu Toggle Button -->
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -38,7 +38,7 @@
                         <ul class="dropdown-menu">
                             <!-- The user image in the menu -->
                             <li class="user-header">
-                                <img src="{{asset('/img/user-ico.ico')}}" class="img-circle" alt="User Image" />
+                                <img src="{{asset('/img/user-ico.ico')}}" class="img-circle" alt="User Image"/>
                                 <p>
                                     {{ Auth::user()->name }}
                                     <small> {{ Auth::user()->rol }}</small>
@@ -48,7 +48,7 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                   <!-- <a href="#" class="btn btn-default btn-flat">{{ trans('adminlte_lang::message.profile') }}</a>-->
+                                <!-- <a href="#" class="btn btn-default btn-flat">{{ trans('adminlte_lang::message.profile') }}</a>-->
                                 </div>
                                 <div class="pull-right">
                                     <a href="{{ url('/logout') }}" class="btn btn-default btn-flat">Salir</a>
@@ -74,7 +74,10 @@
         var t = setTimeout(startTime, 500);
     }
     function checkTime(i) {
-        if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+        if (i < 10) {
+            i = "0" + i
+        }
+        ;  // add zero in front of numbers < 10
         return i;
     }
 </script>
