@@ -1,3 +1,8 @@
+<style>
+    table.mitablar{
+        width: 100%;
+    }
+</style>
 {!! Form::open(['route' => 'generar_factura']) !!}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>

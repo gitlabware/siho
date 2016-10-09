@@ -414,6 +414,14 @@ class ReporteController extends Controller
 
         if ($request->method() == "POST" && !empty($request->fecha_ini) && !empty($request->fecha_fin)) {
             //dd($request->all());
+
+            if($request->tipo_fecha == 'Fecha de creacion'){
+                $tfecha = "created_at";
+            }elseif($request->tipo_fecha == 'Fecha de ingreso'){
+                $tfecha = "fecha_ingreso";
+            }else{
+                $tfecha = "fech_ini_reserva";
+            }
             $f_ini = $this->conv_fecha($request->fecha_ini);
             $f_fin = $this->conv_fecha($request->fecha_fin);
 
@@ -424,14 +432,13 @@ class ReporteController extends Controller
                     }
                 });
             })
-                ->where(DB::raw('DATE(created_at)'), '>=', $f_ini)
-                ->where(DB::raw('DATE(created_at)'), '<=', $f_fin)
+                ->where(DB::raw("DATE($tfecha)"), '>=', $f_ini)
+                ->where(DB::raw("DATE($tfecha)"), '<=', $f_fin)
                 ->where(function ($query) use ($request) {
                     if (!empty($request->estado)) {
                         $query->where('estado', $request->estado);
                     }
                 })->get();
-            //\dd($registros);
         }
 
 
@@ -453,8 +460,12 @@ class ReporteController extends Controller
         if (!empty($request->estado)) {
             $estado = $request->estado;
         }
+        $tipo_fecha_f = 'Fecha de creacion';
+        if (!empty($request->tipo_fecha)) {
+            $tipo_fecha_f = $request->tipo_fecha;
+        }
         $hoteles = Hotel::lists('nombre', 'id')->all();
-        return view('reportes.reporte_registros')->with(compact('fecha_ini', 'fecha_fin', 'hoteles', 'hotel_id', 'estado', 'registros'));
+        return view('reportes.reporte_registros')->with(compact('fecha_ini', 'fecha_fin', 'hoteles', 'hotel_id', 'estado', 'registros','tipo_fecha_f'));
     }
 
 

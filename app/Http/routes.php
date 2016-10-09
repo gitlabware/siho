@@ -153,3 +153,5 @@ Route::post('guarda_actividad/{idActividad?}', 'ActividadController@guarda_activ
 Route::get('grupos/eliminapago/{idPago}', 'GrupoController@eliminapago')->name('eliminapago');
 Route::post('grupos/eliminar_pago/{idPago}', 'GrupoController@eliminar_pago');
 Route::get('crono_genera_pagos', 'GrupoController@crono_genera_pagos');
+
+Route::post('opcioneshab', 'PisosController@opcioneshab')->name('opcioneshab');

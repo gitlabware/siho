@@ -25,8 +25,12 @@
                         {!! Form::label('fecha_fin', 'Fecha Final:') !!}
                         {!! Form::text('fecha_fin', $fecha_fin, ['class' => 'form-control calendario','placeholder' => '','required','id' => 'cfechaingreso']) !!}
                     </div>
+                    <div class="form-group col-sm-2">
+                        {!! Form::label('tipo_fecha', 'Tipo de Fecha:') !!}
+                        {!! Form::select('tipo_fecha', ['Fecha de creacion' => 'Fecha de creacion','Fecha de ingreso' => 'Fecha de ingreso','Fecha de reserv-ingreso' => 'Fecha de reserv-ingreso'],$tipo_fecha_f, ['class' => 'form-control']) !!}
+                    </div>
                     @if(Auth::user()->rol == 'Super Administrador')
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-2">
                             {!! Form::label('hotel', 'Seleccione el Hotel:') !!}
                             {!! Form::select('hotel_id', $hoteles,$hotel_id, ['class' => 'form-control','placeholder' => 'Todos']) !!}
                         </div>
@@ -37,7 +41,7 @@
                         {!! Form::label('estado', 'Seleccione el Estado:') !!}
                         {!! Form::select('estado', ['Ocupando' => 'Ocupando','Reservado' => 'Reservado','Salida' => 'Salida','Eliminado' => 'Eliminado'],$estado, ['class' => 'form-control','placeholder' => 'Todos']) !!}
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-2">
                         <label>&nbsp;</label>
                         {!! Form::submit('Generar', ['class' => 'btn btn-primary form-control']) !!}
                     </div>

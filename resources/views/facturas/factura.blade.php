@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        table.mitablar{
+            width: 100%;
+        }
+    </style>
     <h1 class="pull-left"></h1>
     <a class="btn bg-navy btn-flat margin pull-right"  onclick="printDiv('printableArea')" style="margin-top: 25px" href="javascript:"> <i class="fa fa-print"></i> IMPRIMIR FACTURA</a>
 

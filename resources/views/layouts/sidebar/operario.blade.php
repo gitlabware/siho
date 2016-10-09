@@ -50,6 +50,8 @@
                     </li>
                     <li class="active"><a href="{{ url('repo_pago_regis') }}"><i class='fa fa-circle-o'></i> <span>Reporte de Pagos</span></a>
                     </li>
+                    <li class="active"><a href="{{ url('reporte_registros') }}"><i class='fa fa-circle-o'></i> <span>Reporte de Registros</span></a>
+                    </li>
                 </ul>
             </li>
         </ul><!-- /.sidebar-menu -->

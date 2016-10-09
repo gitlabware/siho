@@ -16,7 +16,6 @@ use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
-
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Habitaciones;
@@ -234,4 +233,9 @@ class PisosController extends InfyOmBaseController
     /*public function anyData(){
         return Datatables::of(Pisos::query())->make(true);
     }*/
+
+
+    public function opcioneshab(Request $request){
+        dd($request->all());
+    }
 }
