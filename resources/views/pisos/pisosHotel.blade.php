@@ -17,20 +17,20 @@
             ?>
             @if($role != 'Operario')
                 <div class="box-tools pull-right">
-                    <!--<a href="javascript:" class="btn btn-info btn-box-tool" onclick="opcionesh();"
-                       style="color: white;"><i class="fa fa-check"></i> <b>OPCIONES</b></a>-->
+                    <a href="javascript:" class="btn btn-info btn-box-tool" onclick="opcionesh();"
+                       style="color: white;"><i class="fa fa-check"></i> <b>OPCIONES</b></a>
                     <a href="{!! url('nuevaHabitacion', $hotel->id) !!}" class="btn btn-success btn-box-tool"
                        style="color: white;"><b>NUEVA HABITACION</b></a>
                 </div>
             @endif
         </div>
         <!-- /.box-header -->
-        {!! Form::open(['route' => ['opcioneshab'],'id' => 'form-habit']) !!}
+
         <div class="box-body table-responsive">
             <table id="tabla" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                    <!--<th></th>-->
+                    <th></th>
                     <th>Piso</th>
                     <th>Habitacion</th>
                     <th>Precios</th>
@@ -42,7 +42,7 @@
                 </thead>
                 <thead>
                 <tr>
-                    <!--<th></th>-->
+                    <th></th>
                     <th>Piso</th>
                     <th>Habitacion</th>
                     <th>Precios</th>
@@ -58,9 +58,9 @@
                             style="background-color: lightgrey;"
                             @endif
                     >
-                        <!--<td>
-                            <input type="checkbox" name="habitaciones[{!! $h->id !!}][valor]">
-                        </td>-->
+                        <td>
+                            <input type="checkbox" name="habitaciones[{!! $h->id !!}][valor]" class="miforma">
+                        </td>
                         <td>{!! $h->rpiso->nombre !!}</td>
                         <td>{!! $h->nombre !!}</td>
                         <td>
@@ -118,6 +118,8 @@
                 </tbody>
             </table>
         </div>
+    {!! Form::open(['route' => ['opcioneshab'],'id' => 'form-habit']) !!}
+
     {!! Form::close() !!}
     <!-- /.box-body -->
     </div>
@@ -127,20 +129,22 @@
 @push('scriptsextras')
 @include('layouts.partials.jsdatatable')
 
+
 <script>
     function opcionesh() {
-        var postData = new FormData($("#form-habit")[0]);
-
+        var postData = $( "#form-habit, .miforma" ).serializeArray();
+        //var postData = $("#form-habit").serializeArray();
         var formURL = $("#form-habit").attr("action");
+        console.log(postData);
         $.ajax(
                 {
                     url: formURL,
                     type: "POST",
                     data: postData,
-                    async: false,
-                    processData: false,
-                    cache: false,
-                    contentType: false,
+                    //async: false,
+                    //processData: false,
+                    //cache: false,
+                    //contentType: false,
 
                     beforeSend: function (XMLHttpRequest) {
                         //alert("antes de enviar");
@@ -150,17 +154,16 @@
                         $('#mimodal').attr('class', 'modal modal-primary');
                         $('#mimodal div.modal-dialog').addClass('modal-md');
                         $('#divmodal').hide();
-                        jQuery("#spin-cargando-mod").show(200);
-                        jQuery('#mimodal').modal('show', {backdrop: 'static'});
+                        $("#spin-cargando-mod").show(200);
+                        $('#mimodal').modal('show', {backdrop: 'static'});
                     },
                     complete: function (XMLHttpRequest, textStatus) {
                         //alert('despues de enviar');
                     },
                     success: function (data, textStatus, jqXHR) {
-                        jQuery("#divmodal").html(data);
-                        setTimeout(function ()
-                        {
-                            jQuery("#spin-cargando-mod").hide();
+                        $("#divmodal").html(data);
+                        setTimeout(function () {
+                            $("#spin-cargando-mod").hide();
                             $('#divmodal').show();
                         }, 1500);
                         //console.log(data);
@@ -202,5 +205,4 @@
 
 
 </script>
-
 @endpush

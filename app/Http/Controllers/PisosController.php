@@ -10,12 +10,14 @@ use App\Models\Pisos;
 use Yajra\Datatables\Datatables;
 use App\Http\Requests\CreatePisosRequest;
 use App\Http\Requests\UpdatePisosRequest;
+use App\Repositories\PrecioshabitacionesRepository;
 use App\Repositories\PisosRepository;
 use App\Http\Controllers\AppBaseController as InfyOmBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
+use App\Models\Precioshabitaciones;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Habitaciones;
@@ -24,6 +26,7 @@ class PisosController extends InfyOmBaseController
 {
     /** @var  PisosRepository */
     private $pisosRepository;
+    private $precioshabitacionesRepository;
 
     public function __construct(PisosRepository $pisosRepo)
     {
@@ -164,25 +167,26 @@ class PisosController extends InfyOmBaseController
         return redirect()->back();
     }
 
-    public function piso($idHotel,$idPiso = null)
+    public function piso($idHotel, $idPiso = null)
     {
         $piso = null;
         if (isset($idPiso)) {
             $piso = Pisos::find($idPiso);
         }
-        return view('pisos.piso')->with(compact('piso','idHotel'));
+        return view('pisos.piso')->with(compact('piso', 'idHotel'));
     }
 
-    public function guarda_piso(Request $request,$idPiso = null){
+    public function guarda_piso(Request $request, $idPiso = null)
+    {
 
         //$idHotel = Auth::user()->hotel_id;
         //dd($idHotel);
-        if(isset($idPiso)){
+        if (isset($idPiso)) {
             $piso = Pisos::find($idPiso);
             $piso->nombre = $request->nombre;
             $piso->hotel_id = $request->hotel_id;
             $piso->save();
-        }else{
+        } else {
             $piso = new Pisos;
             $piso->nombre = $request->nombre;
             $piso->hotel_id = $request->hotel_id;
@@ -206,19 +210,19 @@ class PisosController extends InfyOmBaseController
         //\Debugbar::info($habitaciones);
         //dd($idHotel);
         //$habitaciones = Habitaciones::all()->where('rpiso.hotel_id', $idHotel);
-        $habitaciones = Habitaciones::whereHas('rpiso', function($query) use ($idHotel){
-            $query->where('hotel_id',$idHotel);
+        $habitaciones = Habitaciones::whereHas('rpiso', function ($query) use ($idHotel) {
+            $query->where('hotel_id', $idHotel);
         })->get();
-
 
 
         return view('pisos.pisosHotel')->with(compact('habitaciones', 'hotel'));
     }
 
-    public function pisos($idHotel){
+    public function pisos($idHotel)
+    {
         $hotel = Hotel::find($idHotel);
-        $pisos = Pisos::where('hotel_id',$idHotel)->get();
-        return view('pisos.pisos')->with(compact('pisos','hotel'));
+        $pisos = Pisos::where('hotel_id', $idHotel)->get();
+        return view('pisos.pisos')->with(compact('pisos', 'hotel'));
     }
 
     /*public function muestraPisos($idHotel){
@@ -235,7 +239,64 @@ class PisosController extends InfyOmBaseController
     }*/
 
 
-    public function opcioneshab(Request $request){
-        dd($request->all());
+    public function opcioneshab(Request $request)
+    {
+        //dd($request->all());
+        $habitaciones = array();
+        $precios = array();
+        if (isset($request->habitaciones)) {
+            $habitaciones = $request->habitaciones;
+            $l_habitaciones = array();
+            foreach ($habitaciones as $idHabitacion => $habitacion) {
+                $l_habitaciones[$idHabitacion] = $idHabitacion;
+                $habitaciones[$idHabitacion] = Habitaciones::find($idHabitacion);
+            }
+            $nume_habi2 = count($l_habitaciones);
+            $precios = Precioshabitaciones::where(function ($query) use ($l_habitaciones) {
+                $nume_habi = count($l_habitaciones);
+                if ($nume_habi == 1) {
+                    $query->where('habitacione_id', current($l_habitaciones));
+                } else {
+                    $query->whereIn('habitacione_id', $l_habitaciones);
+                }
+            })->groupBy('precio')->havingRaw('COUNT(precio) = ' . $nume_habi2)->get();
+            //dd($precios[0]->precio);
+        }
+        return view('pisos.opcioneshab')->with(compact('habitaciones', 'precios'));
+    }
+
+    public function guarda_precio_h(Request $request)
+    {
+        //dd($request->all());
+        if(!empty($request->habitaciones)){
+            foreach ($request->habitaciones as $idHabitacion => $habitacione) {
+                $precio = new Precioshabitaciones;
+                $precio->precio = $request->precio;
+                $precio->habitacione_id = $idHabitacion;
+                $precio->save();
+            }
+            Flash::success('Se ha registrado los precios a las habitaciones!!');
+        }else{
+            Flash::error('No ha seleccionado habitaciones!!');
+        }
+
+
+        return redirect()->back();
+    }
+
+    public function elimina_precio_h(Request $request,PrecioshabitacionesRepository $precioshabitacionesRepo)
+    {
+        $this->precioshabitacionesRepository = $precioshabitacionesRepo;
+        //dd($request->all());
+        foreach ($request->habitaciones as $idHabitacion => $habitacione) {
+            $precio = Precioshabitaciones::where('precio', $request->precio)->where('habitacione_id', $idHabitacion)->first();
+            //dd($precio->id);
+            $precioshabitaciones = $this->precioshabitacionesRepository->findWithoutFail($precio->id);
+            $this->precioshabitacionesRepository->delete($precio->id);
+            //$precio->delete();
+            // Precioshabitaciones::destroy($precio->id);
+        }
+        Flash::success('Se ha registrado los precios a las habitaciones!!');
+        return redirect()->back();
     }
 }

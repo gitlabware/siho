@@ -155,3 +155,5 @@ Route::post('grupos/eliminar_pago/{idPago}', 'GrupoController@eliminar_pago');
 Route::get('crono_genera_pagos', 'GrupoController@crono_genera_pagos');
 
 Route::post('opcioneshab', 'PisosController@opcioneshab')->name('opcioneshab');
+Route::post('guarda_precio_h', 'PisosController@guarda_precio_h')->name('guarda_precio_h');
+Route::post('elimina_precio_h', 'PisosController@elimina_precio_h')->name('elimina_precio_h');
